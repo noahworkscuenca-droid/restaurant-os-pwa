@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0F0F0F">
+<title>RestaurantOS — Escanear Facturas</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0F0F0F; --s1:#161616; --s2:#1E1E1E; --bd:#2A2A2A; --ac:#7C3AED; --ac2:#8B5CF6;
+  --tx:#F9FAFB; --tx2:#9CA3AF; --tx3:#6B7280;
+  --ok:#10B981; --info:#3B82F6; --warn:#F59E0B; --err:#EF4444;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{background:var(--bg);color:var(--tx);font-family:'Inter',system-ui,-apple-system,sans-serif;min-height:100dvh;padding-bottom:84px}
+.wrap{max-width:520px;margin:0 auto;padding:1rem 1rem 0}
+header{display:flex;align-items:center;justify-content:space-between;padding:.4rem 0 1rem}
+.brand{font-weight:800;font-size:1.05rem;letter-spacing:-.01em}
+.brand span{color:var(--ac2)}
+.badge{font-size:.65rem;color:var(--tx3);border:1px solid var(--bd);border-radius:99px;padding:.2rem .6rem}
+.slabel{font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;color:var(--tx3);margin:1.4rem 0 .6rem}
+.card{background:var(--s2);border:1px solid var(--bd);border-radius:14px;padding:1.1rem 1.2rem}
+
+/* ---- Zona de escaneo (hero) ---- */
+.scanzone{position:relative;background:var(--s1);border:1.5px dashed #3a3a3a;border-radius:18px;
+  min-height:230px;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:.8rem;cursor:pointer;overflow:hidden;transition:border-color .2s}
+.scanzone:active{border-color:var(--ac)}
+.scanframe{position:relative;width:74px;height:74px}
+.scanframe i{position:absolute;width:22px;height:22px;border:3px solid var(--ac);border-radius:2px}
+.scanframe i:nth-child(1){top:0;left:0;border-right:0;border-bottom:0}
+.scanframe i:nth-child(2){top:0;right:0;border-left:0;border-bottom:0}
+.scanframe i:nth-child(3){bottom:0;left:0;border-right:0;border-top:0}
+.scanframe i:nth-child(4){bottom:0;right:0;border-left:0;border-top:0}
+.scanline{position:absolute;left:8px;right:8px;height:2px;background:linear-gradient(90deg,transparent,var(--ac2),transparent);
+  top:12px;animation:sweep 2.2s ease-in-out infinite}
+@keyframes sweep{0%,100%{top:12px}50%{top:60px}}
+@media (prefers-reduced-motion:reduce){.scanline{animation:none;top:36px}}
+.scanzone h2{font-size:1rem;font-weight:600}
+.scanzone p{font-size:.8rem;color:var(--tx2);text-align:center;max-width:260px}
+.scanzone img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.92}
+
+/* ---- Botones ---- */
+.row{display:flex;gap:.6rem;margin-top:.8rem}
+.btn{flex:1;border:0;border-radius:12px;padding:.9rem;font:inherit;font-weight:600;font-size:.9rem;cursor:pointer;transition:opacity .15s}
+.btn:active{opacity:.75}
+.btn-p{background:var(--ac);color:#fff}
+.btn-s{background:var(--s2);color:var(--tx);border:1px solid var(--bd)}
+.btn-ok{background:var(--ok);color:#04150e}
+.btn[disabled]{opacity:.4;pointer-events:none}
+
+/* ---- Progreso OCR ---- */
+#prog{display:none;margin-top:1rem}
+.pbar{height:6px;background:var(--s2);border-radius:99px;overflow:hidden}
+.pbar>div{height:100%;width:0;background:linear-gradient(90deg,var(--ac),var(--ac2));transition:width .3s;border-radius:99px}
+#progtxt{font-size:.75rem;color:var(--tx2);margin-top:.45rem}
+
+/* ---- Formulario de revisión ---- */
+#review{display:none}
+.field{margin-bottom:.9rem}
+.field label{display:block;font-size:.7rem;text-transform:uppercase;letter-spacing:.07em;color:var(--tx3);margin-bottom:.35rem}
+.field input,.field select{width:100%;background:var(--s1);border:1px solid var(--bd);border-radius:10px;
+  color:var(--tx);font:inherit;font-size:.95rem;padding:.75rem .85rem;outline:none}
+.field input:focus,.field select:focus{border-color:var(--ac)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:.7rem}
+.hint{font-size:.72rem;color:var(--tx3);margin-top:.3rem}
+.conf{display:inline-block;font-size:.68rem;border-radius:99px;padding:.15rem .55rem;margin-left:.4rem;vertical-align:middle}
+.conf.hi{background:rgba(16,185,129,.15);color:var(--ok)}
+.conf.lo{background:rgba(245,158,11,.15);color:var(--warn)}
+
+/* ---- Historial ---- */
+.inv{display:flex;justify-content:space-between;align-items:center;padding:.85rem 0;border-bottom:1px solid var(--bd)}
+.inv:last-child{border-bottom:0}
+.inv .l1{font-size:.9rem;font-weight:600}
+.inv .l2{font-size:.75rem;color:var(--tx3);margin-top:.15rem}
+.inv .amt{font-weight:800;font-size:.95rem;text-align:right}
+.tag{font-size:.65rem;border-radius:99px;padding:.15rem .5rem;font-weight:600}
+.tag.contado{background:rgba(16,185,129,.15);color:var(--ok)}
+.tag.credito{background:rgba(245,158,11,.15);color:var(--warn)}
+.kpi{border-top:4px solid var(--ac);min-height:100px}
+.kpi .kl{font-size:.7rem;text-transform:uppercase;letter-spacing:.07em;color:var(--tx3)}
+.kpi .kv{font-size:1.85rem;font-weight:800;line-height:1.15;margin-top:.25rem}
+.kpi .ks{font-size:.75rem;color:var(--tx2);margin-top:.2rem}
+.empty{text-align:center;color:var(--tx3);font-size:.85rem;padding:1.6rem 0}
+
+/* ---- Toast ---- */
+#toast{position:fixed;left:50%;bottom:92px;transform:translateX(-50%) translateY(20px);opacity:0;
+  background:var(--s2);border:1px solid var(--bd);border-left:4px solid var(--ok);border-radius:12px;
+  padding:.75rem 1.1rem;font-size:.85rem;transition:.25s;pointer-events:none;max-width:88vw;z-index:60}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+#toast.err{border-left-color:var(--err)}
+
+/* ---- Bottom nav ---- */
+nav{position:fixed;bottom:0;left:0;right:0;height:64px;background:rgba(15,15,15,.82);
+  backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-top:1px solid var(--bd);
+  display:flex;z-index:50;padding-bottom:env(safe-area-inset-bottom)}
+nav button{flex:1;background:none;border:0;color:var(--tx3);font:inherit;font-size:.62rem;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.25rem;cursor:pointer}
+nav button.on{color:var(--ac2)}
+nav svg{width:22px;height:22px}
+.page{display:none}
+.page.on{display:block}
+#installTip{display:none;margin-top:1rem;border-left:4px solid var(--info)}
+#installTip p{font-size:.8rem;color:var(--tx2)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand">Restaurant<span>OS</span></div>
+    <div class="badge" id="dbBadge">local</div>
+  </header>
+
+  <!-- ============ PÁGINA: ESCANEAR ============ -->
+  <section class="page on" id="pg-scan">
+    <div class="slabel">Escanear factura</div>
+
+    <div class="scanzone" id="zone" role="button" tabindex="0" aria-label="Tomar foto o subir factura">
+      <div class="scanframe"><i></i><i></i><i></i><i></i><div class="scanline"></div></div>
+      <h2>Toca para escanear</h2>
+      <p>Toma una foto de la factura o sube una imagen. El texto se extrae en tu teléfono, sin internet.</p>
+    </div>
+    <input type="file" id="file" accept="image/*" capture="environment" hidden>
+
+    <div class="row" id="preActions" style="display:none">
+      <button class="btn btn-s" id="btnRetake">Otra foto</button>
+      <button class="btn btn-p" id="btnOCR">Extraer datos</button>
+    </div>
+
+    <div id="prog">
+      <div class="pbar"><div id="pfill"></div></div>
+      <div id="progtxt">Preparando…</div>
+    </div>
+
+    <div id="review">
+      <div class="slabel">Revisar datos <span class="conf lo" id="confBadge">verificar</span></div>
+      <div class="card">
+        <div class="field"><label for="f_sup">Proveedor</label><input id="f_sup" placeholder="Nombre del proveedor"></div>
+        <div class="grid2">
+          <div class="field"><label for="f_num">N° factura</label><input id="f_num" placeholder="000123"></div>
+          <div class="field"><label for="f_date">Fecha</label><input id="f_date" type="date"></div>
+        </div>
+        <div class="grid2">
+          <div class="field"><label for="f_total">Total (CRC)</label><input id="f_total" type="number" step="0.01" inputmode="decimal" placeholder="0.00"></div>
+          <div class="field"><label for="f_type">Tipo</label>
+            <select id="f_type"><option value="CONTADO">Contado</option><option value="CREDITO">Crédito</option></select>
+          </div>
+        </div>
+        <div class="field"><label for="f_cat">Categoría</label>
+          <select id="f_cat">
+            <option>Alimentos</option><option>Bebidas</option><option>Limpieza</option>
+            <option>Empaques</option><option>Servicios</option><option>Mantenimiento</option><option>Otros</option>
+          </select>
+        </div>
+        <div class="hint">Corrige lo que el OCR no leyó bien antes de guardar.</div>
+      </div>
+      <div class="row">
+        <button class="btn btn-s" id="btnCancel">Descartar</button>
+        <button class="btn btn-ok" id="btnSave">Guardar factura</button>
+      </div>
+    </div>
+
+    <div class="card" id="installTip">
+      <p><strong style="color:var(--tx)">Instala la app:</strong> menú de Chrome → <em>Agregar a pantalla de inicio</em>. Funciona sin conexión.</p>
+    </div>
+  </section>
+
+  <!-- ============ PÁGINA: HISTORIAL ============ -->
+  <section class="page" id="pg-hist">
+    <div class="slabel">Resumen del mes</div>
+    <div class="card kpi">
+      <div class="kl">Total compras</div>
+      <div class="kv" id="kpiTotal">₡0</div>
+      <div class="ks" id="kpiCount">0 facturas registradas</div>
+    </div>
+    <div class="slabel">Facturas</div>
+    <div class="card" id="histList"><div class="empty">Sin facturas aún. Escanea la primera desde la pestaña Escanear.</div></div>
+  </section>
+
+  <!-- ============ PÁGINA: AJUSTES ============ -->
+  <section class="page" id="pg-set">
+    <div class="slabel">Sincronización</div>
+    <div class="card">
+      <p style="font-size:.85rem;color:var(--tx2);line-height:1.5" id="syncInfo">
+        Guardando en este teléfono. Para sincronizar con la nube, agrega tus credenciales de Supabase en <code style="color:var(--ac2)">config.js</code> del repositorio.
+      </p>
+      <div class="row"><button class="btn btn-s" id="btnExport">Exportar respaldo (JSON)</button></div>
+    </div>
+    <div class="slabel">Acerca de</div>
+    <div class="card"><p style="font-size:.8rem;color:var(--tx3)">RestaurantOS v1.0 · PWA · OCR en el dispositivo (Tesseract)</p></div>
+  </section>
+</div>
+
+<div id="toast"></div>
+
+<nav>
+  <button data-pg="scan" class="on" aria-label="Escanear">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2M3 12h18"/></svg>
+    Escanear
+  </button>
+  <button data-pg="hist" aria-label="Historial">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M9 13h6M9 17h6"/></svg>
+    Historial
+  </button>
+  <button data-pg="set" aria-label="Ajustes">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h0a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h0a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v0a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    Ajustes
+  </button>
+</nav>
+
+<script src="config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+'use strict';
+const $ = id => document.getElementById(id);
+const CFG = window.ROS_CONFIG || {};
+let sb = null;
+if (CFG.SUPABASE_URL && CFG.SUPABASE_KEY && window.supabase) {
+  try { sb = window.supabase.createClient(CFG.SUPABASE_URL, CFG.SUPABASE_KEY); $('dbBadge').textContent = 'nube'; } catch(e){}
+}
+if (sb) $('syncInfo').textContent = 'Conectado a Supabase. Las facturas se guardan en la nube.';
+
+/* ---------- Navegación ---------- */
+document.querySelectorAll('nav button').forEach(b => b.onclick = () => {
+  document.querySelectorAll('nav button').forEach(x => x.classList.remove('on'));
+  document.querySelectorAll('.page').forEach(x => x.classList.remove('on'));
+  b.classList.add('on');
+  $('pg-' + b.dataset.pg).classList.add('on');
+  if (b.dataset.pg === 'hist') renderHist();
+});
+
+/* ---------- Toast ---------- */
+let toastT;
+function toast(msg, err) {
+  const t = $('toast');
+  t.textContent = msg; t.className = err ? 'show err' : 'show';
+  clearTimeout(toastT); toastT = setTimeout(() => t.className = '', 2800);
+}
+
+/* ---------- Captura de imagen ---------- */
+let imgFile = null;
+$('zone').onclick = () => $('file').click();
+$('zone').onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') $('file').click(); };
+$('btnRetake').onclick = () => $('file').click();
+$('file').onchange = e => {
+  const f = e.target.files[0];
+  if (!f) return;
+  imgFile = f;
+  const url = URL.createObjectURL(f);
+  $('zone').innerHTML = '<img src="' + url + '" alt="Factura cargada">';
+  $('preActions').style.display = 'flex';
+  $('review').style.display = 'none';
+};
+
+/* ---------- Pre-proceso (escala de grises + contraste) ---------- */
+function preprocess(file) {
+  return new Promise(res => {
+    const img = new Image();
+    img.onload = () => {
+      const MAX = 1600;
+      const sc = Math.min(1, MAX / Math.max(img.width, img.height));
+      const c = document.createElement('canvas');
+      c.width = img.width * sc; c.height = img.height * sc;
+      const ctx = c.getContext('2d');
+      ctx.drawImage(img, 0, 0, c.width, c.height);
+      const d = ctx.getImageData(0, 0, c.width, c.height);
+      const px = d.data;
+      for (let i = 0; i < px.length; i += 4) {
+        let g = 0.299*px[i] + 0.587*px[i+1] + 0.114*px[i+2];
+        g = Math.min(255, Math.max(0, (g - 128) * 1.35 + 128)); // contraste
+        px[i] = px[i+1] = px[i+2] = g;
+      }
+      ctx.putImageData(d, 0, 0);
+      URL.revokeObjectURL(img.src);
+      res(c);
+    };
+    img.src = URL.createObjectURL(file);
+  });
+}
+
+/* ---------- OCR ---------- */
+$('btnOCR').onclick = async () => {
+  if (!imgFile) return;
+  $('btnOCR').disabled = true;
+  $('prog').style.display = 'block';
+  $('pfill').style.width = '5%';
+  $('progtxt').textContent = 'Mejorando imagen…';
+  try {
+    const canvas = await preprocess(imgFile);
+    $('progtxt').textContent = 'Cargando motor OCR (la primera vez tarda más)…';
+    const { data } = await Tesseract.recognize(canvas, 'spa', {
+      logger: m => {
+        if (m.status === 'recognizing text') {
+          $('pfill').style.width = (10 + m.progress * 90) + '%';
+          $('progtxt').textContent = 'Leyendo factura… ' + Math.round(m.progress * 100) + '%';
+        }
+      }
+    });
+    $('pfill').style.width = '100%';
+    parseInvoice(data.text || '', data.confidence || 0);
+  } catch (e) {
+    toast('El OCR falló. Puedes llenar los datos a mano.', true);
+    parseInvoice('', 0);
+  }
+  setTimeout(() => { $('prog').style.display = 'none'; $('pfill').style.width = '0'; }, 500);
+  $('btnOCR').disabled = false;
+};
+
+/* ---------- Parseo con regex ---------- */
+function parseInvoice(text, conf) {
+  const t = text.replace(/\r/g, '');
+  // Fecha DD/MM/YYYY o DD-MM-YY
+  const dm = t.match(/(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{2,4})/);
+  if (dm) {
+    let [ , d, m, y ] = dm;
+    if (y.length === 2) y = '20' + y;
+    const iso = y + '-' + m.padStart(2,'0') + '-' + d.padStart(2,'0');
+    if (!isNaN(Date.parse(iso))) $('f_date').value = iso;
+  }
+  if (!$('f_date').value) $('f_date').value = new Date().toISOString().slice(0,10);
+  // Total: toma el monto mayor cerca de la palabra TOTAL, o el mayor del documento
+  let total = null;
+  const totalLine = t.match(/total[^\d]{0,12}([\d.,]{3,})/i);
+  const nums = (t.match(/\d{1,3}(?:[.,]\d{3})*(?:[.,]\d{2})?/g) || [])
+    .map(s => parseFloat(s.replace(/\.(?=\d{3})/g,'').replace(/,(?=\d{3})/g,'').replace(',', '.')))
+    .filter(n => n > 100 && n < 100000000);
+  if (totalLine) total = parseFloat(totalLine[1].replace(/\.(?=\d{3})/g,'').replace(/,(?=\d{3})/g,'').replace(',', '.'));
+  if ((!total || isNaN(total)) && nums.length) total = Math.max(...nums);
+  if (total && !isNaN(total)) $('f_total').value = total.toFixed(2);
+  // Número de factura
+  const fn = t.match(/(?:factura|fact|fac|no\.?|nro|#)\s*[:#]?\s*([A-Z0-9\-]{3,20})/i);
+  if (fn) $('f_num').value = fn[1];
+  // Proveedor: primera línea con letras y longitud razonable
+  const line = t.split('\n').map(s => s.trim()).find(s => /[A-Za-zÁÉÍÓÚÑáéíóúñ]{3,}/.test(s) && s.length > 3 && s.length < 60 && !/factura|fecha|total/i.test(s));
+  if (line) $('f_sup').value = line;
+  // Tipo
+  if (/cr[eé]dito/i.test(t)) $('f_type').value = 'CREDITO';
+  // Badge de confianza
+  const b = $('confBadge');
+  if (conf >= 75) { b.textContent = 'lectura buena'; b.className = 'conf hi'; }
+  else { b.textContent = 'verificar campos'; b.className = 'conf lo'; }
+  $('review').style.display = 'block';
+  $('review').scrollIntoView({ behavior: 'smooth' });
+}
+
+/* ---------- Guardado (Supabase o localStorage) ---------- */
+const LS = 'ros_invoices';
+const getLocal = () => JSON.parse(localStorage.getItem(LS) || '[]');
+
+$('btnSave').onclick = async () => {
+  const inv = {
+    supplier_name: $('f_sup').value.trim() || 'Sin proveedor',
+    invoice_number: $('f_num').value.trim(),
+    invoice_date: $('f_date').value,
+    total_amount: parseFloat($('f_total').value) || 0,
+    sale_type: $('f_type').value,
+    category: $('f_cat').value,
+    status: 'PENDIENTE',
+    created_at: new Date().toISOString()
+  };
+  if (!inv.total_amount) { toast('Ingresa el monto total.', true); return; }
+  $('btnSave').disabled = true;
+  let saved = false;
+  if (sb) {
+    try { await sb.from('invoices').insert(inv); saved = true; } catch (e) {}
+  }
+  if (!saved) {
+    const all = getLocal(); all.unshift(inv);
+    localStorage.setItem(LS, JSON.stringify(all));
+  }
+  $('btnSave').disabled = false;
+  toast('Factura guardada' + (sb && saved ? ' en la nube' : ''));
+  resetScan();
+};
+$('btnCancel').onclick = resetScan;
+
+function resetScan() {
+  imgFile = null; $('file').value = '';
+  $('review').style.display = 'none';
+  $('preActions').style.display = 'none';
+  ['f_sup','f_num','f_total'].forEach(id => $(id).value = '');
+  $('zone').innerHTML = '<div class="scanframe"><i></i><i></i><i></i><i></i><div class="scanline"></div></div>' +
+    '<h2>Toca para escanear</h2><p>Toma una foto de la factura o sube una imagen. El texto se extrae en tu teléfono, sin internet.</p>';
+}
+
+/* ---------- Historial ---------- */
+const crc = n => '₡' + Number(n).toLocaleString('es-CR', { maximumFractionDigits: 0 });
+async function renderHist() {
+  let rows = [];
+  if (sb) {
+    try {
+      const r = await sb.from('invoices').select('*').neq('status','ANULADA').order('created_at', { ascending:false }).limit(50);
+      rows = r.data || [];
+    } catch (e) { rows = getLocal(); }
+  } else rows = getLocal();
+  const month = new Date().toISOString().slice(0,7);
+  const mrows = rows.filter(r => (r.invoice_date || '').startsWith(month));
+  $('kpiTotal').textContent = crc(mrows.reduce((s,r) => s + (+r.total_amount || 0), 0));
+  $('kpiCount').textContent = mrows.length + ' facturas este mes · ' + rows.length + ' en total';
+  const box = $('histList');
+  if (!rows.length) { box.innerHTML = '<div class="empty">Sin facturas aún. Escanea la primera desde la pestaña Escanear.</div>'; return; }
+  box.innerHTML = rows.map(r =>
+    '<div class="inv"><div><div class="l1">' + esc(r.supplier_name || '—') + '</div>' +
+    '<div class="l2">' + esc(r.invoice_date || '') + (r.invoice_number ? ' · #' + esc(r.invoice_number) : '') + ' · ' + esc(r.category || '') + '</div></div>' +
+    '<div><div class="amt">' + crc(r.total_amount) + '</div>' +
+    '<div style="text-align:right;margin-top:.2rem"><span class="tag ' + (r.sale_type === 'CREDITO' ? 'credito' : 'contado') + '">' + (r.sale_type === 'CREDITO' ? 'Crédito' : 'Contado') + '</span></div></div></div>'
+  ).join('');
+}
+const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+/* ---------- Exportar respaldo ---------- */
+$('btnExport').onclick = () => {
+  const blob = new Blob([JSON.stringify(getLocal(), null, 2)], { type:'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'restaurantos-facturas.json';
+  a.click();
+};
+
+/* ---------- PWA ---------- */
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js');
+if (!window.matchMedia('(display-mode: standalone)').matches) $('installTip').style.display = 'block';
+</script>
+</body>
+</html>
