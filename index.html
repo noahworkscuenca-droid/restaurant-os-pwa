@@ -82,6 +82,10 @@ display:flex;flex-direction:column;align-items:center;justify-content:center;gap
 .suprow .sm{font-size:.7rem;color:var(--tx3)}
 .suprow input{flex:1;background:var(--s1);border:1px solid var(--ac);border-radius:8px;color:var(--tx);font:inherit;font-size:.88rem;padding:.5rem .7rem;outline:none;min-width:0}
 .sbtn{background:var(--s1);border:1px solid var(--bd);color:var(--tx2);border-radius:8px;padding:.45rem .7rem;font:inherit;font-size:.72rem;cursor:pointer;flex:none}
+.filt{width:100%;background:var(--s1);border:1px solid var(--bd);border-radius:10px;color:var(--tx);font:inherit;font-size:.88rem;padding:.65rem .8rem;outline:none}
+.filt:focus{border-color:var(--ac)}
+.tag.pendiente{background:rgba(239,68,68,.15);color:var(--err)}
+.tag.pagada{background:rgba(16,185,129,.15);color:var(--ok)}
 #toast{position:fixed;left:50%;bottom:92px;transform:translateX(-50%) translateY(20px);opacity:0;background:var(--s2);border:1px solid var(--bd);border-left:4px solid var(--ok);border-radius:12px;padding:.75rem 1.1rem;font-size:.85rem;transition:.25s;pointer-events:none;max-width:88vw;z-index:60}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 #toast.err{border-left-color:var(--err)}
@@ -149,6 +153,8 @@ canvas.chart{width:100%!important;max-height:240px}
             <select id="f_type"><option value="CONTADO">Contado</option><option value="CREDITO">Crédito</option></select></div>
         </div>
         <div class="field"><label for="f_cat">Categoría</label><select id="f_cat"></select></div>
+        <div class="field"><label for="f_status">Estado de pago</label>
+          <select id="f_status"><option value="PENDIENTE">Pendiente de pago</option><option value="PAGADA">Pagada</option></select></div>
         <div class="hint">Corrige lo que el OCR no leyó bien antes de guardar.</div>
       </div>
       <div class="row">
@@ -181,6 +187,17 @@ canvas.chart{width:100%!important;max-height:240px}
         <div id="mTotal" style="font-size:.72rem;color:var(--tx3);margin-top:.1rem"></div>
       </div>
       <button class="mbtn" id="mNext" aria-label="Mes siguiente">›</button>
+    </div>
+    <div class="row" style="margin-top:.7rem">
+      <input class="filt" id="qNum" placeholder="🔍 Buscar por N° de factura" autocomplete="off">
+    </div>
+    <div class="row">
+      <select class="filt" id="fSup"><option value="">Todos los proveedores</option></select>
+      <select class="filt" id="fSt" style="max-width:42%">
+        <option value="">Todas</option>
+        <option value="PENDIENTE">Pendientes</option>
+        <option value="PAGADA">Pagadas</option>
+      </select>
     </div>
     <div class="card" id="histList" style="margin-top:.7rem"><div class="empty">Cargando…</div></div>
   </section>
@@ -381,11 +398,13 @@ function parseInvoice(text,conf){
 }
 
 /* ---------- Guardado: archivo a Storage + datos por RPC ---------- */
+let editingId=null;
 function invFromForm(){
   return {supplier_name:$('f_sup').value.trim()||'Sin proveedor',
     invoice_number:$('f_num').value.trim(),invoice_date:$('f_date').value,
     total_amount:String(parseFloat($('f_total').value)||0),
     sale_type:$('f_type').value,category:$('f_cat').value,
+    status:$('f_status').value,
     ocr_confidence:String(Math.round(lastConf)),needs_review:lastConf<75};
 }
 async function uploadFile(file){
@@ -403,11 +422,20 @@ $('btnSave').onclick=async()=>{
   const inv=invFromForm();
   if(!(+inv.total_amount)){toast('Ingresa el monto total.',true);return;}
   $('btnSave').disabled=true;$('btnSave').textContent='Guardando…';
+  let r;
+  if(editingId){
+    r=await rpc('api_update_invoice',{p_code:CODE,p_id:editingId,p:inv});
+    $('btnSave').disabled=false;$('btnSave').textContent='Guardar factura';
+    if(r&&r.ok){toast('Factura actualizada.');resetScan();loadSuppliers();show('hist');}
+    else toast('No se pudo actualizar: '+(r&&r.error||'sin conexión'),true);
+    return;
+  }
   const up=await uploadFile(curFile);
   Object.assign(inv,up);
-  const r=await rpc('api_save_invoice',{p_code:CODE,p:inv});
+  r=await rpc('api_save_invoice',{p_code:CODE,p:inv});
+  if(r&&r.ok&&inv.status==='PAGADA')await rpc('api_update_invoice',{p_code:CODE,p_id:r.id,p:{status:'PAGADA'}});
   $('btnSave').disabled=false;$('btnSave').textContent='Guardar factura';
-  if(r&&r.ok){toast('Factura guardada en la nube'+(up.image_url?' con archivo adjunto':''));resetScan();}
+  if(r&&r.ok){toast('Factura guardada en la nube'+(up.image_url?' con archivo adjunto':''));resetScan();loadSuppliers();}
   else{
     const pend=JSON.parse(localStorage.getItem(LSP)||'[]');
     pend.push(inv);localStorage.setItem(LSP,JSON.stringify(pend));
@@ -417,7 +445,8 @@ $('btnSave').onclick=async()=>{
 };
 $('btnCancel').onclick=resetScan;
 function resetScan(){
-  curFile=null;curCanvas=null;$('file').value='';lastConf=0;
+  curFile=null;curCanvas=null;$('file').value='';lastConf=0;editingId=null;
+  $('f_status').value='PENDIENTE';
   $('review').style.display='none';$('preActions').style.display='none';
   ['f_sup','f_num','f_total'].forEach(id=>$(id).value='');
   $('zone').innerHTML='<div class="scanframe"><i></i><i></i><i></i><i></i><div class="scanline"></div></div><h2>Toca para escanear</h2><p>Foto con la cámara, imagen de galería o PDF. El archivo se adjunta a la factura.</p>';
@@ -447,6 +476,9 @@ async function loadSuppliers(){
   const r=await rpc('api_list_suppliers',{p_code:CODE});
   if(r&&r.ok){SUPS=r.rows||[];
     $('supList').innerHTML=SUPS.map(s=>'<option value="'+esc(s.name)+'">').join('');
+    const sel=$('fSup').value;
+    $('fSup').innerHTML='<option value="">Todos los proveedores</option>'+
+      SUPS.map(s=>'<option value="'+s.id+'"'+(s.id===sel?' selected':'')+'>'+esc(s.name)+'</option>').join('');
     if(document.getElementById('pg-set').classList.contains('on'))renderSuppliers();
   }
 }
@@ -518,27 +550,64 @@ async function loadDash(){
 
 /* ---------- Historial ---------- */
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-let histDate=new Date();
+let histDate=new Date(),HIST=[],qT;
 const monthKey=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
 $('mPrev').onclick=()=>{histDate.setMonth(histDate.getMonth()-1);loadHist();};
 $('mNext').onclick=()=>{histDate.setMonth(histDate.getMonth()+1);loadHist();};
+$('qNum').addEventListener('input',()=>{clearTimeout(qT);qT=setTimeout(loadHist,400);});
+$('fSup').onchange=loadHist;$('fSt').onchange=loadHist;
 async function loadHist(){
-  $('mLabel').textContent=histDate.toLocaleDateString('es-CR',{month:'long',year:'numeric'});
+  const q=$('qNum').value.trim();
+  $('mLabel').textContent=q?'Búsqueda: "'+q+'"':histDate.toLocaleDateString('es-CR',{month:'long',year:'numeric'});
   $('mTotal').textContent='';
   const box=$('histList');box.innerHTML='<div class="empty">Cargando…</div>';
-  const r=await rpc('api_list_invoices',{p_code:CODE,p_limit:200,p_month:monthKey(histDate)});
+  const r=await rpc('api_list_invoices',{p_code:CODE,p_limit:200,
+    p_month:q?null:monthKey(histDate),
+    p_supplier:$('fSup').value||null,
+    p_status:$('fSt').value||null,
+    p_q:q||null});
   if(!(r&&r.ok)){box.innerHTML='<div class="empty">No se pudo cargar. Revisa tu conexión.</div>';return;}
-  const rows=r.rows||[];
-  $('mTotal').textContent=crc(r.total||0)+' · '+rows.length+' factura(s)';
-  if(!rows.length){box.innerHTML='<div class="empty">Sin facturas en este mes. Usa ‹ › para cambiar de mes.</div>';return;}
-  box.innerHTML=rows.map(x=>
+  HIST=r.rows||[];
+  $('mTotal').textContent=crc(r.total||0)+' · '+HIST.length+' factura(s)'+
+    ((+r.pending)>0?' · pendiente '+crc(r.pending):'');
+  if(!HIST.length){box.innerHTML='<div class="empty">'+(q?'Sin resultados para esa búsqueda.':'Sin facturas con estos filtros. Usa ‹ › para cambiar de mes.')+'</div>';return;}
+  box.innerHTML=HIST.map((x,i)=>
     '<div class="inv">'+
     (x.image_url?'<a href="'+esc(x.image_url)+'" target="_blank" rel="noopener"><img class="thumb" src="'+esc(x.image_url)+'" alt=""></a>':'<div class="thumb"></div>')+
     '<div class="mid"><div class="l1">'+esc(x.supplier_name||'—')+'</div>'+
-    '<div class="l2">'+esc(x.invoice_date||'')+(x.invoice_number?' · #'+esc(x.invoice_number):'')+' · '+esc(x.category||'')+'</div></div>'+
+    '<div class="l2">'+esc(x.invoice_date||'')+(x.invoice_number?' · #'+esc(x.invoice_number):'')+' · '+esc(x.category||'')+'</div>'+
+    '<div style="margin-top:.4rem;display:flex;gap:.4rem;flex-wrap:wrap">'+
+      '<button class="sbtn" style="color:'+(x.status==='PAGADA'?'var(--warn)':'var(--ok)')+'" onclick="togglePay(\''+x.id+'\',\''+x.status+'\')">'+(x.status==='PAGADA'?'↩ Pendiente':'✓ Pagada')+'</button>'+
+      '<button class="sbtn" onclick="editInv('+i+')">Editar</button>'+
+      '<button class="sbtn" style="color:var(--err)" onclick="delInv(\''+x.id+'\')">Borrar</button></div></div>'+
     '<div><div class="amt">'+crc(x.total_amount)+'</div>'+
+    '<div style="text-align:right;margin-top:.2rem"><span class="tag '+(x.status==='PAGADA'?'pagada':'pendiente')+'">'+(x.status==='PAGADA'?'Pagada':'Pendiente')+'</span></div>'+
     '<div style="text-align:right;margin-top:.2rem"><span class="tag '+(x.sale_type==='CREDITO'?'credito':'contado')+'">'+(x.sale_type==='CREDITO'?'Crédito':'Contado')+'</span></div></div></div>').join('');
 }
+window.togglePay=async(id,st)=>{
+  const r=await rpc('api_update_invoice',{p_code:CODE,p_id:id,p:{status:st==='PAGADA'?'PENDIENTE':'PAGADA'}});
+  if(r&&r.ok){toast(st==='PAGADA'?'Marcada como pendiente.':'Marcada como pagada.');loadHist();}
+  else toast('No se pudo cambiar el estado.',true);
+};
+window.editInv=i=>{
+  const x=HIST[i];if(!x)return;
+  resetScan();editingId=x.id;
+  $('f_sup').value=x.supplier_name||'';$('f_num').value=x.invoice_number||'';
+  $('f_date').value=x.invoice_date||'';$('f_total').value=x.total_amount||'';
+  $('f_type').value=x.sale_type==='CREDITO'?'CREDITO':'CONTADO';
+  $('f_cat').value=CATS.includes(x.category)?x.category:CATS[CATS.length-1];
+  $('f_status').value=x.status==='PAGADA'?'PAGADA':'PENDIENTE';
+  $('confBadge').textContent='editando';$('confBadge').className='conf hi';
+  $('btnSave').textContent='Actualizar factura';
+  show('scan');$('review').style.display='block';
+  $('review').scrollIntoView({behavior:'smooth'});
+};
+window.delInv=async id=>{
+  if(!confirm('¿Eliminar esta factura? Esta acción no se puede deshacer.'))return;
+  const r=await rpc('api_delete_invoice',{p_code:CODE,p_id:id});
+  if(r&&r.ok){toast('Factura eliminada.');loadHist();}
+  else toast('No se pudo eliminar.',true);
+};
 
 /* ---------- Ajustes ---------- */
 $('btnChangeCode').onclick=async()=>{
