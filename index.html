@@ -75,6 +75,13 @@ display:flex;flex-direction:column;align-items:center;justify-content:center;gap
 .tag.contado{background:rgba(16,185,129,.15);color:var(--ok)}
 .tag.credito{background:rgba(245,158,11,.15);color:var(--warn)}
 .empty{text-align:center;color:var(--tx3);font-size:.85rem;padding:1.6rem 0}
+.mbtn{background:var(--s1);border:1px solid var(--bd);color:var(--tx);width:40px;height:40px;border-radius:10px;font-size:1.15rem;cursor:pointer;flex:none}
+.suprow{display:flex;align-items:center;gap:.6rem;padding:.7rem 0;border-bottom:1px solid var(--bd)}
+.suprow:last-child{border-bottom:0}
+.suprow .sn{flex:1;min-width:0;font-size:.9rem;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.suprow .sm{font-size:.7rem;color:var(--tx3)}
+.suprow input{flex:1;background:var(--s1);border:1px solid var(--ac);border-radius:8px;color:var(--tx);font:inherit;font-size:.88rem;padding:.5rem .7rem;outline:none;min-width:0}
+.sbtn{background:var(--s1);border:1px solid var(--bd);color:var(--tx2);border-radius:8px;padding:.45rem .7rem;font:inherit;font-size:.72rem;cursor:pointer;flex:none}
 #toast{position:fixed;left:50%;bottom:92px;transform:translateX(-50%) translateY(20px);opacity:0;background:var(--s2);border:1px solid var(--bd);border-left:4px solid var(--ok);border-radius:12px;padding:.75rem 1.1rem;font-size:.85rem;transition:.25s;pointer-events:none;max-width:88vw;z-index:60}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 #toast.err{border-left-color:var(--err)}
@@ -122,6 +129,7 @@ canvas.chart{width:100%!important;max-height:240px}
       <p>Foto con la cámara, imagen de galería o PDF. El archivo se adjunta a la factura.</p>
     </div>
     <input type="file" id="file" accept="image/*,application/pdf" hidden>
+    <div class="row"><button class="btn btn-s" id="btnManual">+ Agregar factura manual</button></div>
     <div class="row" id="preActions" style="display:none">
       <button class="btn btn-s" id="btnRetake">Otro archivo</button>
       <button class="btn btn-p" id="btnOCR">Extraer datos</button>
@@ -130,7 +138,7 @@ canvas.chart{width:100%!important;max-height:240px}
     <div id="review">
       <div class="slabel">Revisar datos <span class="conf lo" id="confBadge">verificar</span></div>
       <div class="card">
-        <div class="field"><label for="f_sup">Proveedor</label><input id="f_sup" placeholder="Nombre del proveedor"></div>
+        <div class="field"><label for="f_sup">Proveedor</label><input id="f_sup" list="supList" placeholder="Nombre del proveedor"><datalist id="supList"></datalist></div>
         <div class="grid2">
           <div class="field"><label for="f_num">N° factura</label><input id="f_num" placeholder="000123"></div>
           <div class="field"><label for="f_date">Fecha</label><input id="f_date" type="date"></div>
@@ -166,7 +174,15 @@ canvas.chart{width:100%!important;max-height:240px}
   <!-- ===== HISTORIAL ===== -->
   <section class="page" id="pg-hist">
     <div class="slabel">Facturas</div>
-    <div class="card" id="histList"><div class="empty">Cargando…</div></div>
+    <div class="card" style="display:flex;align-items:center;justify-content:space-between;gap:.6rem;padding:.6rem .8rem">
+      <button class="mbtn" id="mPrev" aria-label="Mes anterior">‹</button>
+      <div style="text-align:center;flex:1">
+        <div id="mLabel" style="font-weight:700;font-size:.95rem;text-transform:capitalize">—</div>
+        <div id="mTotal" style="font-size:.72rem;color:var(--tx3);margin-top:.1rem"></div>
+      </div>
+      <button class="mbtn" id="mNext" aria-label="Mes siguiente">›</button>
+    </div>
+    <div class="card" id="histList" style="margin-top:.7rem"><div class="empty">Cargando…</div></div>
   </section>
 
   <!-- ===== AJUSTES ===== -->
@@ -176,6 +192,8 @@ canvas.chart{width:100%!important;max-height:240px}
       <p style="font-size:.85rem;color:var(--tx2)" id="pendInfo">Sin facturas pendientes.</p>
       <div class="row" id="pendRow" style="display:none"><button class="btn btn-p" id="btnRetry">Reintentar subida</button></div>
     </div>
+    <div class="slabel">Proveedores</div>
+    <div class="card" id="supBox"><div class="empty">Cargando…</div></div>
     <div class="slabel">Código de acceso</div>
     <div class="card">
       <div class="field"><label for="newCode">Nuevo código (mín. 6 caracteres)</label><input id="newCode" placeholder="NUEVO-CODIGO"></div>
@@ -241,7 +259,7 @@ function show(pg){
   $('mainNav').classList.toggle('on',pg!=='login');
   if(pg==='dash') loadDash();
   if(pg==='hist') loadHist();
-  if(pg==='set') renderPending();
+  if(pg==='set'){renderPending();loadSuppliers();}
 }
 document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>show(b.dataset.pg));
 
@@ -252,7 +270,7 @@ async function tryLogin(code,silent){
   if(r&&r.ok){
     CODE=code;localStorage.setItem(LSC,code);
     if(r.categories) CATS=r.categories.map(c=>c.name);
-    fillCats();
+    fillCats();loadSuppliers();
     $('dbBadge').textContent='nube';$('dbBadge').classList.add('on');
     show('scan');retryPending(true);
     return true;
@@ -348,8 +366,12 @@ function parseInvoice(text,conf){
   if(total&&!isNaN(total))$('f_total').value=total.toFixed(2);
   const fn=t.match(/(?:factura|fact|fac|no\.?|nro|#)\s*[:#]?\s*([A-Z0-9\-]{3,20})/i);
   if(fn)$('f_num').value=fn[1];
-  const line=t.split('\n').map(s=>s.trim()).find(s=>/[A-Za-zÁÉÍÓÚÑáéíóúñ]{3,}/.test(s)&&s.length>3&&s.length<60&&!/factura|fecha|total/i.test(s));
-  if(line)$('f_sup').value=line;
+  const known=matchSupplier(t);
+  if(known)$('f_sup').value=known;
+  else{
+    const line=t.split('\n').map(s=>s.trim()).find(s=>/[A-Za-zÁÉÍÓÚÑáéíóúñ]{3,}/.test(s)&&s.length>3&&s.length<60&&!/factura|fecha|total/i.test(s));
+    if(line)$('f_sup').value=line;
+  }
   if(/cr[eé]dito/i.test(t))$('f_type').value='CREDITO';
   const b=$('confBadge');
   if(conf>=75){b.textContent='lectura buena';b.className='conf hi';}
@@ -418,6 +440,56 @@ async function retryPending(silent){
 }
 $('btnRetry').onclick=()=>retryPending(false);
 
+/* ---------- Proveedores ---------- */
+let SUPS=[],editSup=null;
+const normTx=s=>String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+async function loadSuppliers(){
+  const r=await rpc('api_list_suppliers',{p_code:CODE});
+  if(r&&r.ok){SUPS=r.rows||[];
+    $('supList').innerHTML=SUPS.map(s=>'<option value="'+esc(s.name)+'">').join('');
+    if(document.getElementById('pg-set').classList.contains('on'))renderSuppliers();
+  }
+}
+function matchSupplier(text){
+  const t=normTx(text);
+  for(const s of SUPS){
+    const names=[s.name].concat(Array.isArray(s.aliases)?s.aliases:[]);
+    for(const n of names){const nn=normTx(n);if(nn.length>=4&&t.includes(nn))return s.name;}
+  }
+  return null;
+}
+function renderSuppliers(){
+  const box=$('supBox');
+  if(!SUPS.length){box.innerHTML='<div class="empty">Sin proveedores aún. Se crean solos al guardar facturas.</div>';return;}
+  box.innerHTML=SUPS.map(s=>{
+    if(editSup===s.id)return '<div class="suprow"><input id="supEdit" value="'+esc(s.name)+'">'+
+      '<button class="sbtn" style="color:var(--ok)" onclick="saveSup(\''+s.id+'\')">Guardar</button>'+
+      '<button class="sbtn" onclick="cancelSup()">✕</button></div>';
+    return '<div class="suprow"><div style="flex:1;min-width:0"><div class="sn">'+esc(s.name)+'</div>'+
+      '<div class="sm">'+s.cnt+' factura(s) · '+crc(s.total)+'</div></div>'+
+      '<button class="sbtn" onclick="editSupplier(\''+s.id+'\')">Editar</button></div>';
+  }).join('');
+  const inp=document.getElementById('supEdit');
+  if(inp){inp.focus();inp.addEventListener('keydown',e=>{if(e.key==='Enter')saveSup(editSup);});}
+}
+window.editSupplier=id=>{editSup=id;renderSuppliers();};
+window.cancelSup=()=>{editSup=null;renderSuppliers();};
+window.saveSup=async id=>{
+  const name=document.getElementById('supEdit').value.trim();
+  const r=await rpc('api_update_supplier',{p_code:CODE,p_id:id,p_name:name});
+  if(r&&r.ok){editSup=null;toast('Proveedor actualizado.');loadSuppliers().then(renderSuppliers);}
+  else toast(r&&r.error==='nombre_existe'?'Ya existe un proveedor con ese nombre.':'No se pudo actualizar.',true);
+};
+
+/* ---------- Factura manual ---------- */
+$('btnManual').onclick=()=>{
+  resetScan();lastConf=0;
+  $('f_date').value=new Date().toISOString().slice(0,10);
+  $('confBadge').textContent='entrada manual';$('confBadge').className='conf hi';
+  $('review').style.display='block';
+  $('review').scrollIntoView({behavior:'smooth'});
+};
+
 /* ---------- Dashboard ---------- */
 const crc=n=>'₡'+Number(n).toLocaleString('es-CR',{maximumFractionDigits:0});
 let chCat=null,chMonth=null;
@@ -446,12 +518,19 @@ async function loadDash(){
 
 /* ---------- Historial ---------- */
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let histDate=new Date();
+const monthKey=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
+$('mPrev').onclick=()=>{histDate.setMonth(histDate.getMonth()-1);loadHist();};
+$('mNext').onclick=()=>{histDate.setMonth(histDate.getMonth()+1);loadHist();};
 async function loadHist(){
+  $('mLabel').textContent=histDate.toLocaleDateString('es-CR',{month:'long',year:'numeric'});
+  $('mTotal').textContent='';
   const box=$('histList');box.innerHTML='<div class="empty">Cargando…</div>';
-  const r=await rpc('api_list_invoices',{p_code:CODE,p_limit:100});
+  const r=await rpc('api_list_invoices',{p_code:CODE,p_limit:200,p_month:monthKey(histDate)});
   if(!(r&&r.ok)){box.innerHTML='<div class="empty">No se pudo cargar. Revisa tu conexión.</div>';return;}
   const rows=r.rows||[];
-  if(!rows.length){box.innerHTML='<div class="empty">Sin facturas aún. Escanea la primera.</div>';return;}
+  $('mTotal').textContent=crc(r.total||0)+' · '+rows.length+' factura(s)';
+  if(!rows.length){box.innerHTML='<div class="empty">Sin facturas en este mes. Usa ‹ › para cambiar de mes.</div>';return;}
   box.innerHTML=rows.map(x=>
     '<div class="inv">'+
     (x.image_url?'<a href="'+esc(x.image_url)+'" target="_blank" rel="noopener"><img class="thumb" src="'+esc(x.image_url)+'" alt=""></a>':'<div class="thumb"></div>')+
