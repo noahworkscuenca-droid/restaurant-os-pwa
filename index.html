@@ -213,6 +213,9 @@ canvas.chart{width:100%!important;max-height:240px}
       <button class="mbtn" id="mNext" aria-label="Mes siguiente">›</button>
     </div>
     <div class="row" style="margin-top:.7rem">
+      <button class="btn btn-s" id="btnCsv">⬇ Exportar mes a Excel (CSV)</button>
+    </div>
+    <div class="row" style="margin-top:.7rem">
       <input class="filt" id="qNum" placeholder="🔍 Buscar por N° de factura" autocomplete="off">
     </div>
     <div class="row">
@@ -448,7 +451,7 @@ function preprocess(src){
 }
 
 /* ---------- OCR ---------- */
-let lastConf=0;
+let lastConf=0,ocrGuess=null;
 $('btnOCR').onclick=async()=>{
   if(!curFile)return;
   const src=isPdf?curCanvas:curFile;
@@ -488,10 +491,11 @@ function parseInvoice(text,conf){
   const fn=t.match(/(?:factura|fact|fac|no\.?|nro|#)\s*[:#]?\s*([A-Z0-9\-]{3,20})/i);
   if(fn)$('f_num').value=fn[1];
   const known=matchSupplier(t);
+  ocrGuess=null;
   if(known)$('f_sup').value=known;
   else{
     const line=t.split('\n').map(s=>s.trim()).find(s=>/[A-Za-zÁÉÍÓÚÑáéíóúñ]{3,}/.test(s)&&s.length>3&&s.length<60&&!/factura|fecha|total/i.test(s));
-    if(line)$('f_sup').value=line;
+    if(line){$('f_sup').value=line;ocrGuess=line;}
   }
   if(/cr[eé]dito/i.test(t))$('f_type').value='CREDITO';
   const b=$('confBadge');
@@ -539,7 +543,11 @@ $('btnSave').onclick=async()=>{
   r=await rpc('api_save_invoice',{p_code:CODE,p:inv});
   if(r&&r.ok&&inv.status==='PAGADA')await rpc('api_update_invoice',{p_code:CODE,p_id:r.id,p:{status:'PAGADA'}});
   $('btnSave').disabled=false;$('btnSave').textContent='Guardar factura';
-  if(r&&r.ok){toast('Factura guardada en la nube'+(up.image_url?' con archivo adjunto':''));resetScan();loadSuppliers();}
+  if(r&&r.ok){
+    const fin=inv.supplier_name;
+    if(ocrGuess&&normTx(ocrGuess)!==normTx(fin)&&SUPS.some(s=>normTx(s.name)===normTx(fin)))
+      rpc('api_add_supplier_alias',{p_code:CODE,p_name:fin,p_alias:ocrGuess});
+    toast('Factura guardada en la nube'+(up.image_url?' con archivo adjunto':''));resetScan();loadSuppliers();}
   else{
     const pend=JSON.parse(localStorage.getItem(LSP)||'[]');
     pend.push(inv);localStorage.setItem(LSP,JSON.stringify(pend));
@@ -734,6 +742,16 @@ async function loadHist(){
     '<div style="text-align:right;margin-top:.2rem"><span class="tag '+(x.status==='PAGADA'?'pagada':'pendiente')+'">'+(x.status==='PAGADA'?'Pagada':'Pendiente')+'</span></div>'+
     '<div style="text-align:right;margin-top:.2rem"><span class="tag '+(x.sale_type==='CREDITO'?'credito':'contado')+'">'+(x.sale_type==='CREDITO'?'Crédito':'Contado')+'</span></div></div></div>').join('');
 }
+$('btnCsv').onclick=()=>{
+  if(!HIST.length){toast('No hay facturas para exportar.',true);return;}
+  const head='Fecha,Proveedor,No Factura,Categoria,Tipo,Estado,Monto CRC,Registrado por\n';
+  const cs=v=>'"'+String(v??'').replace(/"/g,'""')+'"';
+  const rows=HIST.map(x=>[x.invoice_date,x.supplier_name,x.invoice_number,x.category,x.sale_type,x.status,x.total_amount,x.created_by_name||''].map(cs).join(',')).join('\n');
+  const blob=new Blob(['\ufeff'+head+rows],{type:'text/csv;charset=utf-8'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download='restaurantos-'+$('mLabel').textContent.replace(/[^a-z0-9]+/gi,'-')+'.csv';a.click();
+  toast('CSV exportado: ábrelo en Excel.');
+};
 window.togglePay=async(id,st)=>{
   const r=await rpc('api_update_invoice',{p_code:CODE,p_id:id,p:{status:st==='PAGADA'?'PENDIENTE':'PAGADA'}});
   if(r&&r.ok){toast(st==='PAGADA'?'Marcada como pendiente.':'Marcada como pagada.');loadHist();}
