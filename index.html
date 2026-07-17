@@ -332,6 +332,8 @@ function setMode(m){
   if(m==='reset'){$('a_email').style.display='none';$('rowName').style.display='none';$('rowInvite').style.display='none';}
   else $('a_email').style.display='block';
 }
+function syncStatus(){$('f_status').value=$('f_type').value==='CONTADO'?'PAGADA':'PENDIENTE';}
+$('f_type').onchange=syncStatus;
 $('tabIn').onclick=()=>setMode('in');
 $('tabUp').onclick=()=>setMode('up');
 $('lnkCode').onclick=e=>{e.preventDefault();$('codeBox').style.display=$('codeBox').style.display==='none'?'block':'none';};
@@ -460,6 +462,9 @@ $('btnOCR').onclick=async()=>{
   $('prog').style.display='block';$('pfill').style.width='5%';$('progtxt').textContent='Mejorando imagen…';
   try{
     const canvas=await preprocess(src);
+    $('pfill').style.width='20%';$('progtxt').textContent='Leyendo con IA…';
+    const ai=await aiScan(canvas);
+    if(ai){aiFill(ai);setTimeout(()=>{$('prog').style.display='none';$('pfill').style.width='0';},400);$('btnOCR').disabled=false;return;}
     $('progtxt').textContent='Cargando motor OCR…';
     const {data}=await Tesseract.recognize(canvas,'spa',{logger:m=>{
       if(m.status==='recognizing text'){$('pfill').style.width=(10+m.progress*90)+'%';
@@ -470,6 +475,31 @@ $('btnOCR').onclick=async()=>{
   setTimeout(()=>{$('prog').style.display='none';$('pfill').style.width='0';},500);
   $('btnOCR').disabled=false;
 };
+
+/* ---------- Escaneo IA (opcional, via Edge Function) ---------- */
+async function aiScan(canvas){
+  if(!sb)return null;
+  try{
+    const b64=canvas.toDataURL('image/jpeg',.85).split(',')[1];
+    const {data,error}=await sb.functions.invoke('ai-scan',{body:{image:b64,media_type:'image/jpeg'}});
+    const r=typeof data==='string'?JSON.parse(data):data;
+    if(error||!r||!r.ok||!r.data)return null;
+    return r.data;
+  }catch(e){return null;}
+}
+function aiFill(d){
+  lastConf=95;ocrGuess=null;
+  const nm=(d.supplier_name||'').trim();
+  if(nm){const k=matchSupplier(nm);if(k)$('f_sup').value=k;else{$('f_sup').value=nm;ocrGuess=nm;}}
+  if(d.invoice_number)$('f_num').value=String(d.invoice_number);
+  $('f_date').value=(d.invoice_date&&!isNaN(Date.parse(d.invoice_date)))?d.invoice_date:new Date().toISOString().slice(0,10);
+  if(d.total_amount&&+d.total_amount>0)$('f_total').value=(+d.total_amount).toFixed(2);
+  $('f_type').value=d.sale_type==='CREDITO'?'CREDITO':'CONTADO';
+  syncStatus();
+  const b=$('confBadge');b.textContent='IA · revisar';b.className='conf hi';
+  $('review').style.display='block';
+  $('review').scrollIntoView({behavior:'smooth'});
+}
 
 function parseInvoice(text,conf){
   lastConf=conf;
@@ -498,6 +528,7 @@ function parseInvoice(text,conf){
     if(line){$('f_sup').value=line;ocrGuess=line;}
   }
   if(/cr[eé]dito/i.test(t))$('f_type').value='CREDITO';
+  syncStatus();
   const b=$('confBadge');
   if(conf>=75){b.textContent='lectura buena';b.className='conf hi';}
   else{b.textContent='verificar campos';b.className='conf lo';}
@@ -541,7 +572,6 @@ $('btnSave').onclick=async()=>{
   const up=await uploadFile(curFile);
   Object.assign(inv,up);
   r=await rpc('api_save_invoice',{p_code:CODE,p:inv});
-  if(r&&r.ok&&inv.status==='PAGADA')await rpc('api_update_invoice',{p_code:CODE,p_id:r.id,p:{status:'PAGADA'}});
   $('btnSave').disabled=false;$('btnSave').textContent='Guardar factura';
   if(r&&r.ok){
     const fin=inv.supplier_name;
@@ -627,7 +657,7 @@ window.saveSup=async id=>{
 
 /* ---------- Factura manual ---------- */
 $('btnManual').onclick=()=>{
-  resetScan();lastConf=0;
+  resetScan();lastConf=0;syncStatus();
   $('f_date').value=new Date().toISOString().slice(0,10);
   $('confBadge').textContent='entrada manual';$('confBadge').className='conf hi';
   $('review').style.display='block';
