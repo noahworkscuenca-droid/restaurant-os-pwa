@@ -453,6 +453,19 @@ function preprocess(src){
   });
 }
 
+function liteResize(file){
+  return new Promise(res=>{
+    const img=new Image();
+    img.onload=()=>{
+      const MAX=1400,sc=Math.min(1,MAX/Math.max(img.width,img.height));
+      const c=document.createElement('canvas');c.width=img.width*sc;c.height=img.height*sc;
+      c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+      URL.revokeObjectURL(img.src);res(c);
+    };
+    img.src=URL.createObjectURL(file);
+  });
+}
+
 /* ---------- OCR ---------- */
 let lastConf=0,ocrGuess=null;
 $('btnOCR').onclick=async()=>{
@@ -460,12 +473,16 @@ $('btnOCR').onclick=async()=>{
   const src=isPdf?curCanvas:curFile;
   $('btnOCR').disabled=true;
   if(!src){parseInvoice('',0);toast('PDF sin vista previa: llena los datos a mano.',true);$('btnOCR').disabled=false;return;}
-  $('prog').style.display='block';$('pfill').style.width='5%';$('progtxt').textContent='Mejorando imagen…';
+  $('prog').style.display='block';$('pfill').style.width='10%';$('progtxt').textContent='Leyendo con IA…';
   try{
+    if(!isPdf){
+      const liteCanvas=await liteResize(src);
+      const ai=await aiScan(liteCanvas);
+      if(ai){aiFill(ai);setTimeout(()=>{$('prog').style.display='none';$('pfill').style.width='0';},300);$('btnOCR').disabled=false;return;}
+      if(AI_LAST_ERR)toast('IA no disponible ('+AI_LAST_ERR+'): usando escaneo gratis.',true);
+    }
+    $('pfill').style.width='30%';$('progtxt').textContent='Mejorando imagen…';
     const canvas=await preprocess(src);
-    $('pfill').style.width='20%';$('progtxt').textContent='Leyendo con IA…';
-    const ai=await aiScan(canvas);
-    if(ai){aiFill(ai);setTimeout(()=>{$('prog').style.display='none';$('pfill').style.width='0';},400);$('btnOCR').disabled=false;return;}
     $('progtxt').textContent='Cargando motor OCR…';
     const {data}=await Tesseract.recognize(canvas,'spa',{logger:m=>{
       if(m.status==='recognizing text'){$('pfill').style.width=(10+m.progress*90)+'%';
@@ -478,15 +495,19 @@ $('btnOCR').onclick=async()=>{
 };
 
 /* ---------- Escaneo IA (opcional, via Edge Function) ---------- */
+let AI_LAST_ERR=null;
 async function aiScan(canvas){
-  if(!sb)return null;
+  AI_LAST_ERR=null;
+  if(!sb){AI_LAST_ERR='sin conexión';return null;}
   try{
     const b64=canvas.toDataURL('image/jpeg',.85).split(',')[1];
-    const {data,error}=await sb.functions.invoke('ai-scan',{body:{image:b64,media_type:'image/jpeg'}});
+    const {data,error}=await sb.functions.invoke('ai-scan',{body:{image:b64,media_type:'image/jpeg',code:CODE||''}});
     const r=typeof data==='string'?JSON.parse(data):data;
-    if(error||!r||!r.ok||!r.data)return null;
+    if(error){AI_LAST_ERR=error.message||'error de red';return null;}
+    if(!r||!r.ok){AI_LAST_ERR=(r&&r.error)||'respuesta inválida';return null;}
+    if(!r.data)return null;
     return r.data;
-  }catch(e){return null;}
+  }catch(e){AI_LAST_ERR=String(e);return null;}
 }
 function aiFill(d){
   lastConf=95;ocrGuess=null;
