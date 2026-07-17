@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#F6F8F6">
-<title>Bilsy</title>
+<title>RestaurantOS</title>
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -112,166 +112,166 @@ canvas.chart{width:100%!important;max-height:240px}
 </head>
 <body>
 <div class="wrap">
-<header>
-<div class="brand" style="display:flex;align-items:center;gap:.45rem"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--ac)" stroke-width="2" stroke-linecap="round"><path d="M4 4h4M4 4v4M20 4h-4M20 4v4M4 20h4M4 20v-4M20 20h-4M20 20v-4"/><path d="M9 8h4l2 2v8H9z"/><path d="M11.5 12.5h1M9.5 15h5M9.5 17h5M10.5 19.5v-1.2M10 19h1"/></svg>Bilsy</div>
-<div class="badge" id="dbBadge">—</div>
-</header>
+  <header>
+    <div class="brand" style="display:flex;align-items:center;gap:.45rem"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--ac)" stroke-width="2" stroke-linecap="round"><path d="M4 4h4M4 4v4M20 4h-4M20 4v4M4 20h4M4 20v-4M20 20h-4M20 20v-4"/><path d="M9 8h4l2 2v8H9z"/><path d="M11.5 12.5h1M9.5 15h5M9.5 17h5M10.5 19.5v-1.2M10 19h1"/></svg>Restaurant<span>OS</span></div>
+    <div class="badge" id="dbBadge">—</div>
+  </header>
 
-<!-- ===== LOGIN ===== -->
-<section class="page" id="pg-login">
-<div class="loginbox">
-<div style="display:inline-flex;align-items:center;justify-content:center;width:80px;height:80px;background:rgba(19,122,70,.12);border-radius:22px;margin:0 auto 1.4rem;box-shadow:0 2px 10px rgba(19,122,70,.18)"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="var(--ac)" stroke-width="1.6" stroke-linecap="round"><path d="M4 4h4M4 4v4M20 4h-4M20 4v4M4 20h4M4 20v-4M20 20h-4M20 20v-4"/><path d="M9 8h4l2 2v8H9z"/><path d="M11.5 12.5h1M9.5 15h5M9.5 17h5M10.5 19.5v-1.2M10 19h1"/></svg></div>
-<div class="brand" style="font-size:1.35rem;margin-bottom:.15rem">Bilsy</div>
-<h1 id="authTitle" style="font-size:1.05rem;color:var(--tx2);font-weight:600">Bienvenido</h1>
-<p id="authSub">Entra con tu cuenta para gestionar las facturas del restaurante.</p>
-<div class="row" style="margin-bottom:1rem">
-<button class="btn btn-p" id="tabIn">Entrar</button>
-<button class="btn btn-s" id="tabUp">Crear cuenta</button>
-</div>
-<div class="field" id="rowName" style="display:none"><input class="filt" id="a_name" placeholder="Tu nombre" autocomplete="name"></div>
-<div class="field"><input class="filt" id="a_email" type="email" placeholder="Correo" autocomplete="email"></div>
-<div class="field"><input class="filt" id="a_pass" type="password" placeholder="Contraseña" autocomplete="current-password"></div>
-<div class="field" id="rowInvite" style="display:none"><input class="filt" id="a_invite" placeholder="Código de invitación del restaurante" autocomplete="off" style="text-transform:uppercase"></div>
-<div class="row"><button class="btn btn-p" id="btnAuth">Entrar</button></div>
-<p style="margin-top:1rem"><a href="#" id="lnkForgot" style="color:var(--tx3);font-size:.78rem">¿Olvidaste tu contraseña?</a></p>
-<p style="margin-top:.4rem"><a href="#" id="lnkCode" style="color:var(--tx3);font-size:.78rem">Entrar con código de equipo</a></p>
-<div id="codeBox" style="display:none;margin-top:1rem">
-<div class="field"><input id="codeInput" placeholder="CÓDIGO" autocomplete="off"></div>
-<div class="row"><button class="btn btn-s" id="btnLogin">Entrar con código</button></div>
-</div>
-</div>
-</section>
+  <!-- ===== LOGIN ===== -->
+  <section class="page" id="pg-login">
+    <div class="loginbox">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--ac)" stroke-width="1.6" stroke-linecap="round" style="margin-bottom:.5rem"><path d="M4 4h4M4 4v4M20 4h-4M20 4v4M4 20h4M4 20v-4M20 20h-4M20 20v-4"/><path d="M9 8h4l2 2v8H9z"/><path d="M11.5 12.5h1M9.5 15h5M9.5 17h5M10.5 19.5v-1.2M10 19h1"/></svg>
+      <div class="brand" style="font-size:1.35rem;margin-bottom:.15rem">Restaurant<span>OS</span></div>
+      <h1 id="authTitle" style="font-size:1.05rem;color:var(--tx2);font-weight:600">Bienvenido</h1>
+      <p id="authSub">Entra con tu cuenta para gestionar las facturas del restaurante.</p>
+      <div class="row" style="margin-bottom:1rem">
+        <button class="btn btn-p" id="tabIn">Entrar</button>
+        <button class="btn btn-s" id="tabUp">Crear cuenta</button>
+      </div>
+      <div class="field" id="rowName" style="display:none"><input class="filt" id="a_name" placeholder="Tu nombre" autocomplete="name"></div>
+      <div class="field"><input class="filt" id="a_email" type="email" placeholder="Correo" autocomplete="email"></div>
+      <div class="field"><input class="filt" id="a_pass" type="password" placeholder="Contraseña" autocomplete="current-password"></div>
+      <div class="field" id="rowInvite" style="display:none"><input class="filt" id="a_invite" placeholder="Código de invitación del restaurante" autocomplete="off" style="text-transform:uppercase"></div>
+      <div class="row"><button class="btn btn-p" id="btnAuth">Entrar</button></div>
+      <p style="margin-top:1rem"><a href="#" id="lnkForgot" style="color:var(--tx3);font-size:.78rem">¿Olvidaste tu contraseña?</a></p>
+      <p style="margin-top:.4rem"><a href="#" id="lnkCode" style="color:var(--tx3);font-size:.78rem">Entrar con código de equipo</a></p>
+      <div id="codeBox" style="display:none;margin-top:1rem">
+        <div class="field"><input id="codeInput" placeholder="CÓDIGO" autocomplete="off"></div>
+        <div class="row"><button class="btn btn-s" id="btnLogin">Entrar con código</button></div>
+      </div>
+    </div>
+  </section>
 
-<!-- ===== ESCANEAR ===== -->
-<section class="page" id="pg-scan">
-<div class="slabel">Escanear o subir factura</div>
-<div class="scanzone" id="zone" role="button" tabindex="0" aria-label="Tomar foto o subir archivo">
-<svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="var(--ac)" stroke-width="1.7" stroke-linecap="round"><path d="M4 7h3l2-3h6l2 3h3v13H4z"/><circle cx="12" cy="13" r="3.5"/></svg>
-<h2>Escanear factura</h2>
-<p>Toca para tomar una foto o subir una imagen o PDF.</p>
-</div>
-<input type="file" id="file" accept="image/*,application/pdf" hidden>
-<div class="row"><button class="btn btn-s" id="btnManual">+ Agregar factura manual</button></div>
-<div class="row" id="preActions" style="display:none">
-<button class="btn btn-s" id="btnRetake">Otro archivo</button>
-<button class="btn btn-p" id="btnOCR">Extraer datos</button>
-</div>
-<div id="prog"><div class="pbar"><div id="pfill"></div></div><div id="progtxt"></div></div>
-<div id="review">
-<div class="slabel">Revisar datos <span class="conf lo" id="confBadge">verificar</span></div>
-<div class="card">
-<div class="field"><label for="f_sup">Proveedor</label><input id="f_sup" list="supList" placeholder="Nombre del proveedor"><datalist id="supList"></datalist></div>
-<div class="grid2">
-<div class="field"><label for="f_num">N° factura</label><input id="f_num" placeholder="000123"></div>
-<div class="field"><label for="f_date">Fecha</label><input id="f_date" type="date"></div>
-</div>
-<div class="grid2">
-<div class="field"><label for="f_total">Total (CRC)</label><input id="f_total" type="number" step="0.01" inputmode="decimal" placeholder="0.00"></div>
-<div class="field"><label for="f_type">Tipo</label>
-<select id="f_type"><option value="CONTADO">Contado</option><option value="CREDITO">Crédito</option></select></div>
-</div>
-<div class="field"><label for="f_cat">Categoría</label><select id="f_cat"></select></div>
-<div class="field"><label for="f_status">Estado de pago</label>
-<select id="f_status"><option value="PENDIENTE">Pendiente de pago</option><option value="PAGADA">Pagada</option></select></div>
-<div class="hint">Corrige lo que el OCR no leyó bien antes de guardar.</div>
-</div>
-<div class="row">
-<button class="btn btn-s" id="btnCancel">Descartar</button>
-<button class="btn btn-ok" id="btnSave">Guardar factura</button>
-</div>
-</div>
-</section>
+  <!-- ===== ESCANEAR ===== -->
+  <section class="page" id="pg-scan">
+    <div class="slabel">Escanear o subir factura</div>
+    <div class="scanzone" id="zone" role="button" tabindex="0" aria-label="Tomar foto o subir archivo">
+      <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="var(--ac)" stroke-width="1.7" stroke-linecap="round"><path d="M4 7h3l2-3h6l2 3h3v13H4z"/><circle cx="12" cy="13" r="3.5"/></svg>
+      <h2>Escanear factura</h2>
+      <p>Toca para tomar una foto o subir una imagen o PDF.</p>
+    </div>
+    <input type="file" id="file" accept="image/*,application/pdf" hidden>
+    <div class="row"><button class="btn btn-s" id="btnManual">+ Agregar factura manual</button></div>
+    <div class="row" id="preActions" style="display:none">
+      <button class="btn btn-s" id="btnRetake">Otro archivo</button>
+      <button class="btn btn-p" id="btnOCR">Extraer datos</button>
+    </div>
+    <div id="prog"><div class="pbar"><div id="pfill"></div></div><div id="progtxt"></div></div>
+    <div id="review">
+      <div class="slabel">Revisar datos <span class="conf lo" id="confBadge">verificar</span></div>
+      <div class="card">
+        <div class="field"><label for="f_sup">Proveedor</label><input id="f_sup" list="supList" placeholder="Nombre del proveedor"><datalist id="supList"></datalist></div>
+        <div class="grid2">
+          <div class="field"><label for="f_num">N° factura</label><input id="f_num" placeholder="000123"></div>
+          <div class="field"><label for="f_date">Fecha</label><input id="f_date" type="date"></div>
+        </div>
+        <div class="grid2">
+          <div class="field"><label for="f_total">Total (CRC)</label><input id="f_total" type="number" step="0.01" inputmode="decimal" placeholder="0.00"></div>
+          <div class="field"><label for="f_type">Tipo</label>
+            <select id="f_type"><option value="CONTADO">Contado</option><option value="CREDITO">Crédito</option></select></div>
+        </div>
+        <div class="field"><label for="f_cat">Categoría</label><select id="f_cat"></select></div>
+        <div class="field"><label for="f_status">Estado de pago</label>
+          <select id="f_status"><option value="PENDIENTE">Pendiente de pago</option><option value="PAGADA">Pagada</option></select></div>
+        <div class="hint">Corrige lo que el OCR no leyó bien antes de guardar.</div>
+      </div>
+      <div class="row">
+        <button class="btn btn-s" id="btnCancel">Descartar</button>
+        <button class="btn btn-ok" id="btnSave">Guardar factura</button>
+      </div>
+    </div>
+  </section>
 
-<!-- ===== GASTOS ===== -->
-<section class="page" id="pg-dash">
-<div class="slabel">Gastos del mes</div>
-<div class="kpis">
-<div class="card kpi"><div class="kl">Total compras</div><div class="kv" id="kTotal">—</div><div class="ks" id="kCount"></div></div>
-<div class="card kpi a"><div class="kl">Crédito por pagar</div><div class="kv" id="kCred">—</div><div class="ks">de este mes</div></div>
-</div>
-<div id="lvBox" style="display:none">
-<div class="slabel">Ventas · Loyverse</div>
-<div class="kpis">
-<div class="card kpi g"><div class="kl">Ventas del mes</div><div class="kv" id="kLvM">—</div><div class="ks" id="kLvMs"></div></div>
-<div class="card kpi b"><div class="kl">Margen bruto est.</div><div class="kv" id="kLvG">—</div><div class="ks">ventas − compras</div></div>
-</div>
-</div>
-<div class="slabel">Por categoría</div>
-<div class="card"><canvas class="chart" id="chCat"></canvas><div class="empty" id="emptyCat" style="display:none">Sin gastos este mes.</div></div>
-<div class="slabel">Últimos 6 meses</div>
-<div class="card"><canvas class="chart" id="chMonth"></canvas></div>
-</section>
+  <!-- ===== GASTOS ===== -->
+  <section class="page" id="pg-dash">
+    <div class="slabel">Gastos del mes</div>
+    <div class="kpis">
+      <div class="card kpi"><div class="kl">Total compras</div><div class="kv" id="kTotal">—</div><div class="ks" id="kCount"></div></div>
+      <div class="card kpi a"><div class="kl">Crédito por pagar</div><div class="kv" id="kCred">—</div><div class="ks">de este mes</div></div>
+    </div>
+    <div id="lvBox" style="display:none">
+      <div class="slabel">Ventas · Loyverse</div>
+      <div class="kpis">
+        <div class="card kpi g"><div class="kl">Ventas del mes</div><div class="kv" id="kLvM">—</div><div class="ks" id="kLvMs"></div></div>
+        <div class="card kpi b"><div class="kl">Margen bruto est.</div><div class="kv" id="kLvG">—</div><div class="ks">ventas − compras</div></div>
+      </div>
+    </div>
+    <div class="slabel">Por categoría</div>
+    <div class="card"><canvas class="chart" id="chCat"></canvas><div class="empty" id="emptyCat" style="display:none">Sin gastos este mes.</div></div>
+    <div class="slabel">Últimos 6 meses</div>
+    <div class="card"><canvas class="chart" id="chMonth"></canvas></div>
+  </section>
 
-<!-- ===== HISTORIAL ===== -->
-<section class="page" id="pg-hist">
-<div class="slabel">Facturas</div>
-<div class="card" style="display:flex;align-items:center;justify-content:space-between;gap:.6rem;padding:.6rem .8rem">
-<button class="mbtn" id="mPrev" aria-label="Mes anterior">‹</button>
-<div style="text-align:center;flex:1">
-<div id="mLabel" style="font-weight:700;font-size:.95rem;text-transform:capitalize">—</div>
-<div id="mTotal" style="font-size:.72rem;color:var(--tx3);margin-top:.1rem"></div>
-</div>
-<button class="mbtn" id="mNext" aria-label="Mes siguiente">›</button>
-</div>
-<div class="row" style="margin-top:.7rem">
-<button class="btn btn-s" id="btnCsv">⬇ Exportar mes a Excel (CSV)</button>
-</div>
-<div class="row" style="margin-top:.7rem">
-<input class="filt" id="qNum" placeholder="🔍 Buscar por N° de factura" autocomplete="off">
-</div>
-<div class="row">
-<select class="filt" id="fSup"><option value="">Todos los proveedores</option></select>
-<select class="filt" id="fSt" style="max-width:42%">
-<option value="">Todas</option>
-<option value="PENDIENTE">Pendientes</option>
-<option value="PAGADA">Pagadas</option>
-</select>
-</div>
-<div class="card" id="histList" style="margin-top:.7rem"><div class="empty">Cargando…</div></div>
-</section>
+  <!-- ===== HISTORIAL ===== -->
+  <section class="page" id="pg-hist">
+    <div class="slabel">Facturas</div>
+    <div class="card" style="display:flex;align-items:center;justify-content:space-between;gap:.6rem;padding:.6rem .8rem">
+      <button class="mbtn" id="mPrev" aria-label="Mes anterior">‹</button>
+      <div style="text-align:center;flex:1">
+        <div id="mLabel" style="font-weight:700;font-size:.95rem;text-transform:capitalize">—</div>
+        <div id="mTotal" style="font-size:.72rem;color:var(--tx3);margin-top:.1rem"></div>
+      </div>
+      <button class="mbtn" id="mNext" aria-label="Mes siguiente">›</button>
+    </div>
+    <div class="row" style="margin-top:.7rem">
+      <button class="btn btn-s" id="btnCsv">⬇ Exportar mes a Excel (CSV)</button>
+    </div>
+    <div class="row" style="margin-top:.7rem">
+      <input class="filt" id="qNum" placeholder="🔍 Buscar por N° de factura" autocomplete="off">
+    </div>
+    <div class="row">
+      <select class="filt" id="fSup"><option value="">Todos los proveedores</option></select>
+      <select class="filt" id="fSt" style="max-width:42%">
+        <option value="">Todas</option>
+        <option value="PENDIENTE">Pendientes</option>
+        <option value="PAGADA">Pagadas</option>
+      </select>
+    </div>
+    <div class="card" id="histList" style="margin-top:.7rem"><div class="empty">Cargando…</div></div>
+  </section>
 
-<!-- ===== AJUSTES ===== -->
-<section class="page" id="pg-set">
-<div class="slabel">Pendientes de subir</div>
-<div class="card">
-<p style="font-size:.85rem;color:var(--tx2)" id="pendInfo">Sin facturas pendientes.</p>
-<div class="row" id="pendRow" style="display:none"><button class="btn btn-p" id="btnRetry">Reintentar subida</button></div>
-</div>
-<div class="slabel">Integración Loyverse (opcional)</div>
-<div class="card">
-<p style="font-size:.82rem;color:var(--tx2);margin-bottom:.8rem" id="lvInfo">Conecta tu POS para ver ventas vs compras y controlar lo que entra y sale del inventario.</p>
-<div class="field" id="lvTokRow"><input class="filt" id="lvTok" type="password" placeholder="Token de acceso de Loyverse" autocomplete="off"></div>
-<div class="row" style="margin-top:0">
-<button class="btn btn-p" id="btnLv">Conectar</button>
-<button class="btn btn-s" id="btnLvOff" style="display:none;color:var(--err)">Desconectar</button>
-</div>
-<div class="hint">El token se genera en Loyverse → Integraciones → Tokens de acceso, y se guarda solo en este teléfono.</div>
-</div>
-<div class="slabel">Mi cuenta</div>
-<div class="card" id="meCard"><p style="font-size:.85rem;color:var(--tx2)" id="meInfo">Sesión por código de equipo.</p></div>
-<div class="slabel">Proveedores</div>
-<div class="card" id="supBox"><div class="empty">Cargando…</div></div>
-<div class="slabel" id="codeLbl">Código de acceso</div>
-<div class="card" id="codeCard">
-<div class="field"><label for="newCode">Nuevo código (mín. 6 caracteres)</label><input id="newCode" placeholder="NUEVO-CODIGO"></div>
-<div class="row"><button class="btn btn-s" id="btnChangeCode">Cambiar código del equipo</button></div>
-<div class="hint">El cambio aplica para todos: comparte el nuevo código con tu jefe.</div>
-</div>
-<div class="slabel">Sesión</div>
-<div class="card"><div class="row" style="margin-top:0">
-<button class="btn btn-s" id="btnExport">Exportar respaldo</button>
-<button class="btn btn-s" id="btnLogout" style="color:var(--err)">Salir</button>
-</div></div>
-</section>
+  <!-- ===== AJUSTES ===== -->
+  <section class="page" id="pg-set">
+    <div class="slabel">Pendientes de subir</div>
+    <div class="card">
+      <p style="font-size:.85rem;color:var(--tx2)" id="pendInfo">Sin facturas pendientes.</p>
+      <div class="row" id="pendRow" style="display:none"><button class="btn btn-p" id="btnRetry">Reintentar subida</button></div>
+    </div>
+    <div class="slabel">Integración Loyverse (opcional)</div>
+    <div class="card">
+      <p style="font-size:.82rem;color:var(--tx2);margin-bottom:.8rem" id="lvInfo">Conecta tu POS para ver ventas vs compras y controlar lo que entra y sale del inventario.</p>
+      <div class="field" id="lvTokRow"><input class="filt" id="lvTok" type="password" placeholder="Token de acceso de Loyverse" autocomplete="off"></div>
+      <div class="row" style="margin-top:0">
+        <button class="btn btn-p" id="btnLv">Conectar</button>
+        <button class="btn btn-s" id="btnLvOff" style="display:none;color:var(--err)">Desconectar</button>
+      </div>
+      <div class="hint">El token se genera en Loyverse → Integraciones → Tokens de acceso, y se guarda solo en este teléfono.</div>
+    </div>
+    <div class="slabel">Mi cuenta</div>
+    <div class="card" id="meCard"><p style="font-size:.85rem;color:var(--tx2)" id="meInfo">Sesión por código de equipo.</p></div>
+    <div class="slabel">Proveedores</div>
+    <div class="card" id="supBox"><div class="empty">Cargando…</div></div>
+    <div class="slabel" id="codeLbl">Código de acceso</div>
+    <div class="card" id="codeCard">
+      <div class="field"><label for="newCode">Nuevo código (mín. 6 caracteres)</label><input id="newCode" placeholder="NUEVO-CODIGO"></div>
+      <div class="row"><button class="btn btn-s" id="btnChangeCode">Cambiar código del equipo</button></div>
+      <div class="hint">El cambio aplica para todos: comparte el nuevo código con tu jefe.</div>
+    </div>
+    <div class="slabel">Sesión</div>
+    <div class="card"><div class="row" style="margin-top:0">
+      <button class="btn btn-s" id="btnExport">Exportar respaldo</button>
+      <button class="btn btn-s" id="btnLogout" style="color:var(--err)">Salir</button>
+    </div></div>
+  </section>
 </div>
 
 <div id="toast"></div>
 
 <nav id="mainNav">
-<button data-pg="scan" class="on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2M3 12h18"/></svg>Escanear</button>
-<button data-pg="dash"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>Gastos</button>
-<button data-pg="hist"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M9 13h6M9 17h6"/></svg>Historial</button>
-<button data-pg="set"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.2 4.2l2.8 2.8M17 17l2.8 2.8M1 12h4M19 12h4M4.2 19.8L7 17M17 7l2.8-2.8"/></svg>Ajustes</button>
+  <button data-pg="scan" class="on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2M3 12h18"/></svg>Escanear</button>
+  <button data-pg="dash"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 20V10M12 20V4M6 20v-6"/></svg>Gastos</button>
+  <button data-pg="hist"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M9 13h6M9 17h6"/></svg>Historial</button>
+  <button data-pg="set"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.2 4.2l2.8 2.8M17 17l2.8 2.8M1 12h4M19 12h4M4.2 19.8L7 17M17 7l2.8-2.8"/></svg>Ajustes</button>
 </nav>
 
 <script src="config.js"></script>
@@ -285,7 +285,7 @@ const $=id=>document.getElementById(id);
 const CFG=window.ROS_CONFIG||{};
 let sb=null;
 if(CFG.SUPABASE_URL&&CFG.SUPABASE_KEY&&window.supabase){
-try{sb=window.supabase.createClient(CFG.SUPABASE_URL,CFG.SUPABASE_KEY);}catch(e){}
+  try{sb=window.supabase.createClient(CFG.SUPABASE_URL,CFG.SUPABASE_KEY);}catch(e){}
 }
 if(window.pdfjsLib) pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js';
 
@@ -295,43 +295,43 @@ let CATS=['Alimentos','Bebidas','Insumos','Servicios','Otros'];
 
 /* ---------- RPC helper ---------- */
 async function rpc(fn,args){
-if(!sb) return {ok:false,error:'sin_conexion'};
-try{
-const {data,error}=await sb.rpc(fn,args);
-if(error) return {ok:false,error:error.message};
-return data;
-}catch(e){return {ok:false,error:String(e)}}
+  if(!sb) return {ok:false,error:'sin_conexion'};
+  try{
+    const {data,error}=await sb.rpc(fn,args);
+    if(error) return {ok:false,error:error.message};
+    return data;
+  }catch(e){return {ok:false,error:String(e)}}
 }
 
 /* ---------- Toast ---------- */
 let toastT;
 function toast(msg,err){const t=$('toast');t.textContent=msg;t.className=err?'show err':'show';
-clearTimeout(toastT);toastT=setTimeout(()=>t.className='',3200);}
+  clearTimeout(toastT);toastT=setTimeout(()=>t.className='',3200);}
 
 /* ---------- Navegación ---------- */
 function show(pg){
-document.querySelectorAll('.page').forEach(x=>x.classList.remove('on'));
-$('pg-'+pg).classList.add('on');
-document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.pg===pg));
-$('mainNav').classList.toggle('on',pg!=='login');
-if(pg==='dash') loadDash();
-if(pg==='hist') loadHist();
-if(pg==='set'){renderPending();loadSuppliers();lvUI();}
+  document.querySelectorAll('.page').forEach(x=>x.classList.remove('on'));
+  $('pg-'+pg).classList.add('on');
+  document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('on',b.dataset.pg===pg));
+  $('mainNav').classList.toggle('on',pg!=='login');
+  if(pg==='dash') loadDash();
+  if(pg==='hist') loadHist();
+  if(pg==='set'){renderPending();loadSuppliers();lvUI();}
 }
 document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>show(b.dataset.pg));
 
 /* ---------- Autenticación con cuentas ---------- */
 let ME=null,authMode='in';
 function setMode(m){
-authMode=m;
-$('tabIn').className='btn '+(m==='in'?'btn-p':'btn-s');
-$('tabUp').className='btn '+(m==='up'?'btn-p':'btn-s');
-$('rowName').style.display=m==='up'?'block':'none';
-$('rowInvite').style.display=m==='up'?'block':'none';
-$('btnAuth').textContent=m==='up'?'Crear cuenta':(m==='reset'?'Guardar nueva contraseña':'Entrar');
-$('authTitle').textContent=m==='up'?'Crear cuenta':(m==='reset'?'Nueva contraseña':'Bienvenido');
-if(m==='reset'){$('a_email').style.display='none';$('rowName').style.display='none';$('rowInvite').style.display='none';}
-else $('a_email').style.display='block';
+  authMode=m;
+  $('tabIn').className='btn '+(m==='in'?'btn-p':'btn-s');
+  $('tabUp').className='btn '+(m==='up'?'btn-p':'btn-s');
+  $('rowName').style.display=m==='up'?'block':'none';
+  $('rowInvite').style.display=m==='up'?'block':'none';
+  $('btnAuth').textContent=m==='up'?'Crear cuenta':(m==='reset'?'Guardar nueva contraseña':'Entrar');
+  $('authTitle').textContent=m==='up'?'Crear cuenta':(m==='reset'?'Nueva contraseña':'Bienvenido');
+  if(m==='reset'){$('a_email').style.display='none';$('rowName').style.display='none';$('rowInvite').style.display='none';}
+  else $('a_email').style.display='block';
 }
 function syncStatus(){$('f_status').value=$('f_type').value==='CONTADO'?'PAGADA':'PENDIENTE';}
 $('f_type').onchange=syncStatus;
@@ -339,71 +339,72 @@ $('tabIn').onclick=()=>setMode('in');
 $('tabUp').onclick=()=>setMode('up');
 $('lnkCode').onclick=e=>{e.preventDefault();$('codeBox').style.display=$('codeBox').style.display==='none'?'block':'none';};
 $('lnkForgot').onclick=async e=>{
-e.preventDefault();
-const em=$('a_email').value.trim();
-if(!em){toast('Escribe tu correo arriba primero.',true);return;}
-if(!sb)return;
-const {error}=await sb.auth.resetPasswordForEmail(em,{redirectTo:location.origin+location.pathname});
-toast(error?'No se pudo enviar el correo.':'Te enviamos un correo para restablecerla.',!!error);
+  e.preventDefault();
+  const em=$('a_email').value.trim();
+  if(!em){toast('Escribe tu correo arriba primero.',true);return;}
+  if(!sb)return;
+  const {error}=await sb.auth.resetPasswordForEmail(em,{redirectTo:location.origin+location.pathname});
+  toast(error?'No se pudo enviar el correo.':'Te enviamos un correo para restablecerla.',!!error);
 };
 async function enterApp(){
-CODE='';
-const me=await rpc('api_me',{});
-ME=(me&&me.ok)?me:null;
-if(ME&&!ME.active){toast('Tu cuenta espera aprobación: pide el código de invitación correcto.',true);await sb.auth.signOut();ME=null;show('login');return;}
-const v=await rpc('api_verify_code',{p_code:''});
-if(v&&v.ok&&v.categories)CATS=v.categories.map(c=>c.name);
-fillCats();loadSuppliers();
-$('dbBadge').textContent=ME?ME.name.split(' ')[0]+' · '+ME.role:'nube';
-$('dbBadge').classList.add('on');
-applyRole();show('scan');retryPending(true);
+  CODE='';
+  const me=await rpc('api_me',{});
+  ME=(me&&me.ok)?me:null;
+  if(ME&&!ME.active){toast('Tu cuenta espera aprobación: pide el código de invitación correcto.',true);await sb.auth.signOut();ME=null;show('login');return;}
+  const v=await rpc('api_verify_code',{p_code:''});
+  if(v&&v.ok&&v.categories)CATS=v.categories.map(c=>c.name);
+  fillCats();loadSuppliers();
+  $('dbBadge').textContent=ME?ME.name.split(' ')[0]+' · '+ME.role:'nube';
+  $('dbBadge').classList.add('on');
+  applyRole();show('scan');retryPending(true);
 }
 function applyRole(){
-const emp=ME&&ME.role==='empleado';
-$('codeCard').style.display=emp?'none':'block';
-$('codeLbl').style.display=emp?'none':'block';
-$('meInfo').textContent=ME?('Sesión: '+ME.name+' ('+ME.role+')'):'Sesión por código de equipo.';
+  const emp=ME&&ME.role==='empleado';
+  $('codeCard').style.display=emp?'none':'block';
+  $('codeLbl').style.display=emp?'none':'block';
+  $('meInfo').textContent=ME?('Sesión: '+ME.name+' ('+ME.role+')'):'Sesión por código de equipo.';
 }
 $('btnAuth').onclick=async()=>{
-if(!sb){toast('Sin conexión con la nube.',true);return;}
-const em=$('a_email').value.trim(),pw=$('a_pass').value;
-$('btnAuth').disabled=true;
-try{
-if(authMode==='reset'){
-if(pw.length<6){toast('Mínimo 6 caracteres.',true);return;}
-const {error}=await sb.auth.updateUser({password:pw});
-if(error)toast('No se pudo guardar.',true);
-else{toast('Contraseña actualizada.');await enterApp();}
-}else if(authMode==='up'){
-const nm=$('a_name').value.trim(),inv=$('a_invite').value.trim().toUpperCase();
-if(!nm||!em||pw.length<6){toast('Completa nombre, correo y contraseña (mín. 6).',true);return;}
-const {data,error}=await sb.auth.signUp({email:em,password:pw,options:{data:{name:nm,invite:inv}}});
-if(error){toast(error.message.includes('registered')?'Ese correo ya tiene cuenta.':'No se pudo crear la cuenta.',true);}
-else if(!data.session){toast('Cuenta creada: revisa tu correo para confirmarla y luego entra.');setMode('in');}
-else await enterApp();
-}else{
-const {error}=await sb.auth.signInWithPassword({email:em,password:pw});
-if(error)toast('Correo o contraseña incorrectos.',true);
-else await enterApp();
-}
-}finally{$('btnAuth').disabled=false;}
+  if(!sb){toast('Sin conexión con la nube.',true);return;}
+  const em=$('a_email').value.trim(),pw=$('a_pass').value;
+  $('btnAuth').disabled=true;
+  try{
+    if(authMode==='reset'){
+      if(pw.length<6){toast('Mínimo 6 caracteres.',true);return;}
+      const {error}=await sb.auth.updateUser({password:pw});
+      if(error)toast('No se pudo guardar.',true);
+      else{toast('Contraseña actualizada.');await enterApp();}
+    }else if(authMode==='up'){
+      const nm=$('a_name').value.trim(),inv=$('a_invite').value.trim().toUpperCase();
+      if(!nm||!em||pw.length<6){toast('Completa nombre, correo y contraseña (mín. 6).',true);return;}
+      const {data,error}=await sb.auth.signUp({email:em,password:pw,options:{data:{name:nm,invite:inv}}});
+      if(error){toast(error.message.includes('registered')?'Ese correo ya tiene cuenta.':'No se pudo crear la cuenta.',true);}
+      else if(!data.session){toast('Cuenta creada: revisa tu correo para confirmarla y luego entra.');setMode('in');}
+      else await enterApp();
+    }else{
+      const {error}=await sb.auth.signInWithPassword({email:em,password:pw});
+      if(error)toast('Correo o contraseña incorrectos.',true);
+      else await enterApp();
+    }
+  }finally{$('btnAuth').disabled=false;}
 };
+
 
 function fillCats(){$('f_cat').innerHTML=CATS.map(c=>'<option>'+c+'</option>').join('');}
 async function tryLogin(code,silent){
-const r=await rpc('api_verify_code',{p_code:code});
-if(r&&r.ok){
-CODE=code;localStorage.setItem(LSC,code);
-if(r.categories) CATS=r.categories.map(c=>c.name);
-fillCats();loadSuppliers();
-$('dbBadge').textContent='nube';$('dbBadge').classList.add('on');
-ME=null;applyRole();
-show('scan');retryPending(true);
-return true;
-}
-if(!silent) toast(r&&r.error==='sin_conexion'?'No hay conexión con la nube.':'Código incorrecto.',true);
-if(silent&&r&&!r.ok&&r.error!=='sin_conexion'){localStorage.removeItem(LSC);CODE='';show('login');}
-return false;
+  const r=await rpc('api_verify_code',{p_code:code});
+  if(r&&r.ok){
+    CODE=code;localStorage.setItem(LSC,code);
+    if(r.categories) CATS=r.categories.map(c=>c.name);
+    fillCats();loadSuppliers();
+    $('dbBadge').textContent='nube';$('dbBadge').classList.add('on');
+    ME=null;applyRole();
+    show('scan');retryPending(true);
+    return true;
+  }
+  if(!silent) toast(r&&r.error==='sin_conexion'?'No hay conexión con la nube.':'Código incorrecto.',true);
+  if(silent&&r&&!r.ok&&r.error!=='sin_conexion'){localStorage.removeItem(LSC);CODE='';show('login');}
+  return false;
 }
 $('btnLogin').onclick=()=>{const c=$('codeInput').value.trim().toUpperCase();if(c)tryLogin(c);};
 $('codeInput').addEventListener('keydown',e=>{if(e.key==='Enter')$('btnLogin').click();});
@@ -415,346 +416,349 @@ $('zone').onclick=()=>$('file').click();
 $('zone').onkeydown=e=>{if(e.key==='Enter'||e.key===' ')$('file').click();};
 $('btnRetake').onclick=()=>$('file').click();
 $('file').onchange=async e=>{
-const f=e.target.files[0];if(!f)return;
-curFile=f;isPdf=f.type==='application/pdf';curCanvas=null;
-$('review').style.display='none';$('preActions').style.display='flex';
-if(isPdf){
-$('zone').innerHTML='<h2>PDF cargado</h2><p>'+esc(f.name)+'</p>';
-try{
-const buf=await f.arrayBuffer();
-const pdf=await pdfjsLib.getDocument({data:buf}).promise;
-const page=await pdf.getPage(1);
-const vp=page.getViewport({scale:2});
-const c=document.createElement('canvas');c.width=vp.width;c.height=vp.height;
-await page.render({canvasContext:c.getContext('2d'),viewport:vp}).promise;
-curCanvas=c;
-$('zone').innerHTML='<img src="'+c.toDataURL('image/jpeg',.8)+'" alt="PDF"><div class="filepill">'+esc(f.name)+'</div>';
-}catch(err){/* PDF no legible: se sube igual, datos a mano */}
-}else{
-$('zone').innerHTML='<img src="'+URL.createObjectURL(f)+'" alt="Factura"><div class="filepill">'+esc(f.name)+'</div>';
-}
+  const f=e.target.files[0];if(!f)return;
+  curFile=f;isPdf=f.type==='application/pdf';curCanvas=null;
+  $('review').style.display='none';$('preActions').style.display='flex';
+  if(isPdf){
+    $('zone').innerHTML='<h2>PDF cargado</h2><p>'+esc(f.name)+'</p>';
+    try{
+      const buf=await f.arrayBuffer();
+      const pdf=await pdfjsLib.getDocument({data:buf}).promise;
+      const page=await pdf.getPage(1);
+      const vp=page.getViewport({scale:2});
+      const c=document.createElement('canvas');c.width=vp.width;c.height=vp.height;
+      await page.render({canvasContext:c.getContext('2d'),viewport:vp}).promise;
+      curCanvas=c;
+      $('zone').innerHTML='<img src="'+c.toDataURL('image/jpeg',.8)+'" alt="PDF"><div class="filepill">'+esc(f.name)+'</div>';
+    }catch(err){/* PDF no legible: se sube igual, datos a mano */}
+  }else{
+    $('zone').innerHTML='<img src="'+URL.createObjectURL(f)+'" alt="Factura"><div class="filepill">'+esc(f.name)+'</div>';
+  }
 };
 
 /* ---------- Pre-proceso ---------- */
 function preprocess(src){
-return new Promise(res=>{
-const done=img=>{
-const MAX=1600,sc=Math.min(1,MAX/Math.max(img.width,img.height));
-const c=document.createElement('canvas');c.width=img.width*sc;c.height=img.height*sc;
-const ctx=c.getContext('2d');ctx.drawImage(img,0,0,c.width,c.height);
-const d=ctx.getImageData(0,0,c.width,c.height),px=d.data;
-for(let i=0;i<px.length;i+=4){let g=.299*px[i]+.587*px[i+1]+.114*px[i+2];
-g=Math.min(255,Math.max(0,(g-128)*1.35+128));px[i]=px[i+1]=px[i+2]=g;}
-ctx.putImageData(d,0,0);res(c);
-};
-if(src instanceof HTMLCanvasElement){const img=new Image();img.onload=()=>done(img);img.src=src.toDataURL();}
-else{const img=new Image();img.onload=()=>{URL.revokeObjectURL(img.src);done(img);};img.src=URL.createObjectURL(src);}
-});
+  return new Promise(res=>{
+    const done=img=>{
+      const MAX=1600,sc=Math.min(1,MAX/Math.max(img.width,img.height));
+      const c=document.createElement('canvas');c.width=img.width*sc;c.height=img.height*sc;
+      const ctx=c.getContext('2d');ctx.drawImage(img,0,0,c.width,c.height);
+      const d=ctx.getImageData(0,0,c.width,c.height),px=d.data;
+      for(let i=0;i<px.length;i+=4){let g=.299*px[i]+.587*px[i+1]+.114*px[i+2];
+        g=Math.min(255,Math.max(0,(g-128)*1.35+128));px[i]=px[i+1]=px[i+2]=g;}
+      ctx.putImageData(d,0,0);res(c);
+    };
+    if(src instanceof HTMLCanvasElement){const img=new Image();img.onload=()=>done(img);img.src=src.toDataURL();}
+    else{const img=new Image();img.onload=()=>{URL.revokeObjectURL(img.src);done(img);};img.src=URL.createObjectURL(src);}
+  });
 }
 
 function liteResize(file){
-return new Promise(res=>{
-const img=new Image();
-img.onload=()=>{
-const MAX=1400,sc=Math.min(1,MAX/Math.max(img.width,img.height));
-const c=document.createElement('canvas');c.width=img.width*sc;c.height=img.height*sc;
-c.getContext('2d').drawImage(img,0,0,c.width,c.height);
-URL.revokeObjectURL(img.src);res(c);
-};
-img.src=URL.createObjectURL(file);
-});
+  return new Promise(res=>{
+    const img=new Image();
+    img.onload=()=>{
+      const MAX=1400,sc=Math.min(1,MAX/Math.max(img.width,img.height));
+      const c=document.createElement('canvas');c.width=img.width*sc;c.height=img.height*sc;
+      c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+      URL.revokeObjectURL(img.src);res(c);
+    };
+    img.src=URL.createObjectURL(file);
+  });
 }
 
 /* ---------- OCR ---------- */
 let lastConf=0,ocrGuess=null;
 $('btnOCR').onclick=async()=>{
-if(!curFile)return;
-const src=isPdf?curCanvas:curFile;
-$('btnOCR').disabled=true;
-if(!src){parseInvoice('',0);toast('PDF sin vista previa: llena los datos a mano.',true);$('btnOCR').disabled=false;return;}
-$('prog').style.display='block';$('pfill').style.width='10%';$('progtxt').textContent='Leyendo con IA…';
-try{
-if(!isPdf){
-const liteCanvas=await liteResize(src);
-const ai=await aiScan(liteCanvas);
-if(ai){aiFill(ai);setTimeout(()=>{$('prog').style.display='none';$('pfill').style.width='0';},300);$('btnOCR').disabled=false;return;}
-if(AI_LAST_ERR)toast('IA no disponible ('+AI_LAST_ERR+'): usando escaneo gratis.',true);
-}
-$('pfill').style.width='30%';$('progtxt').textContent='Mejorando imagen…';
-const canvas=await preprocess(src);
-$('progtxt').textContent='Cargando motor OCR…';
-const {data}=await Tesseract.recognize(canvas,'spa',{logger:m=>{
-if(m.status==='recognizing text'){$('pfill').style.width=(10+m.progress*90)+'%';
-$('progtxt').textContent='Leyendo factura… '+Math.round(m.progress*100)+'%';}}});
-$('pfill').style.width='100%';
-parseInvoice(data.text||'',data.confidence||0);
-}catch(e){toast('El OCR falló. Llena los datos a mano.',true);parseInvoice('',0);}
-setTimeout(()=>{$('prog').style.display='none';$('pfill').style.width='0';},500);
-$('btnOCR').disabled=false;
+  if(!curFile)return;
+  const src=isPdf?curCanvas:curFile;
+  $('btnOCR').disabled=true;
+  if(!src){parseInvoice('',0);toast('PDF sin vista previa: llena los datos a mano.',true);$('btnOCR').disabled=false;return;}
+  $('prog').style.display='block';$('pfill').style.width='10%';$('progtxt').textContent='Leyendo con IA…';
+  try{
+    if(!isPdf){
+      const liteCanvas=await liteResize(src);
+      const ai=await aiScan(liteCanvas);
+      if(ai){aiFill(ai);setTimeout(()=>{$('prog').style.display='none';$('pfill').style.width='0';},300);$('btnOCR').disabled=false;return;}
+      if(AI_LAST_ERR)toast('IA no disponible ('+AI_LAST_ERR+'): usando escaneo gratis.',true);
+    }
+    $('pfill').style.width='30%';$('progtxt').textContent='Mejorando imagen…';
+    const canvas=await preprocess(src);
+    $('progtxt').textContent='Cargando motor OCR…';
+    const {data}=await Tesseract.recognize(canvas,'spa',{logger:m=>{
+      if(m.status==='recognizing text'){$('pfill').style.width=(10+m.progress*90)+'%';
+        $('progtxt').textContent='Leyendo factura… '+Math.round(m.progress*100)+'%';}}});
+    $('pfill').style.width='100%';
+    parseInvoice(data.text||'',data.confidence||0);
+  }catch(e){toast('El OCR falló. Llena los datos a mano.',true);parseInvoice('',0);}
+  setTimeout(()=>{$('prog').style.display='none';$('pfill').style.width='0';},500);
+  $('btnOCR').disabled=false;
 };
 
 /* ---------- Escaneo IA (opcional, via Edge Function) ---------- */
 let AI_LAST_ERR=null;
 async function aiScan(canvas){
-AI_LAST_ERR=null;
-if(!sb){AI_LAST_ERR='sin conexión';return null;}
-try{
-const b64=canvas.toDataURL('image/jpeg',.85).split(',')[1];
-const {data,error}=await sb.functions.invoke('ai-scan',{body:{image:b64,media_type:'image/jpeg',code:CODE||''}});
-const r=typeof data==='string'?JSON.parse(data):data;
-if(error){AI_LAST_ERR=error.message||'error de red';return null;}
-if(!r||!r.ok){AI_LAST_ERR=(r&&r.error)||'respuesta inválida';return null;}
-if(!r.data)return null;
-return r.data;
-}catch(e){AI_LAST_ERR=String(e);return null;}
+  AI_LAST_ERR=null;
+  if(!CFG.SUPABASE_URL){AI_LAST_ERR='sin conexión';return null;}
+  try{
+    const b64=canvas.toDataURL('image/jpeg',.85).split(',')[1];
+    const resp=await fetch(CFG.SUPABASE_URL+'/functions/v1/ai-scan',{
+      method:'POST',
+      headers:{'Content-Type':'text/plain'},
+      body:JSON.stringify({image:b64,media_type:'image/jpeg',code:CODE||''})
+    });
+    const r=await resp.json().catch(()=>null);
+    if(!r||!r.ok){AI_LAST_ERR=(r&&r.error)||('HTTP '+resp.status);return null;}
+    if(!r.data)return null;
+    return r.data;
+  }catch(e){AI_LAST_ERR=String(e);return null;}
 }
 function aiFill(d){
-lastConf=95;ocrGuess=null;
-const nm=(d.supplier_name||'').trim();
-if(nm){const k=matchSupplier(nm);if(k)$('f_sup').value=k;else{$('f_sup').value=nm;ocrGuess=nm;}}
-if(d.invoice_number)$('f_num').value=String(d.invoice_number);
-$('f_date').value=(d.invoice_date&&!isNaN(Date.parse(d.invoice_date)))?d.invoice_date:new Date().toISOString().slice(0,10);
-if(d.total_amount&&+d.total_amount>0)$('f_total').value=(+d.total_amount).toFixed(2);
-$('f_type').value=d.sale_type==='CREDITO'?'CREDITO':'CONTADO';
-syncStatus();
-const b=$('confBadge');b.textContent='IA · revisar';b.className='conf hi';
-$('review').style.display='block';
-$('review').scrollIntoView({behavior:'smooth'});
+  lastConf=95;ocrGuess=null;
+  const nm=(d.supplier_name||'').trim();
+  if(nm){const k=matchSupplier(nm);if(k)$('f_sup').value=k;else{$('f_sup').value=nm;ocrGuess=nm;}}
+  if(d.invoice_number)$('f_num').value=String(d.invoice_number);
+  $('f_date').value=(d.invoice_date&&!isNaN(Date.parse(d.invoice_date)))?d.invoice_date:new Date().toISOString().slice(0,10);
+  if(d.total_amount&&+d.total_amount>0)$('f_total').value=(+d.total_amount).toFixed(2);
+  $('f_type').value=d.sale_type==='CREDITO'?'CREDITO':'CONTADO';
+  syncStatus();
+  const b=$('confBadge');b.textContent='IA · revisar';b.className='conf hi';
+  $('review').style.display='block';
+  $('review').scrollIntoView({behavior:'smooth'});
 }
 
 function parseInvoice(text,conf){
-lastConf=conf;
-const t=text.replace(/\r/g,'');
-const dm=t.match(/(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{2,4})/);
-if(dm){let[,d,m,y]=dm;if(y.length===2)y='20'+y;
-const iso=y+'-'+m.padStart(2,'0')+'-'+d.padStart(2,'0');
-if(!isNaN(Date.parse(iso)))$('f_date').value=iso;}
-if(!$('f_date').value)$('f_date').value=new Date().toISOString().slice(0,10);
-const norm=s=>parseFloat(s.replace(/\.(?=\d{3})/g,'').replace(/,(?=\d{3})/g,'').replace(',','.'));
-let total=null;
-const tl=t.match(/total[^\d]{0,12}([\d.,]{3,})/i);
-if(tl)total=norm(tl[1]);
-if(!total||isNaN(total)){
-const nums=(t.match(/\d{1,3}(?:[.,]\d{3})*(?:[.,]\d{2})?/g)||[]).map(norm).filter(n=>n>100&&n<1e8);
-if(nums.length)total=Math.max(...nums);
-}
-if(total&&!isNaN(total))$('f_total').value=total.toFixed(2);
-const fn=t.match(/(?:factura|fact|fac|no\.?|nro|#)\s*[:#]?\s*([A-Z0-9\-]{3,20})/i);
-if(fn)$('f_num').value=fn[1];
-const known=matchSupplier(t);
-ocrGuess=null;
-if(known)$('f_sup').value=known;
-else{
-const line=t.split('\n').map(s=>s.trim()).find(s=>/[A-Za-zÁÉÍÓÚÑáéíóúñ]{3,}/.test(s)&&s.length>3&&s.length<60&&!/factura|fecha|total/i.test(s));
-if(line){$('f_sup').value=line;ocrGuess=line;}
-}
-if(/cr[eé]dito/i.test(t))$('f_type').value='CREDITO';
-syncStatus();
-const b=$('confBadge');
-if(conf>=75){b.textContent='lectura buena';b.className='conf hi';}
-else{b.textContent='verificar campos';b.className='conf lo';}
-$('review').style.display='block';
-$('review').scrollIntoView({behavior:'smooth'});
+  lastConf=conf;
+  const t=text.replace(/\r/g,'');
+  const dm=t.match(/(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{2,4})/);
+  if(dm){let[,d,m,y]=dm;if(y.length===2)y='20'+y;
+    const iso=y+'-'+m.padStart(2,'0')+'-'+d.padStart(2,'0');
+    if(!isNaN(Date.parse(iso)))$('f_date').value=iso;}
+  if(!$('f_date').value)$('f_date').value=new Date().toISOString().slice(0,10);
+  const norm=s=>parseFloat(s.replace(/\.(?=\d{3})/g,'').replace(/,(?=\d{3})/g,'').replace(',','.'));
+  let total=null;
+  const tl=t.match(/total[^\d]{0,12}([\d.,]{3,})/i);
+  if(tl)total=norm(tl[1]);
+  if(!total||isNaN(total)){
+    const nums=(t.match(/\d{1,3}(?:[.,]\d{3})*(?:[.,]\d{2})?/g)||[]).map(norm).filter(n=>n>100&&n<1e8);
+    if(nums.length)total=Math.max(...nums);
+  }
+  if(total&&!isNaN(total))$('f_total').value=total.toFixed(2);
+  const fn=t.match(/(?:factura|fact|fac|no\.?|nro|#)\s*[:#]?\s*([A-Z0-9\-]{3,20})/i);
+  if(fn)$('f_num').value=fn[1];
+  const known=matchSupplier(t);
+  ocrGuess=null;
+  if(known)$('f_sup').value=known;
+  else{
+    const line=t.split('\n').map(s=>s.trim()).find(s=>/[A-Za-zÁÉÍÓÚÑáéíóúñ]{3,}/.test(s)&&s.length>3&&s.length<60&&!/factura|fecha|total/i.test(s));
+    if(line){$('f_sup').value=line;ocrGuess=line;}
+  }
+  if(/cr[eé]dito/i.test(t))$('f_type').value='CREDITO';
+  syncStatus();
+  const b=$('confBadge');
+  if(conf>=75){b.textContent='lectura buena';b.className='conf hi';}
+  else{b.textContent='verificar campos';b.className='conf lo';}
+  $('review').style.display='block';
+  $('review').scrollIntoView({behavior:'smooth'});
 }
 
 /* ---------- Guardado: archivo a Storage + datos por RPC ---------- */
 let editingId=null;
 function invFromForm(){
-return {supplier_name:$('f_sup').value.trim()||'Sin proveedor',
-invoice_number:$('f_num').value.trim(),invoice_date:$('f_date').value,
-total_amount:String(parseFloat($('f_total').value)||0),
-sale_type:$('f_type').value,category:$('f_cat').value,
-status:$('f_status').value,
-ocr_confidence:String(Math.round(lastConf)),needs_review:lastConf<75};
+  return {supplier_name:$('f_sup').value.trim()||'Sin proveedor',
+    invoice_number:$('f_num').value.trim(),invoice_date:$('f_date').value,
+    total_amount:String(parseFloat($('f_total').value)||0),
+    sale_type:$('f_type').value,category:$('f_cat').value,
+    status:$('f_status').value,
+    ocr_confidence:String(Math.round(lastConf)),needs_review:lastConf<75};
 }
 async function uploadFile(file){
-if(!sb||!file)return {};
-try{
-const ext=file.name.split('.').pop().toLowerCase()||'jpg';
-const path='inv/'+Date.now()+'-'+Math.random().toString(36).slice(2,8)+'.'+ext;
-const {error}=await sb.storage.from('invoices').upload(path,file,{contentType:file.type});
-if(error)return {};
-const {data}=sb.storage.from('invoices').getPublicUrl(path);
-return {image_path:path,image_url:data?data.publicUrl:null};
-}catch(e){return {}}
+  if(!sb||!file)return {};
+  try{
+    const ext=file.name.split('.').pop().toLowerCase()||'jpg';
+    const path='inv/'+Date.now()+'-'+Math.random().toString(36).slice(2,8)+'.'+ext;
+    const {error}=await sb.storage.from('invoices').upload(path,file,{contentType:file.type});
+    if(error)return {};
+    const {data}=sb.storage.from('invoices').getPublicUrl(path);
+    return {image_path:path,image_url:data?data.publicUrl:null};
+  }catch(e){return {}}
 }
 $('btnSave').onclick=async()=>{
-const inv=invFromForm();
-if(!(+inv.total_amount)){toast('Ingresa el monto total.',true);return;}
-$('btnSave').disabled=true;$('btnSave').textContent='Guardando…';
-let r;
-if(editingId){
-r=await rpc('api_update_invoice',{p_code:CODE,p_id:editingId,p:inv});
-$('btnSave').disabled=false;$('btnSave').textContent='Guardar factura';
-if(r&&r.ok){toast('Factura actualizada.');resetScan();loadSuppliers();show('hist');}
-else toast('No se pudo actualizar: '+(r&&r.error||'sin conexión'),true);
-return;
-}
-const up=await uploadFile(curFile);
-Object.assign(inv,up);
-r=await rpc('api_save_invoice',{p_code:CODE,p:inv});
-$('btnSave').disabled=false;$('btnSave').textContent='Guardar factura';
-if(r&&r.ok){
-const fin=inv.supplier_name;
-if(ocrGuess&&normTx(ocrGuess)!==normTx(fin)&&SUPS.some(s=>normTx(s.name)===normTx(fin)))
-rpc('api_add_supplier_alias',{p_code:CODE,p_name:fin,p_alias:ocrGuess});
-toast('Factura guardada en la nube'+(up.image_url?' con archivo adjunto':''));resetScan();loadSuppliers();}
-else{
-const pend=JSON.parse(localStorage.getItem(LSP)||'[]');
-pend.push(inv);localStorage.setItem(LSP,JSON.stringify(pend));
-toast('Sin conexión con la nube: guardada como pendiente. Reintenta desde Ajustes.',true);
-resetScan();
-}
+  const inv=invFromForm();
+  if(!(+inv.total_amount)){toast('Ingresa el monto total.',true);return;}
+  $('btnSave').disabled=true;$('btnSave').textContent='Guardando…';
+  let r;
+  if(editingId){
+    r=await rpc('api_update_invoice',{p_code:CODE,p_id:editingId,p:inv});
+    $('btnSave').disabled=false;$('btnSave').textContent='Guardar factura';
+    if(r&&r.ok){toast('Factura actualizada.');resetScan();loadSuppliers();show('hist');}
+    else toast('No se pudo actualizar: '+(r&&r.error||'sin conexión'),true);
+    return;
+  }
+  const up=await uploadFile(curFile);
+  Object.assign(inv,up);
+  r=await rpc('api_save_invoice',{p_code:CODE,p:inv});
+  $('btnSave').disabled=false;$('btnSave').textContent='Guardar factura';
+  if(r&&r.ok){
+    const fin=inv.supplier_name;
+    if(ocrGuess&&normTx(ocrGuess)!==normTx(fin)&&SUPS.some(s=>normTx(s.name)===normTx(fin)))
+      rpc('api_add_supplier_alias',{p_code:CODE,p_name:fin,p_alias:ocrGuess});
+    toast('Factura guardada en la nube'+(up.image_url?' con archivo adjunto':''));resetScan();loadSuppliers();}
+  else{
+    const pend=JSON.parse(localStorage.getItem(LSP)||'[]');
+    pend.push(inv);localStorage.setItem(LSP,JSON.stringify(pend));
+    toast('Sin conexión con la nube: guardada como pendiente. Reintenta desde Ajustes.',true);
+    resetScan();
+  }
 };
 $('btnCancel').onclick=resetScan;
 function resetScan(){
-curFile=null;curCanvas=null;$('file').value='';lastConf=0;editingId=null;
-$('f_status').value='PENDIENTE';
-$('review').style.display='none';$('preActions').style.display='none';
-['f_sup','f_num','f_total'].forEach(id=>$(id).value='');
-$('zone').innerHTML='<svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="var(--ac)" stroke-width="1.7" stroke-linecap="round"><path d="M4 7h3l2-3h6l2 3h3v13H4z"/><circle cx="12" cy="13" r="3.5"/></svg><h2>Escanear factura</h2><p>Toca para tomar una foto o subir una imagen o PDF.</p>';
+  curFile=null;curCanvas=null;$('file').value='';lastConf=0;editingId=null;
+  $('f_status').value='PENDIENTE';
+  $('review').style.display='none';$('preActions').style.display='none';
+  ['f_sup','f_num','f_total'].forEach(id=>$(id).value='');
+  $('zone').innerHTML='<svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="var(--ac)" stroke-width="1.7" stroke-linecap="round"><path d="M4 7h3l2-3h6l2 3h3v13H4z"/><circle cx="12" cy="13" r="3.5"/></svg><h2>Escanear factura</h2><p>Toca para tomar una foto o subir una imagen o PDF.</p>';
 }
 
 /* ---------- Pendientes ---------- */
 function renderPending(){
-const p=JSON.parse(localStorage.getItem(LSP)||'[]');
-$('pendInfo').textContent=p.length?p.length+' factura(s) esperando subir a la nube.':'Sin facturas pendientes.';
-$('pendRow').style.display=p.length?'flex':'none';
+  const p=JSON.parse(localStorage.getItem(LSP)||'[]');
+  $('pendInfo').textContent=p.length?p.length+' factura(s) esperando subir a la nube.':'Sin facturas pendientes.';
+  $('pendRow').style.display=p.length?'flex':'none';
 }
 async function retryPending(silent){
-let p=JSON.parse(localStorage.getItem(LSP)||'[]');
-if(!p.length)return;
-const left=[];
-for(const inv of p){const r=await rpc('api_save_invoice',{p_code:CODE,p:inv});if(!(r&&r.ok))left.push(inv);}
-localStorage.setItem(LSP,JSON.stringify(left));
-if(!silent)toast(left.length?('Quedan '+left.length+' pendientes.'):'Todas las pendientes se subieron.',left.length>0);
-renderPending();
+  let p=JSON.parse(localStorage.getItem(LSP)||'[]');
+  if(!p.length)return;
+  const left=[];
+  for(const inv of p){const r=await rpc('api_save_invoice',{p_code:CODE,p:inv});if(!(r&&r.ok))left.push(inv);}
+  localStorage.setItem(LSP,JSON.stringify(left));
+  if(!silent)toast(left.length?('Quedan '+left.length+' pendientes.'):'Todas las pendientes se subieron.',left.length>0);
+  renderPending();
 }
 $('btnRetry').onclick=()=>retryPending(false);
 
 /* ---------- Proveedores ---------- */
 let SUPS=[],editSup=null;
-const normTx=s=>String(s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'');
+const normTx=s=>String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
 async function loadSuppliers(){
-const r=await rpc('api_list_suppliers',{p_code:CODE});
-if(r&&r.ok){SUPS=r.rows||[];
-$('supList').innerHTML=SUPS.map(s=>'<option value="'+esc(s.name)+'">').join('');
-const sel=$('fSup').value;
-$('fSup').innerHTML='<option value="">Todos los proveedores</option>'+
-SUPS.map(s=>'<option value="'+s.id+'"'+(s.id===sel?' selected':'')+'>'+esc(s.name)+'</option>').join('');
-if(document.getElementById('pg-set').classList.contains('on'))renderSuppliers();
-}
+  const r=await rpc('api_list_suppliers',{p_code:CODE});
+  if(r&&r.ok){SUPS=r.rows||[];
+    $('supList').innerHTML=SUPS.map(s=>'<option value="'+esc(s.name)+'">').join('');
+    const sel=$('fSup').value;
+    $('fSup').innerHTML='<option value="">Todos los proveedores</option>'+
+      SUPS.map(s=>'<option value="'+s.id+'"'+(s.id===sel?' selected':'')+'>'+esc(s.name)+'</option>').join('');
+    if(document.getElementById('pg-set').classList.contains('on'))renderSuppliers();
+  }
 }
 function matchSupplier(text){
-const t=normTx(text);
-for(const s of SUPS){
-const names=[s.name].concat(Array.isArray(s.aliases)?s.aliases:[]);
-for(const n of names){const nn=normTx(n);if(nn.length>=4&&t.includes(nn))return s.name;}
-}
-return null;
+  const t=normTx(text);
+  for(const s of SUPS){
+    const names=[s.name].concat(Array.isArray(s.aliases)?s.aliases:[]);
+    for(const n of names){const nn=normTx(n);if(nn.length>=4&&t.includes(nn))return s.name;}
+  }
+  return null;
 }
 function renderSuppliers(){
-const box=$('supBox');
-if(!SUPS.length){box.innerHTML='<div class="empty">Sin proveedores aún. Se crean solos al guardar facturas.</div>';return;}
-box.innerHTML=SUPS.map(s=>{
-if(editSup===s.id)return '<div class="suprow"><input id="supEdit" value="'+esc(s.name)+'">'+
-'<button class="sbtn" style="color:var(--ok)" onclick="saveSup(\''+s.id+'\')">Guardar</button>'+
-'<button class="sbtn" onclick="cancelSup()">✕</button></div>';
-return '<div class="suprow"><div style="flex:1;min-width:0"><div class="sn">'+esc(s.name)+'</div>'+
-'<div class="sm">'+s.cnt+' factura(s) · '+crc(s.total)+'</div></div>'+
-'<button class="sbtn" onclick="editSupplier(\''+s.id+'\')">Editar</button></div>';
-}).join('');
-const inp=document.getElementById('supEdit');
-if(inp){inp.focus();inp.addEventListener('keydown',e=>{if(e.key==='Enter')saveSup(editSup);});}
+  const box=$('supBox');
+  if(!SUPS.length){box.innerHTML='<div class="empty">Sin proveedores aún. Se crean solos al guardar facturas.</div>';return;}
+  box.innerHTML=SUPS.map(s=>{
+    if(editSup===s.id)return '<div class="suprow"><input id="supEdit" value="'+esc(s.name)+'">'+
+      '<button class="sbtn" style="color:var(--ok)" onclick="saveSup(\''+s.id+'\')">Guardar</button>'+
+      '<button class="sbtn" onclick="cancelSup()">✕</button></div>';
+    return '<div class="suprow"><div style="flex:1;min-width:0"><div class="sn">'+esc(s.name)+'</div>'+
+      '<div class="sm">'+s.cnt+' factura(s) · '+crc(s.total)+'</div></div>'+
+      '<button class="sbtn" onclick="editSupplier(\''+s.id+'\')">Editar</button></div>';
+  }).join('');
+  const inp=document.getElementById('supEdit');
+  if(inp){inp.focus();inp.addEventListener('keydown',e=>{if(e.key==='Enter')saveSup(editSup);});}
 }
 window.editSupplier=id=>{editSup=id;renderSuppliers();};
 window.cancelSup=()=>{editSup=null;renderSuppliers();};
 window.saveSup=async id=>{
-const name=document.getElementById('supEdit').value.trim();
-const r=await rpc('api_update_supplier',{p_code:CODE,p_id:id,p_name:name});
-if(r&&r.ok){editSup=null;toast('Proveedor actualizado.');loadSuppliers().then(renderSuppliers);}
-else toast(r&&r.error==='nombre_existe'?'Ya existe un proveedor con ese nombre.':'No se pudo actualizar.',true);
+  const name=document.getElementById('supEdit').value.trim();
+  const r=await rpc('api_update_supplier',{p_code:CODE,p_id:id,p_name:name});
+  if(r&&r.ok){editSup=null;toast('Proveedor actualizado.');loadSuppliers().then(renderSuppliers);}
+  else toast(r&&r.error==='nombre_existe'?'Ya existe un proveedor con ese nombre.':'No se pudo actualizar.',true);
 };
 
 /* ---------- Factura manual ---------- */
 $('btnManual').onclick=()=>{
-resetScan();lastConf=0;syncStatus();
-$('f_date').value=new Date().toISOString().slice(0,10);
-$('confBadge').textContent='entrada manual';$('confBadge').className='conf hi';
-$('review').style.display='block';
-$('review').scrollIntoView({behavior:'smooth'});
+  resetScan();lastConf=0;syncStatus();
+  $('f_date').value=new Date().toISOString().slice(0,10);
+  $('confBadge').textContent='entrada manual';$('confBadge').className='conf hi';
+  $('review').style.display='block';
+  $('review').scrollIntoView({behavior:'smooth'});
 };
 
 /* ---------- Loyverse (opcional) ---------- */
 const LVK='ros_lv';
 async function lv(path){
-const tk=localStorage.getItem(LVK);
-if(!sb||!tk)return null;
-try{
-const {data,error}=await sb.functions.invoke('loyverse',{body:{token:tk,path}});
-if(error)return null;
-return typeof data==='string'?JSON.parse(data):data;
-}catch(e){return null;}
+  const tk=localStorage.getItem(LVK);
+  if(!sb||!tk)return null;
+  try{
+    const {data,error}=await sb.functions.invoke('loyverse',{body:{token:tk,path}});
+    if(error)return null;
+    return typeof data==='string'?JSON.parse(data):data;
+  }catch(e){return null;}
 }
 function lvUI(){
-const on=!!localStorage.getItem(LVK);
-$('lvTokRow').style.display=on?'none':'block';
-$('btnLv').style.display=on?'none':'block';
-$('btnLvOff').style.display=on?'block':'none';
-$('lvInfo').textContent=on?'Loyverse conectado. Las ventas aparecen en la pestaña Gastos.':'Conecta tu POS para ver ventas vs compras y controlar lo que entra y sale del inventario.';
+  const on=!!localStorage.getItem(LVK);
+  $('lvTokRow').style.display=on?'none':'block';
+  $('btnLv').style.display=on?'none':'block';
+  $('btnLvOff').style.display=on?'block':'none';
+  $('lvInfo').textContent=on?'Loyverse conectado. Las ventas aparecen en la pestaña Gastos.':'Conecta tu POS para ver ventas vs compras y controlar lo que entra y sale del inventario.';
 }
 $('btnLv').onclick=async()=>{
-const tk=$('lvTok').value.trim();
-if(!tk){toast('Pega tu token de Loyverse.',true);return;}
-$('btnLv').disabled=true;$('btnLv').textContent='Probando…';
-localStorage.setItem(LVK,tk);
-const r=await lv('receipts?limit=1');
-$('btnLv').disabled=false;$('btnLv').textContent='Conectar';
-if(r&&!r.error&&!r.errors){toast('Loyverse conectado.');$('lvTok').value='';lvUI();}
-else{localStorage.removeItem(LVK);toast('Token inválido o sin permiso. Verifica en Loyverse.',true);}
+  const tk=$('lvTok').value.trim();
+  if(!tk){toast('Pega tu token de Loyverse.',true);return;}
+  $('btnLv').disabled=true;$('btnLv').textContent='Probando…';
+  localStorage.setItem(LVK,tk);
+  const r=await lv('receipts?limit=1');
+  $('btnLv').disabled=false;$('btnLv').textContent='Conectar';
+  if(r&&!r.error&&!r.errors){toast('Loyverse conectado.');$('lvTok').value='';lvUI();}
+  else{localStorage.removeItem(LVK);toast('Token inválido o sin permiso. Verifica en Loyverse.',true);}
 };
 $('btnLvOff').onclick=()=>{localStorage.removeItem(LVK);lvUI();toast('Loyverse desconectado.');};
 async function loadLvSales(monthTotal){
-if(!localStorage.getItem(LVK)){$('lvBox').style.display='none';return;}
-$('lvBox').style.display='block';
-$('kLvM').textContent='…';$('kLvG').textContent='…';
-const d=new Date();
-const iso=new Date(d.getFullYear(),d.getMonth(),1).toISOString();
-const r=await lv('receipts?created_at_min='+encodeURIComponent(iso)+'&limit=250');
-if(!r||!Array.isArray(r.receipts)){$('kLvM').textContent='—';$('kLvMs').textContent='no se pudo consultar';$('kLvG').textContent='—';return;}
-const ventas=r.receipts.reduce((s,x)=>s+(+x.total_money||0),0);
-$('kLvM').textContent=crc(ventas);
-$('kLvMs').textContent=r.receipts.length+' recibo(s)'+(r.receipts.length===250?' (primeros 250)':'');
-const g=ventas-(+monthTotal||0);
-$('kLvG').textContent=crc(g);
-$('kLvG').style.color=g>=0?'var(--ok)':'var(--err)';
+  if(!localStorage.getItem(LVK)){$('lvBox').style.display='none';return;}
+  $('lvBox').style.display='block';
+  $('kLvM').textContent='…';$('kLvG').textContent='…';
+  const d=new Date();
+  const iso=new Date(d.getFullYear(),d.getMonth(),1).toISOString();
+  const r=await lv('receipts?created_at_min='+encodeURIComponent(iso)+'&limit=250');
+  if(!r||!Array.isArray(r.receipts)){$('kLvM').textContent='—';$('kLvMs').textContent='no se pudo consultar';$('kLvG').textContent='—';return;}
+  const ventas=r.receipts.reduce((s,x)=>s+(+x.total_money||0),0);
+  $('kLvM').textContent=crc(ventas);
+  $('kLvMs').textContent=r.receipts.length+' recibo(s)'+(r.receipts.length===250?' (primeros 250)':'');
+  const g=ventas-(+monthTotal||0);
+  $('kLvG').textContent=crc(g);
+  $('kLvG').style.color=g>=0?'var(--ok)':'var(--err)';
 }
 
 /* ---------- Dashboard ---------- */
 const crc=n=>'₡'+Number(n).toLocaleString('es-CR',{maximumFractionDigits:0});
 let chCat=null,chMonth=null;
 async function loadDash(){
-const r=await rpc('api_dashboard',{p_code:CODE});
-if(!(r&&r.ok)){toast('No se pudo cargar el dashboard.',true);return;}
-$('kTotal').textContent=crc(r.month_total);
-$('kCount').textContent=r.month_count+' facturas este mes';
-$('kCred').textContent=crc(r.month_credito);
-loadLvSales(r.month_total);
-const CO={color:'#475467',grid:'#E4E9E4'};
-Chart.defaults.color=CO.color;Chart.defaults.borderColor=CO.grid;Chart.defaults.font.family='Inter';
-const cats=r.by_category||[];
-$('emptyCat').style.display=cats.length?'none':'block';
-$('chCat').style.display=cats.length?'block':'none';
-if(chCat)chCat.destroy();
-if(cats.length)chCat=new Chart($('chCat'),{type:'bar',
-data:{labels:cats.map(c=>c.name),datasets:[{data:cats.map(c=>c.total),
-backgroundColor:['#137A46','#2563EB','#0D9488','#D97706','#65A30D','#DC2626','#98A2B3'],borderRadius:8}]},
-options:{indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{ticks:{callback:v=>crc(v)}}}}});
-const ms=r.by_month||[];
-if(chMonth)chMonth.destroy();
-chMonth=new Chart($('chMonth'),{type:'bar',
-data:{labels:ms.map(x=>x.m),datasets:[{data:ms.map(x=>x.total),backgroundColor:'#137A46',borderRadius:8}]},
-options:{plugins:{legend:{display:false}},scales:{y:{ticks:{callback:v=>crc(v)}}}}});
+  const r=await rpc('api_dashboard',{p_code:CODE});
+  if(!(r&&r.ok)){toast('No se pudo cargar el dashboard.',true);return;}
+  $('kTotal').textContent=crc(r.month_total);
+  $('kCount').textContent=r.month_count+' facturas este mes';
+  $('kCred').textContent=crc(r.month_credito);
+  loadLvSales(r.month_total);
+  const CO={color:'#475467',grid:'#E4E9E4'};
+  Chart.defaults.color=CO.color;Chart.defaults.borderColor=CO.grid;Chart.defaults.font.family='Inter';
+  const cats=r.by_category||[];
+  $('emptyCat').style.display=cats.length?'none':'block';
+  $('chCat').style.display=cats.length?'block':'none';
+  if(chCat)chCat.destroy();
+  if(cats.length)chCat=new Chart($('chCat'),{type:'bar',
+    data:{labels:cats.map(c=>c.name),datasets:[{data:cats.map(c=>c.total),
+      backgroundColor:['#137A46','#2563EB','#0D9488','#D97706','#65A30D','#DC2626','#98A2B3'],borderRadius:8}]},
+    options:{indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{ticks:{callback:v=>crc(v)}}}}});
+  const ms=r.by_month||[];
+  if(chMonth)chMonth.destroy();
+  chMonth=new Chart($('chMonth'),{type:'bar',
+    data:{labels:ms.map(x=>x.m),datasets:[{data:ms.map(x=>x.total),backgroundColor:'#137A46',borderRadius:8}]},
+    options:{plugins:{legend:{display:false}},scales:{y:{ticks:{callback:v=>crc(v)}}}}});
 }
 
 /* ---------- Historial ---------- */
@@ -766,97 +770,97 @@ $('mNext').onclick=()=>{histDate.setMonth(histDate.getMonth()+1);loadHist();};
 $('qNum').addEventListener('input',()=>{clearTimeout(qT);qT=setTimeout(loadHist,400);});
 $('fSup').onchange=loadHist;$('fSt').onchange=loadHist;
 async function loadHist(){
-const q=$('qNum').value.trim();
-$('mLabel').textContent=q?'Búsqueda: "'+q+'"':histDate.toLocaleDateString('es-CR',{month:'long',year:'numeric'});
-$('mTotal').textContent='';
-const box=$('histList');box.innerHTML='<div class="skl"></div><div class="skl"></div><div class="skl"></div>';
-const r=await rpc('api_list_invoices',{p_code:CODE,p_limit:200,
-p_month:q?null:monthKey(histDate),
-p_supplier:$('fSup').value||null,
-p_status:$('fSt').value||null,
-p_q:q||null});
-if(!(r&&r.ok)){box.innerHTML='<div class="empty">No se pudo cargar. Revisa tu conexión.</div>';return;}
-HIST=r.rows||[];
-$('mTotal').textContent=crc(r.total||0)+' · '+HIST.length+' factura(s)'+
-((+r.pending)>0?' · pendiente '+crc(r.pending):'');
-if(!HIST.length){box.innerHTML='<div class="empty">'+(q?'Sin resultados para esa búsqueda.':'Sin facturas con estos filtros. Usa ‹ › para cambiar de mes.')+'</div>';return;}
-box.innerHTML=HIST.map((x,i)=>
-'<div class="inv">'+
-(x.image_url?'<a href="'+esc(x.image_url)+'" target="_blank" rel="noopener"><img class="thumb" src="'+esc(x.image_url)+'" alt=""></a>':'<div class="thumb"></div>')+
-'<div class="mid"><div class="l1">'+esc(x.supplier_name||'—')+'</div>'+
-'<div class="l2">'+esc(x.invoice_date||'')+(x.invoice_number?' · #'+esc(x.invoice_number):'')+' · '+esc(x.category||'')+(x.created_by_name?' · por '+esc(x.created_by_name):'')+'</div>'+
-'<div style="margin-top:.4rem;display:flex;gap:.4rem;flex-wrap:wrap">'+
-'<button class="sbtn" style="color:'+(x.status==='PAGADA'?'var(--warn)':'var(--ok)')+'" onclick="togglePay(\''+x.id+'\',\''+x.status+'\')">'+(x.status==='PAGADA'?'↩ Pendiente':'✓ Pagada')+'</button>'+
-'<button class="sbtn" onclick="editInv('+i+')">Editar</button>'+
-(ME&&ME.role==='empleado'?'':'<button class="sbtn" style="color:var(--err)" onclick="delInv(\''+x.id+'\')">Borrar</button>')+'</div></div>'+
-'<div><div class="amt">'+crc(x.total_amount)+'</div>'+
-'<div style="text-align:right;margin-top:.2rem"><span class="tag '+(x.status==='PAGADA'?'pagada':'pendiente')+'">'+(x.status==='PAGADA'?'Pagada':'Pendiente')+'</span></div>'+
-'<div style="text-align:right;margin-top:.2rem"><span class="tag '+(x.sale_type==='CREDITO'?'credito':'contado')+'">'+(x.sale_type==='CREDITO'?'Crédito':'Contado')+'</span></div></div></div>').join('');
+  const q=$('qNum').value.trim();
+  $('mLabel').textContent=q?'Búsqueda: "'+q+'"':histDate.toLocaleDateString('es-CR',{month:'long',year:'numeric'});
+  $('mTotal').textContent='';
+  const box=$('histList');box.innerHTML='<div class="skl"></div><div class="skl"></div><div class="skl"></div>';
+  const r=await rpc('api_list_invoices',{p_code:CODE,p_limit:200,
+    p_month:q?null:monthKey(histDate),
+    p_supplier:$('fSup').value||null,
+    p_status:$('fSt').value||null,
+    p_q:q||null});
+  if(!(r&&r.ok)){box.innerHTML='<div class="empty">No se pudo cargar. Revisa tu conexión.</div>';return;}
+  HIST=r.rows||[];
+  $('mTotal').textContent=crc(r.total||0)+' · '+HIST.length+' factura(s)'+
+    ((+r.pending)>0?' · pendiente '+crc(r.pending):'');
+  if(!HIST.length){box.innerHTML='<div class="empty">'+(q?'Sin resultados para esa búsqueda.':'Sin facturas con estos filtros. Usa ‹ › para cambiar de mes.')+'</div>';return;}
+  box.innerHTML=HIST.map((x,i)=>
+    '<div class="inv">'+
+    (x.image_url?'<a href="'+esc(x.image_url)+'" target="_blank" rel="noopener"><img class="thumb" src="'+esc(x.image_url)+'" alt=""></a>':'<div class="thumb"></div>')+
+    '<div class="mid"><div class="l1">'+esc(x.supplier_name||'—')+'</div>'+
+    '<div class="l2">'+esc(x.invoice_date||'')+(x.invoice_number?' · #'+esc(x.invoice_number):'')+' · '+esc(x.category||'')+(x.created_by_name?' · por '+esc(x.created_by_name):'')+'</div>'+
+    '<div style="margin-top:.4rem;display:flex;gap:.4rem;flex-wrap:wrap">'+
+      '<button class="sbtn" style="color:'+(x.status==='PAGADA'?'var(--warn)':'var(--ok)')+'" onclick="togglePay(\''+x.id+'\',\''+x.status+'\')">'+(x.status==='PAGADA'?'↩ Pendiente':'✓ Pagada')+'</button>'+
+      '<button class="sbtn" onclick="editInv('+i+')">Editar</button>'+
+      (ME&&ME.role==='empleado'?'':'<button class="sbtn" style="color:var(--err)" onclick="delInv(\''+x.id+'\')">Borrar</button>')+'</div></div>'+
+    '<div><div class="amt">'+crc(x.total_amount)+'</div>'+
+    '<div style="text-align:right;margin-top:.2rem"><span class="tag '+(x.status==='PAGADA'?'pagada':'pendiente')+'">'+(x.status==='PAGADA'?'Pagada':'Pendiente')+'</span></div>'+
+    '<div style="text-align:right;margin-top:.2rem"><span class="tag '+(x.sale_type==='CREDITO'?'credito':'contado')+'">'+(x.sale_type==='CREDITO'?'Crédito':'Contado')+'</span></div></div></div>').join('');
 }
 $('btnCsv').onclick=()=>{
-if(!HIST.length){toast('No hay facturas para exportar.',true);return;}
-const head='Fecha,Proveedor,No Factura,Categoria,Tipo,Estado,Monto CRC,Registrado por\n';
-const cs=v=>'"'+String(v??'').replace(/"/g,'""')+'"';
-const rows=HIST.map(x=>[x.invoice_date,x.supplier_name,x.invoice_number,x.category,x.sale_type,x.status,x.total_amount,x.created_by_name||''].map(cs).join(',')).join('\n');
-const blob=new Blob(['﻿'+head+rows],{type:'text/csv;charset=utf-8'});
-const a=document.createElement('a');a.href=URL.createObjectURL(blob);
-a.download='restaurantos-'+$('mLabel').textContent.replace(/[^a-z0-9]+/gi,'-')+'.csv';a.click();
-toast('CSV exportado: ábrelo en Excel.');
+  if(!HIST.length){toast('No hay facturas para exportar.',true);return;}
+  const head='Fecha,Proveedor,No Factura,Categoria,Tipo,Estado,Monto CRC,Registrado por\n';
+  const cs=v=>'"'+String(v??'').replace(/"/g,'""')+'"';
+  const rows=HIST.map(x=>[x.invoice_date,x.supplier_name,x.invoice_number,x.category,x.sale_type,x.status,x.total_amount,x.created_by_name||''].map(cs).join(',')).join('\n');
+  const blob=new Blob(['\ufeff'+head+rows],{type:'text/csv;charset=utf-8'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download='restaurantos-'+$('mLabel').textContent.replace(/[^a-z0-9]+/gi,'-')+'.csv';a.click();
+  toast('CSV exportado: ábrelo en Excel.');
 };
 window.togglePay=async(id,st)=>{
-const r=await rpc('api_update_invoice',{p_code:CODE,p_id:id,p:{status:st==='PAGADA'?'PENDIENTE':'PAGADA'}});
-if(r&&r.ok){toast(st==='PAGADA'?'Marcada como pendiente.':'Marcada como pagada.');loadHist();}
-else toast('No se pudo cambiar el estado.',true);
+  const r=await rpc('api_update_invoice',{p_code:CODE,p_id:id,p:{status:st==='PAGADA'?'PENDIENTE':'PAGADA'}});
+  if(r&&r.ok){toast(st==='PAGADA'?'Marcada como pendiente.':'Marcada como pagada.');loadHist();}
+  else toast('No se pudo cambiar el estado.',true);
 };
 window.editInv=i=>{
-const x=HIST[i];if(!x)return;
-resetScan();editingId=x.id;
-$('f_sup').value=x.supplier_name||'';$('f_num').value=x.invoice_number||'';
-$('f_date').value=x.invoice_date||'';$('f_total').value=x.total_amount||'';
-$('f_type').value=x.sale_type==='CREDITO'?'CREDITO':'CONTADO';
-$('f_cat').value=CATS.includes(x.category)?x.category:CATS[CATS.length-1];
-$('f_status').value=x.status==='PAGADA'?'PAGADA':'PENDIENTE';
-$('confBadge').textContent='editando';$('confBadge').className='conf hi';
-$('btnSave').textContent='Actualizar factura';
-show('scan');$('review').style.display='block';
-$('review').scrollIntoView({behavior:'smooth'});
+  const x=HIST[i];if(!x)return;
+  resetScan();editingId=x.id;
+  $('f_sup').value=x.supplier_name||'';$('f_num').value=x.invoice_number||'';
+  $('f_date').value=x.invoice_date||'';$('f_total').value=x.total_amount||'';
+  $('f_type').value=x.sale_type==='CREDITO'?'CREDITO':'CONTADO';
+  $('f_cat').value=CATS.includes(x.category)?x.category:CATS[CATS.length-1];
+  $('f_status').value=x.status==='PAGADA'?'PAGADA':'PENDIENTE';
+  $('confBadge').textContent='editando';$('confBadge').className='conf hi';
+  $('btnSave').textContent='Actualizar factura';
+  show('scan');$('review').style.display='block';
+  $('review').scrollIntoView({behavior:'smooth'});
 };
 window.delInv=async id=>{
-if(!confirm('¿Eliminar esta factura? Esta acción no se puede deshacer.'))return;
-const r=await rpc('api_delete_invoice',{p_code:CODE,p_id:id});
-if(r&&r.ok){toast('Factura eliminada.');loadHist();}
-else toast('No se pudo eliminar.',true);
+  if(!confirm('¿Eliminar esta factura? Esta acción no se puede deshacer.'))return;
+  const r=await rpc('api_delete_invoice',{p_code:CODE,p_id:id});
+  if(r&&r.ok){toast('Factura eliminada.');loadHist();}
+  else toast('No se pudo eliminar.',true);
 };
 
 /* ---------- Ajustes ---------- */
 $('btnChangeCode').onclick=async()=>{
-const nc=$('newCode').value.trim().toUpperCase();
-if(nc.length<6){toast('El código debe tener al menos 6 caracteres.',true);return;}
-const r=await rpc('api_change_code',{p_old:CODE,p_new:nc});
-if(r&&r.ok){CODE=nc;localStorage.setItem(LSC,nc);$('newCode').value='';toast('Código actualizado. Compártelo con tu equipo.');}
-else toast('No se pudo cambiar el código.',true);
+  const nc=$('newCode').value.trim().toUpperCase();
+  if(nc.length<6){toast('El código debe tener al menos 6 caracteres.',true);return;}
+  const r=await rpc('api_change_code',{p_old:CODE,p_new:nc});
+  if(r&&r.ok){CODE=nc;localStorage.setItem(LSC,nc);$('newCode').value='';toast('Código actualizado. Compártelo con tu equipo.');}
+  else toast('No se pudo cambiar el código.',true);
 };
 $('btnExport').onclick=async()=>{
-const r=await rpc('api_list_invoices',{p_code:CODE,p_limit:1000});
-const blob=new Blob([JSON.stringify(r&&r.rows||[],null,2)],{type:'application/json'});
-const a=document.createElement('a');a.href=URL.createObjectURL(blob);
-a.download='restaurantos-facturas.json';a.click();
+  const r=await rpc('api_list_invoices',{p_code:CODE,p_limit:1000});
+  const blob=new Blob([JSON.stringify(r&&r.rows||[],null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download='restaurantos-facturas.json';a.click();
 };
 
 /* ---------- PWA + arranque ---------- */
 if('serviceWorker' in navigator)navigator.serviceWorker.register('./sw.js');
 fillCats();
 (async()=>{
-if(sb){
-if(location.hash.includes('type=recovery')){
-show('login');setMode('reset');return;
-}
-try{
-const {data}=await sb.auth.getSession();
-if(data&&data.session){await enterApp();return;}
-}catch(e){}
-}
-if(CODE){show('scan');tryLogin(CODE,true);}else{show('login');setMode('in');}
+  if(sb){
+    if(location.hash.includes('type=recovery')){
+      show('login');setMode('reset');return;
+    }
+    try{
+      const {data}=await sb.auth.getSession();
+      if(data&&data.session){await enterApp();return;}
+    }catch(e){}
+  }
+  if(CODE){show('scan');tryLogin(CODE,true);}else{show('login');setMode('in');}
 })();
 </script>
 </body>
