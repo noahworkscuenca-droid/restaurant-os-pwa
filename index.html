@@ -457,7 +457,7 @@ function liteResize(file){
   return new Promise(res=>{
     const img=new Image();
     img.onload=()=>{
-      const MAX=1400,sc=Math.min(1,MAX/Math.max(img.width,img.height));
+      const MAX=1100,sc=Math.min(1,MAX/Math.max(img.width,img.height));
       const c=document.createElement('canvas');c.width=img.width*sc;c.height=img.height*sc;
       c.getContext('2d').drawImage(img,0,0,c.width,c.height);
       URL.revokeObjectURL(img.src);res(c);
@@ -500,12 +500,15 @@ async function aiScan(canvas){
   AI_LAST_ERR=null;
   if(!CFG.SUPABASE_URL){AI_LAST_ERR='sin conexión';return null;}
   try{
-    const b64=canvas.toDataURL('image/jpeg',.85).split(',')[1];
+    const b64=canvas.toDataURL('image/jpeg',.8).split(',')[1];
+    const ctl=new AbortController();
+    const tm=setTimeout(()=>ctl.abort(),50000);
     const resp=await fetch(CFG.SUPABASE_URL+'/functions/v1/ai-scan',{
       method:'POST',
       headers:{'Content-Type':'text/plain'},
-      body:JSON.stringify({image:b64,media_type:'image/jpeg',code:CODE||''})
-    });
+      body:JSON.stringify({image:b64,media_type:'image/jpeg',code:CODE||''}),
+      signal:ctl.signal
+    }).finally(()=>clearTimeout(tm));
     const r=await resp.json().catch(()=>null);
     if(!r||!r.ok){AI_LAST_ERR=(r&&r.error)||('HTTP '+resp.status);return null;}
     if(!r.data)return null;
