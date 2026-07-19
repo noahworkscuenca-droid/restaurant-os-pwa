@@ -1,7 +1,7 @@
 {
-  "name": "RestaurantOS",
-  "short_name": "RestaurantOS",
-  "description": "Escaneo de facturas y gestion para restaurantes",
+  "name": "Ticksy",
+  "short_name": "Ticksy",
+  "description": "Escanea, organiza y controla las facturas de tu restaurante",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#F6F8F6",
