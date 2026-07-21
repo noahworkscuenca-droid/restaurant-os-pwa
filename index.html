@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#F6F8F6">
-<title>RestaurantOS</title>
+<title>Ticksy</title>
 <link rel="manifest" href="manifest.json">
 <link rel="icon" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
@@ -113,7 +113,7 @@ canvas.chart{width:100%!important;max-height:240px}
 <body>
 <div class="wrap">
   <header>
-    <div class="brand" style="display:flex;align-items:center;gap:.45rem"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--ac)" stroke-width="2" stroke-linecap="round"><path d="M4 4h4M4 4v4M20 4h-4M20 4v4M4 20h4M4 20v-4M20 20h-4M20 20v-4"/><path d="M9 8h4l2 2v8H9z"/><path d="M11.5 12.5h1M9.5 15h5M9.5 17h5M10.5 19.5v-1.2M10 19h1"/></svg>Restaurant<span>OS</span></div>
+    <div class="brand" style="display:flex;align-items:center;gap:.45rem"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--ac)" stroke-width="2" stroke-linecap="round"><path d="M4 4h4M4 4v4M20 4h-4M20 4v4M4 20h4M4 20v-4M20 20h-4M20 20v-4"/><path d="M9 8h4l2 2v8H9z"/><path d="M11.5 12.5h1M9.5 15h5M9.5 17h5M10.5 19.5v-1.2M10 19h1"/></svg>Tick<span>sy</span></div>
     <div class="badge" id="dbBadge">—</div>
   </header>
 
@@ -121,7 +121,7 @@ canvas.chart{width:100%!important;max-height:240px}
   <section class="page" id="pg-login">
     <div class="loginbox">
       <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--ac)" stroke-width="1.6" stroke-linecap="round" style="margin-bottom:.5rem"><path d="M4 4h4M4 4v4M20 4h-4M20 4v4M4 20h4M4 20v-4M20 20h-4M20 20v-4"/><path d="M9 8h4l2 2v8H9z"/><path d="M11.5 12.5h1M9.5 15h5M9.5 17h5M10.5 19.5v-1.2M10 19h1"/></svg>
-      <div class="brand" style="font-size:1.35rem;margin-bottom:.15rem">Restaurant<span>OS</span></div>
+      <div class="brand" style="font-size:1.35rem;margin-bottom:.15rem">Tick<span>sy</span></div>
       <h1 id="authTitle" style="font-size:1.05rem;color:var(--tx2);font-weight:600">Bienvenido</h1>
       <p id="authSub">Entra con tu cuenta para gestionar las facturas del restaurante.</p>
       <div class="row" style="margin-bottom:1rem">
@@ -495,18 +495,28 @@ $('btnOCR').onclick=async()=>{
 };
 
 /* ---------- Escaneo IA (opcional, via Edge Function) ---------- */
-let AI_LAST_ERR=null;
+let AI_LAST_ERR=null,preUp=null;
+function canvasBlob(c){return new Promise(res=>c.toBlob(res,'image/jpeg',.8));}
 async function aiScan(canvas){
-  AI_LAST_ERR=null;
-  if(!CFG.SUPABASE_URL){AI_LAST_ERR='sin conexión';return null;}
+  AI_LAST_ERR=null;preUp=null;
+  if(!sb){AI_LAST_ERR='sin conexión';return null;}
   try{
-    const b64=canvas.toDataURL('image/jpeg',.8).split(',')[1];
+    $('progtxt').textContent='Subiendo foto…';
+    const blob=await canvasBlob(canvas);
+    const path='inv/'+Date.now()+'-'+Math.random().toString(36).slice(2,8)+'.jpg';
+    const up=await sb.storage.from('invoices').upload(path,blob,{contentType:'image/jpeg'});
+    if(up.error){AI_LAST_ERR='subida: '+up.error.message;return null;}
+    const {data:pu}=sb.storage.from('invoices').getPublicUrl(path);
+    preUp={image_path:path,image_url:pu?pu.publicUrl:null};
+    if(!preUp.image_url){AI_LAST_ERR='sin URL pública';return null;}
+    $('progtxt').textContent='Leyendo con IA…';$('pfill').style.width='55%';
+    let jwt='';try{const s=await sb.auth.getSession();jwt=(s.data&&s.data.session&&s.data.session.access_token)||'';}catch(e){}
     const ctl=new AbortController();
     const tm=setTimeout(()=>ctl.abort(),50000);
     const resp=await fetch(CFG.SUPABASE_URL+'/functions/v1/ai-scan',{
       method:'POST',
       headers:{'Content-Type':'text/plain'},
-      body:JSON.stringify({image:b64,media_type:'image/jpeg',code:CODE||''}),
+      body:JSON.stringify({image_url:preUp.image_url,code:CODE||'',jwt}),
       signal:ctl.signal
     }).finally(()=>clearTimeout(tm));
     const r=await resp.json().catch(()=>null);
@@ -597,7 +607,7 @@ $('btnSave').onclick=async()=>{
     else toast('No se pudo actualizar: '+(r&&r.error||'sin conexión'),true);
     return;
   }
-  const up=await uploadFile(curFile);
+  const up=(preUp&&preUp.image_url)?preUp:await uploadFile(curFile);
   Object.assign(inv,up);
   r=await rpc('api_save_invoice',{p_code:CODE,p:inv});
   $('btnSave').disabled=false;$('btnSave').textContent='Guardar factura';
@@ -615,7 +625,7 @@ $('btnSave').onclick=async()=>{
 };
 $('btnCancel').onclick=resetScan;
 function resetScan(){
-  curFile=null;curCanvas=null;$('file').value='';lastConf=0;editingId=null;
+  curFile=null;curCanvas=null;$('file').value='';lastConf=0;editingId=null;preUp=null;
   $('f_status').value='PENDIENTE';
   $('review').style.display='none';$('preActions').style.display='none';
   ['f_sup','f_num','f_total'].forEach(id=>$(id).value='');
@@ -807,7 +817,7 @@ $('btnCsv').onclick=()=>{
   const rows=HIST.map(x=>[x.invoice_date,x.supplier_name,x.invoice_number,x.category,x.sale_type,x.status,x.total_amount,x.created_by_name||''].map(cs).join(',')).join('\n');
   const blob=new Blob(['\ufeff'+head+rows],{type:'text/csv;charset=utf-8'});
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);
-  a.download='restaurantos-'+$('mLabel').textContent.replace(/[^a-z0-9]+/gi,'-')+'.csv';a.click();
+  a.download='ticksy-'+$('mLabel').textContent.replace(/[^a-z0-9]+/gi,'-')+'.csv';a.click();
   toast('CSV exportado: ábrelo en Excel.');
 };
 window.togglePay=async(id,st)=>{
@@ -847,7 +857,7 @@ $('btnExport').onclick=async()=>{
   const r=await rpc('api_list_invoices',{p_code:CODE,p_limit:1000});
   const blob=new Blob([JSON.stringify(r&&r.rows||[],null,2)],{type:'application/json'});
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);
-  a.download='restaurantos-facturas.json';a.click();
+  a.download='ticksy-facturas.json';a.click();
 };
 
 /* ---------- PWA + arranque ---------- */
