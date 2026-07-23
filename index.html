@@ -599,6 +599,15 @@ $('btnSave').onclick=async()=>{
   const inv=invFromForm();
   if(!(+inv.total_amount)){toast('Ingresa el monto total.',true);return;}
   $('btnSave').disabled=true;$('btnSave').textContent='Guardando…';
+  if(sb&&!CODE){
+    try{
+      const s=await sb.auth.getSession();
+      if(!s.data||!s.data.session){
+        $('btnSave').disabled=false;$('btnSave').textContent='Guardar factura';
+        toast('Tu sesión expiró. Sal y vuelve a entrar.',true);return;
+      }
+    }catch(e){}
+  }
   let r;
   if(editingId){
     r=await rpc('api_update_invoice',{p_code:CODE,p_id:editingId,p:inv});
@@ -619,7 +628,7 @@ $('btnSave').onclick=async()=>{
   else{
     const pend=JSON.parse(localStorage.getItem(LSP)||'[]');
     pend.push(inv);localStorage.setItem(LSP,JSON.stringify(pend));
-    toast('Sin conexión con la nube: guardada como pendiente. Reintenta desde Ajustes.',true);
+    toast('No se guardó ('+((r&&r.error)||'sin respuesta')+'). Queda pendiente en Ajustes.',true);
     resetScan();
   }
 };
@@ -633,6 +642,7 @@ function resetScan(){
 }
 
 /* ---------- Pendientes ---------- */
+let lastPendErr=null;
 function renderPending(){
   const p=JSON.parse(localStorage.getItem(LSP)||'[]');
   $('pendInfo').textContent=p.length?p.length+' factura(s) esperando subir a la nube.':'Sin facturas pendientes.';
@@ -641,10 +651,10 @@ function renderPending(){
 async function retryPending(silent){
   let p=JSON.parse(localStorage.getItem(LSP)||'[]');
   if(!p.length)return;
-  const left=[];
-  for(const inv of p){const r=await rpc('api_save_invoice',{p_code:CODE,p:inv});if(!(r&&r.ok))left.push(inv);}
+  const left=[];lastPendErr=null;
+  for(const inv of p){const r=await rpc('api_save_invoice',{p_code:CODE,p:inv});if(!(r&&r.ok)){lastPendErr=(r&&r.error)||'sin respuesta';left.push(inv);}}
   localStorage.setItem(LSP,JSON.stringify(left));
-  if(!silent)toast(left.length?('Quedan '+left.length+' pendientes.'):'Todas las pendientes se subieron.',left.length>0);
+  if(!silent)toast(left.length?('Quedan '+left.length+' pendientes'+(lastPendErr?' ('+lastPendErr+')':'')+'.'):'Todas las pendientes se subieron.',left.length>0);
   renderPending();
 }
 $('btnRetry').onclick=()=>retryPending(false);
