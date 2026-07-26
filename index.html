@@ -150,11 +150,14 @@ canvas.chart{width:100%!important;max-height:240px}
       <h2>Escanear factura</h2>
       <p>Toca para tomar una foto o subir una imagen o PDF.</p>
     </div>
-    <input type="file" id="file" accept="image/*,application/pdf" hidden>
+    <input type="file" id="file" accept="image/*,application/pdf" multiple hidden>
     <div class="row"><button class="btn btn-s" id="btnManual">+ Agregar factura manual</button></div>
     <div class="row" id="preActions" style="display:none">
-      <button class="btn btn-s" id="btnRetake">Otro archivo</button>
+      <button class="btn btn-s" id="btnRetake">Reemplazar</button>
       <button class="btn btn-p" id="btnOCR">Extraer datos</button>
+    </div>
+    <div class="row" id="add2Row" style="display:none;margin-top:.4rem">
+      <button class="btn btn-s" id="btnAdd2">+ Agregar 2ª foto (factura larga)</button>
     </div>
     <div id="prog"><div class="pbar"><div id="pfill"></div></div><div id="progtxt"></div></div>
     <div id="review">
@@ -411,15 +414,27 @@ $('codeInput').addEventListener('keydown',e=>{if(e.key==='Enter')$('btnLogin').c
 $('btnLogout').onclick=async()=>{localStorage.removeItem(LSC);CODE='';ME=null;if(sb)try{await sb.auth.signOut();}catch(e){}show('login');};
 
 /* ---------- Captura de archivo ---------- */
-let curFile=null,curCanvas=null,isPdf=false;
-$('zone').onclick=()=>$('file').click();
-$('zone').onkeydown=e=>{if(e.key==='Enter'||e.key===' ')$('file').click();};
-$('btnRetake').onclick=()=>$('file').click();
+let curFile=null,curCanvas=null,isPdf=false,extraFiles=[],addingSecond=false;
+$('zone').onclick=()=>{addingSecond=false;$('file').click();};
+$('zone').onkeydown=e=>{if(e.key==='Enter'||e.key===' '){addingSecond=false;$('file').click();}};
+$('btnRetake').onclick=()=>{addingSecond=false;extraFiles=[];$('file').click();};
+$('btnAdd2').onclick=()=>{addingSecond=true;$('file').click();};
 $('file').onchange=async e=>{
-  const f=e.target.files[0];if(!f)return;
+  const files=Array.from(e.target.files||[]);if(!files.length)return;
+  if(addingSecond&&curFile&&!isPdf){
+    // Agregar segunda(s) foto(s) a la factura actual
+    for(const f of files){if(f.type!=='application/pdf')extraFiles.push(f);}
+    addingSecond=false;
+    updateMultiUI();
+    return;
+  }
+  // Nueva captura
+  extraFiles=[];
+  const f=files[0];
   curFile=f;isPdf=f.type==='application/pdf';curCanvas=null;
   $('review').style.display='none';$('preActions').style.display='flex';
   if(isPdf){
+    $('add2Row').style.display='none';
     $('zone').innerHTML='<h2>PDF cargado</h2><p>'+esc(f.name)+'</p>';
     try{
       const buf=await f.arrayBuffer();
@@ -430,11 +445,21 @@ $('file').onchange=async e=>{
       await page.render({canvasContext:c.getContext('2d'),viewport:vp}).promise;
       curCanvas=c;
       $('zone').innerHTML='<img src="'+c.toDataURL('image/jpeg',.8)+'" alt="PDF"><div class="filepill">'+esc(f.name)+'</div>';
-    }catch(err){/* PDF no legible: se sube igual, datos a mano */}
+    }catch(err){/* PDF no legible */}
   }else{
-    $('zone').innerHTML='<img src="'+URL.createObjectURL(f)+'" alt="Factura"><div class="filepill">'+esc(f.name)+'</div>';
+    // Si vinieron 2+ de una vez, la primera es curFile y el resto extras
+    if(files.length>1)extraFiles=files.slice(1);
+    $('add2Row').style.display='flex';
+    updateMultiUI();
   }
 };
+function updateMultiUI(){
+  if(isPdf||!curFile)return;
+  const total=1+extraFiles.length;
+  const pill=total>1?('<div class="filepill">'+total+' fotos de la factura</div>'):('<div class="filepill">'+esc(curFile.name)+'</div>');
+  $('zone').innerHTML='<img src="'+URL.createObjectURL(curFile)+'" alt="Factura">'+pill;
+  $('btnAdd2').textContent=total>1?('✓ '+total+' fotos · agregar otra'):'+ Agregar 2ª foto (factura larga)';
+}
 
 /* ---------- Pre-proceso ---------- */
 function preprocess(src){
@@ -497,33 +522,59 @@ $('btnOCR').onclick=async()=>{
 /* ---------- Escaneo IA (opcional, via Edge Function) ---------- */
 let AI_LAST_ERR=null,preUp=null;
 function canvasBlob(c){return new Promise(res=>c.toBlob(res,'image/jpeg',.8));}
-async function aiScan(canvas){
+async function fileToCanvas(file){
+  return new Promise(res=>{
+    const img=new Image();
+    img.onload=()=>{
+      const MAX=1100,sc=Math.min(1,MAX/Math.max(img.width,img.height));
+      const c=document.createElement('canvas');c.width=img.width*sc;c.height=img.height*sc;
+      c.getContext('2d').drawImage(img,0,0,c.width,c.height);
+      URL.revokeObjectURL(img.src);res(c);
+    };
+    img.src=URL.createObjectURL(file);
+  });
+}
+async function uploadCanvas(canvas){
+  const blob=await canvasBlob(canvas);
+  const path='inv/'+Date.now()+'-'+Math.random().toString(36).slice(2,8)+'.jpg';
+  const up=await sb.storage.from('invoices').upload(path,blob,{contentType:'image/jpeg'});
+  if(up.error)throw new Error('subida: '+up.error.message);
+  const {data:pu}=sb.storage.from('invoices').getPublicUrl(path);
+  if(!pu||!pu.publicUrl)throw new Error('sin URL pública');
+  return {path,url:pu.publicUrl};
+}
+async function aiScan(firstCanvas){
   AI_LAST_ERR=null;preUp=null;
   if(!sb){AI_LAST_ERR='sin conexión';return null;}
   try{
     $('progtxt').textContent='Subiendo foto…';
-    const blob=await canvasBlob(canvas);
-    const path='inv/'+Date.now()+'-'+Math.random().toString(36).slice(2,8)+'.jpg';
-    const up=await sb.storage.from('invoices').upload(path,blob,{contentType:'image/jpeg'});
-    if(up.error){AI_LAST_ERR='subida: '+up.error.message;return null;}
-    const {data:pu}=sb.storage.from('invoices').getPublicUrl(path);
-    preUp={image_path:path,image_url:pu?pu.publicUrl:null};
-    if(!preUp.image_url){AI_LAST_ERR='sin URL pública';return null;}
+    // Subir primera foto
+    const urls=[];
+    const up1=await uploadCanvas(firstCanvas);
+    urls.push(up1.url);
+    preUp={image_path:up1.path,image_url:up1.url};
+    // Subir fotos extra de la misma factura (factura larga)
+    for(const f of extraFiles){
+      $('progtxt').textContent='Subiendo foto '+(urls.length+1)+'…';
+      const cv=await fileToCanvas(f);
+      const u=await uploadCanvas(cv);
+      urls.push(u.url);
+    }
     $('progtxt').textContent='Leyendo con IA…';$('pfill').style.width='55%';
     let jwt='';try{const s=await sb.auth.getSession();jwt=(s.data&&s.data.session&&s.data.session.access_token)||'';}catch(e){}
     const ctl=new AbortController();
-    const tm=setTimeout(()=>ctl.abort(),50000);
+    const tm=setTimeout(()=>ctl.abort(),55000);
     const resp=await fetch(CFG.SUPABASE_URL+'/functions/v1/ai-scan',{
       method:'POST',
       headers:{'Content-Type':'text/plain'},
-      body:JSON.stringify({image_url:preUp.image_url,code:CODE||'',jwt}),
+      body:JSON.stringify({image_urls:urls,image_url:urls[0],code:CODE||'',jwt}),
       signal:ctl.signal
     }).finally(()=>clearTimeout(tm));
     const r=await resp.json().catch(()=>null);
     if(!r||!r.ok){AI_LAST_ERR=(r&&r.error)||('HTTP '+resp.status);return null;}
     if(!r.data)return null;
     return r.data;
-  }catch(e){AI_LAST_ERR=String(e);return null;}
+  }catch(e){AI_LAST_ERR=e.message||String(e);return null;}
 }
 function aiFill(d){
   lastConf=95;ocrGuess=null;
@@ -618,6 +669,20 @@ $('btnSave').onclick=async()=>{
   }
   const up=(preUp&&preUp.image_url)?preUp:await uploadFile(curFile);
   Object.assign(inv,up);
+  // Deteccion de duplicados (solo al crear, no al editar)
+  const dup=await rpc('api_check_duplicate',{p_code:CODE,p:inv});
+  if(dup&&dup.ok&&dup.duplicate){
+    const m=dup.match||{};
+    const motivo=dup.reason==='numero'?('mismo N° de factura'):('mismo proveedor y monto');
+    const msg='Posible factura repetida ('+motivo+'):\n\n'+
+      (m.supplier_name||'—')+'\n'+crc(m.total_amount)+' · '+(m.invoice_date||'')+' · '+(m.status==='PAGADA'?'Pagada':'Pendiente')+
+      '\n\n¿Guardar de todos modos?';
+    if(!confirm(msg)){
+      $('btnSave').disabled=false;$('btnSave').textContent='Guardar factura';
+      toast('No se guardó: es una factura repetida.');
+      return;
+    }
+  }
   r=await rpc('api_save_invoice',{p_code:CODE,p:inv});
   $('btnSave').disabled=false;$('btnSave').textContent='Guardar factura';
   if(r&&r.ok){
@@ -635,6 +700,8 @@ $('btnSave').onclick=async()=>{
 $('btnCancel').onclick=resetScan;
 function resetScan(){
   curFile=null;curCanvas=null;$('file').value='';lastConf=0;editingId=null;preUp=null;
+  extraFiles=[];addingSecond=false;$('add2Row').style.display='none';
+  $('btnAdd2').textContent='+ Agregar 2ª foto (factura larga)';
   $('f_status').value='PENDIENTE';
   $('review').style.display='none';$('preActions').style.display='none';
   ['f_sup','f_num','f_total'].forEach(id=>$(id).value='');
