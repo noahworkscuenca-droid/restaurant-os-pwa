@@ -1,4 +1,4 @@
-const CACHE = 'ticksy-v19b';
+const CACHE = 'ticksy-v19c';
 const ASSETS = ['./', './index.html', './config.js', './manifest.json', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', e => {
