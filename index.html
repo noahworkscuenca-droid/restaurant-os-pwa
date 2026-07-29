@@ -141,6 +141,22 @@ nav svg{width:22px;height:22px;stroke-width:2.1}
 .loginbox p{font-size:.85rem;color:var(--tx2);margin-bottom:1.4rem;line-height:1.55}
 #codeInput{text-align:center;font-size:1.1rem;letter-spacing:.22em;font-weight:700;text-transform:uppercase}
 canvas.chart{width:100%!important;max-height:240px}
+/* Aviso de factura repetida */
+#dupWrap{position:fixed;inset:0;background:rgba(8,19,13,.55);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);display:none;align-items:flex-end;justify-content:center;z-index:80;padding:1rem}
+#dupWrap.on{display:flex;animation:dupFade .2s ease}
+@keyframes dupFade{from{opacity:0}to{opacity:1}}
+#dupCard{background:var(--s1);border-radius:24px;padding:1.5rem 1.4rem 1.3rem;width:100%;max-width:420px;box-shadow:0 24px 60px -20px rgba(0,0,0,.5);animation:dupUp .25s cubic-bezier(.2,.8,.3,1)}
+@keyframes dupUp{from{transform:translateY(30px);opacity:.6}to{transform:none;opacity:1}}
+.dupIcon{width:48px;height:48px;border-radius:16px;background:rgba(180,83,9,.14);color:var(--warn);display:flex;align-items:center;justify-content:center;margin-bottom:.9rem}
+@media (prefers-color-scheme:dark){.dupIcon{background:rgba(240,176,86,.16)}}
+.dupIcon svg{width:24px;height:24px;stroke:currentColor}
+#dupCard h3{font-size:1.15rem;font-weight:700;letter-spacing:-.03em;margin-bottom:.35rem}
+#dupWhy{font-size:.85rem;color:var(--tx2);line-height:1.5;margin-bottom:1rem}
+.dupMatch{background:var(--bg);border-radius:16px;padding:.9rem 1rem;display:flex;align-items:center;gap:.8rem;margin-bottom:1.1rem}
+.dupMatch .thumb{width:42px;height:42px;border-radius:13px;background:var(--avatar-bg);color:var(--avatar-fg);display:flex;align-items:center;justify-content:center;font-weight:700;flex:none}
+.dupMatch .dm1{font-size:.92rem;font-weight:650;letter-spacing:-.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dupMatch .dm2{font-size:.74rem;color:var(--tx3);margin-top:.15rem;font-weight:500}
+.dupMatch .dmAmt{font-size:1rem;font-weight:700;letter-spacing:-.03em;text-align:right}
 </style>
 </head>
 <body>
@@ -302,6 +318,25 @@ canvas.chart{width:100%!important;max-height:240px}
 </div>
 
 <div id="toast"></div>
+<div id="dupWrap" role="dialog" aria-modal="true" aria-labelledby="dupTitle">
+  <div id="dupCard">
+    <div class="dupIcon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4h9a2 2 0 0 1 2 2v9"/><rect x="4" y="8" width="11" height="12" rx="2"/></svg></div>
+    <h3 id="dupTitle">¿Factura repetida?</h3>
+    <p id="dupWhy"></p>
+    <div class="dupMatch">
+      <div class="thumb" id="dupIni">?</div>
+      <div style="flex:1;min-width:0">
+        <div class="dm1" id="dupSup">—</div>
+        <div class="dm2" id="dupMeta"></div>
+      </div>
+      <div class="dmAmt" id="dupAmt"></div>
+    </div>
+    <div class="row" style="margin-top:0">
+      <button class="btn btn-s" id="dupNo">No guardar</button>
+      <button class="btn btn-p" id="dupSi">Guardar igual</button>
+    </div>
+  </div>
+</div>
 
 <nav id="mainNav">
   <button data-pg="scan" class="on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2M3 12h18"/></svg>Escanear</button>
@@ -337,6 +372,35 @@ async function rpc(fn,args){
     if(error) return {ok:false,error:error.message};
     return data;
   }catch(e){return {ok:false,error:String(e)}}
+}
+
+/* ---------- Aviso de factura repetida ---------- */
+function avisoRepetida(m,reason){
+  return new Promise(res=>{
+    const motivos={
+      numero_exacto:'Ya existe una factura con este mismo número.',
+      numero_parcial:'Ya existe una factura de este proveedor con un número casi idéntico.',
+      sin_numero:'Esta factura no trae número, y ya hay una del mismo proveedor por el mismo monto y la misma fecha.'
+    };
+    $('dupWhy').textContent=motivos[reason]||'Ya existe una factura muy parecida.';
+    $('dupIni').textContent=(m.supplier_name||'?').trim().charAt(0).toUpperCase();
+    $('dupSup').textContent=m.supplier_name||'—';
+    const partes=[];
+    if(m.invoice_number)partes.push('#'+m.invoice_number);
+    if(m.invoice_date)partes.push(m.invoice_date);
+    partes.push(m.status==='PAGADA'?'Pagada':'Pendiente');
+    $('dupMeta').textContent=partes.join(' · ');
+    $('dupAmt').textContent=crc(m.total_amount);
+    $('dupWrap').classList.add('on');
+    const cerrar=v=>{
+      $('dupWrap').classList.remove('on');
+      $('dupSi').onclick=null;$('dupNo').onclick=null;$('dupWrap').onclick=null;
+      res(v);
+    };
+    $('dupSi').onclick=()=>cerrar(true);
+    $('dupNo').onclick=()=>cerrar(false);
+    $('dupWrap').onclick=e=>{if(e.target===$('dupWrap'))cerrar(false);};
+  });
 }
 
 /* ---------- Toast ---------- */
@@ -707,12 +771,8 @@ $('btnSave').onclick=async()=>{
   // Deteccion de duplicados (solo al crear, no al editar)
   const dup=await rpc('api_check_duplicate',{p_code:CODE,p:inv});
   if(dup&&dup.ok&&dup.duplicate){
-    const m=dup.match||{};
-    const motivo=dup.reason==='numero'?('mismo N° de factura'):('mismo proveedor y monto');
-    const msg='Posible factura repetida ('+motivo+'):\n\n'+
-      (m.supplier_name||'—')+'\n'+crc(m.total_amount)+' · '+(m.invoice_date||'')+' · '+(m.status==='PAGADA'?'Pagada':'Pendiente')+
-      '\n\n¿Guardar de todos modos?';
-    if(!confirm(msg)){
+    const seguir=await avisoRepetida(dup.match||{},dup.reason);
+    if(!seguir){
       $('btnSave').disabled=false;$('btnSave').textContent='Guardar factura';
       toast('No se guardó: es una factura repetida.');
       return;
