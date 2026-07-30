@@ -165,6 +165,7 @@ canvas.chart{width:100%!important;max-height:240px}
     <div class="brand"><svg viewBox="0 0 24 24" fill="none" stroke="var(--ac)" stroke-width="2" stroke-linecap="round"><path d="M4 4h4M4 4v4M20 4h-4M20 4v4M4 20h4M4 20v-4M20 20h-4M20 20v-4"/><path d="M9 8h4l2 2v8H9z"/><path d="M11.5 12.5h1M9.5 15h5M9.5 17h5M10.5 19.5v-1.2M10 19h1"/></svg>Tick<span>sy</span></div>
     <div class="badge" id="dbBadge"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v1"/></svg></div>
   </header>
+  <div id="viewBanner" style="display:none;background:var(--warn);color:#fff;text-align:center;font-size:.78rem;font-weight:600;padding:.5rem;border-radius:8px;margin:.6rem 0"></div>
 
   <!-- ===== LOGIN ===== -->
   <section class="page" id="pg-login">
@@ -180,14 +181,10 @@ canvas.chart{width:100%!important;max-height:240px}
       <div class="field" id="rowName" style="display:none"><input class="filt" id="a_name" placeholder="Tu nombre" autocomplete="name"></div>
       <div class="field"><input class="filt" id="a_email" type="email" placeholder="Correo" autocomplete="email"></div>
       <div class="field"><input class="filt" id="a_pass" type="password" placeholder="Contraseña" autocomplete="current-password"></div>
-      <div class="field" id="rowInvite" style="display:none"><input class="filt" id="a_invite" placeholder="Código de invitación del restaurante" autocomplete="off" style="text-transform:uppercase"></div>
+      <div class="field" id="rowInvite" style="display:none"><input class="filt" id="a_invite" placeholder="Código de invitación (si tu jefe te lo dio)" autocomplete="off" style="text-transform:uppercase"></div>
+      <div class="field" id="rowRestName" style="display:none"><input class="filt" id="a_restname" placeholder="Nombre de tu restaurante (si no tenés código)" autocomplete="off"></div>
       <div class="row"><button class="btn btn-p" id="btnAuth">Entrar</button></div>
       <p style="margin-top:1rem"><a href="#" id="lnkForgot" style="color:var(--tx3);font-size:.78rem">¿Olvidaste tu contraseña?</a></p>
-      <p style="margin-top:.4rem"><a href="#" id="lnkCode" style="color:var(--tx3);font-size:.78rem">Entrar con código de equipo</a></p>
-      <div id="codeBox" style="display:none;margin-top:1rem">
-        <div class="field"><input id="codeInput" placeholder="CÓDIGO" autocomplete="off"></div>
-        <div class="row"><button class="btn btn-s" id="btnLogin">Entrar con código</button></div>
-      </div>
     </div>
   </section>
 
@@ -300,14 +297,20 @@ canvas.chart{width:100%!important;max-height:240px}
       <div class="hint">El token se genera en Loyverse → Integraciones → Tokens de acceso, y se guarda solo en este teléfono.</div>
     </div>
     <div class="slabel">Mi cuenta</div>
-    <div class="card" id="meCard"><p style="font-size:.85rem;color:var(--tx2)" id="meInfo">Sesión por código de equipo.</p></div>
+    <div class="card" id="meCard"><p style="font-size:.85rem;color:var(--tx2)" id="meInfo">Sin sesión.</p></div>
+    <div class="slabel" id="ownerLbl" style="display:none">Cuenta maestra</div>
+    <div class="card" id="ownerCard" style="display:none">
+      <div class="field"><label for="restSel">Ver otro restaurante</label>
+        <select id="restSel"><option value="">— El mío —</option></select></div>
+      <div class="hint">Solo lectura: podés ver su historial y su dashboard. Las facturas que guardes siempre quedan en tu propio restaurante.</div>
+    </div>
     <div class="slabel">Proveedores</div>
     <div class="card" id="supBox"><div class="empty">Cargando…</div></div>
-    <div class="slabel" id="codeLbl">Código de acceso</div>
+    <div class="slabel" id="codeLbl">Código de invitación al restaurante</div>
     <div class="card" id="codeCard">
       <div class="field"><label for="newCode">Nuevo código (mín. 6 caracteres)</label><input id="newCode" placeholder="NUEVO-CODIGO"></div>
-      <div class="row"><button class="btn btn-s" id="btnChangeCode">Cambiar código del equipo</button></div>
-      <div class="hint">El cambio aplica para todos: comparte el nuevo código con tu jefe.</div>
+      <div class="row"><button class="btn btn-s" id="btnChangeCode">Cambiar código de invitación</button></div>
+      <div class="hint">Compartí este código con tus empleados para que se registren en tu restaurante.</div>
     </div>
     <div class="slabel">Sesión</div>
     <div class="card"><div class="row" style="margin-top:0">
@@ -428,16 +431,16 @@ function setMode(m){
   $('tabUp').className='btn '+(m==='up'?'btn-p':'btn-s');
   $('rowName').style.display=m==='up'?'block':'none';
   $('rowInvite').style.display=m==='up'?'block':'none';
+  $('rowRestName').style.display=m==='up'?'block':'none';
   $('btnAuth').textContent=m==='up'?'Crear cuenta':(m==='reset'?'Guardar nueva contraseña':'Entrar');
   $('authTitle').textContent=m==='up'?'Crear cuenta':(m==='reset'?'Nueva contraseña':'Bienvenido');
-  if(m==='reset'){$('a_email').style.display='none';$('rowName').style.display='none';$('rowInvite').style.display='none';}
+  if(m==='reset'){$('a_email').style.display='none';$('rowName').style.display='none';$('rowInvite').style.display='none';$('rowRestName').style.display='none';}
   else $('a_email').style.display='block';
 }
 function syncStatus(){$('f_status').value=$('f_type').value==='CONTADO'?'PAGADA':'PENDIENTE';}
 $('f_type').onchange=syncStatus;
 $('tabIn').onclick=()=>setMode('in');
 $('tabUp').onclick=()=>setMode('up');
-$('lnkCode').onclick=e=>{e.preventDefault();$('codeBox').style.display=$('codeBox').style.display==='none'?'block':'none';};
 $('lnkForgot').onclick=async e=>{
   e.preventDefault();
   const em=$('a_email').value.trim();
@@ -465,8 +468,35 @@ function applyRole(){
   const emp=ME&&ME.role==='empleado';
   $('codeCard').style.display=emp?'none':'block';
   $('codeLbl').style.display=emp?'none':'block';
-  $('meInfo').textContent=ME?('Sesión: '+ME.name+' ('+ME.role+')'):'Sesión por código de equipo.';
+  $('meInfo').textContent=ME?('Sesión: '+ME.name+' ('+ME.role+')'+(ME.restaurant_name?' · '+ME.restaurant_name:'')):'Sin sesión.';
+  const owner=!!(ME&&ME.is_owner);
+  $('ownerLbl').style.display=owner?'block':'none';
+  $('ownerCard').style.display=owner?'block':'none';
+  if(owner&&!OWNER_LOADED)loadOwnerRestaurants();
 }
+let VIEW_RID=null,OWNER_LOADED=false;
+async function loadOwnerRestaurants(){
+  OWNER_LOADED=true;
+  const r=await rpc('api_list_restaurants',{});
+  if(!(r&&r.ok))return;
+  const rows=(r.rows||[]).filter(x=>x.id!==(ME&&ME.restaurant_id));
+  $('restSel').innerHTML='<option value="">— El mío —</option>'+
+    rows.map(x=>'<option value="'+esc(x.id)+'">'+esc(x.nombre)+'</option>').join('');
+}
+function viewedRestaurantName(){
+  const opt=$('restSel').querySelector('option[value="'+VIEW_RID+'"]');
+  return opt?opt.textContent:'';
+}
+function refreshViewBanner(){
+  const b=$('viewBanner');
+  if(VIEW_RID){b.style.display='block';b.textContent='Viendo '+viewedRestaurantName()+' · solo lectura';}
+  else b.style.display='none';
+}
+$('restSel').onchange=()=>{
+  VIEW_RID=$('restSel').value||null;
+  refreshViewBanner();
+  loadDash();loadHist();loadSuppliers();
+};
 $('btnAuth').onclick=async()=>{
   if(!sb){toast('Sin conexión con la nube.',true);return;}
   const em=$('a_email').value.trim(),pw=$('a_pass').value;
@@ -478,10 +508,16 @@ $('btnAuth').onclick=async()=>{
       if(error)toast('No se pudo guardar.',true);
       else{toast('Contraseña actualizada.');await enterApp();}
     }else if(authMode==='up'){
-      const nm=$('a_name').value.trim(),inv=$('a_invite').value.trim().toUpperCase();
+      const nm=$('a_name').value.trim(),inv=$('a_invite').value.trim().toUpperCase(),rn=$('a_restname').value.trim();
       if(!nm||!em||pw.length<6){toast('Completa nombre, correo y contraseña (mín. 6).',true);return;}
-      const {data,error}=await sb.auth.signUp({email:em,password:pw,options:{data:{name:nm,invite:inv}}});
-      if(error){toast(error.message.includes('registered')?'Ese correo ya tiene cuenta.':'No se pudo crear la cuenta.',true);}
+      if(!inv&&!rn){toast('Ingresa un código de invitación o el nombre de tu restaurante.',true);return;}
+      const {data,error}=await sb.auth.signUp({email:em,password:pw,options:{data:{name:nm,invite:inv,restaurant_name:rn}}});
+      if(error){
+        const m=error.message||'';
+        if(m.includes('registered'))toast('Ese correo ya tiene cuenta.',true);
+        else if(inv)toast('Ese código de invitación no es válido.',true);
+        else toast('No se pudo crear la cuenta.',true);
+      }
       else if(!data.session){toast('Cuenta creada: revisa tu correo para confirmarla y luego entra.');setMode('in');}
       else await enterApp();
     }else{
@@ -494,23 +530,7 @@ $('btnAuth').onclick=async()=>{
 
 
 function fillCats(){$('f_cat').innerHTML=CATS.map(c=>'<option>'+c+'</option>').join('');}
-async function tryLogin(code,silent){
-  const r=await rpc('api_verify_code',{p_code:code});
-  if(r&&r.ok){
-    CODE=code;localStorage.setItem(LSC,code);
-    if(r.categories) CATS=r.categories.map(c=>c.name);
-    fillCats();loadSuppliers();
-    ME=null;setBadge();applyRole();
-    show('scan');retryPending(true);
-    return true;
-  }
-  if(!silent) toast(r&&r.error==='sin_conexion'?'No hay conexión con la nube.':'Código incorrecto.',true);
-  if(silent&&r&&!r.ok&&r.error!=='sin_conexion'){localStorage.removeItem(LSC);CODE='';show('login');}
-  return false;
-}
-$('btnLogin').onclick=()=>{const c=$('codeInput').value.trim().toUpperCase();if(c)tryLogin(c);};
-$('codeInput').addEventListener('keydown',e=>{if(e.key==='Enter')$('btnLogin').click();});
-$('btnLogout').onclick=async()=>{localStorage.removeItem(LSC);CODE='';ME=null;if(sb)try{await sb.auth.signOut();}catch(e){}show('login');};
+$('btnLogout').onclick=async()=>{localStorage.removeItem(LSC);CODE='';ME=null;VIEW_RID=null;OWNER_LOADED=false;$('viewBanner').style.display='none';if(sb)try{await sb.auth.signOut();}catch(e){}show('login');};
 
 /* ---------- Captura de archivo ---------- */
 let curFile=null,curCanvas=null,isPdf=false,extraFiles=[],addingSecond=false;
@@ -599,12 +619,10 @@ $('btnOCR').onclick=async()=>{
   if(!src){parseInvoice('',0);toast('PDF sin vista previa: llena los datos a mano.',true);$('btnOCR').disabled=false;return;}
   $('prog').style.display='block';$('pfill').style.width='10%';$('progtxt').textContent='Leyendo con IA…';
   try{
-    if(!isPdf){
-      const liteCanvas=await liteResize(src);
-      const ai=await aiScan(liteCanvas);
-      if(ai){aiFill(ai);setTimeout(()=>{$('prog').style.display='none';$('pfill').style.width='0';},300);$('btnOCR').disabled=false;return;}
-      if(AI_LAST_ERR)toast('IA no disponible ('+AI_LAST_ERR+'): usando escaneo gratis.',true);
-    }
+    const aiSrc=isPdf?src:await liteResize(src);
+    const ai=await aiScan(aiSrc);
+    if(ai){aiFill(ai);setTimeout(()=>{$('prog').style.display='none';$('pfill').style.width='0';},300);$('btnOCR').disabled=false;return;}
+    if(AI_LAST_ERR)toast('IA no disponible ('+AI_LAST_ERR+'): usando escaneo gratis.',true);
     $('pfill').style.width='30%';$('progtxt').textContent='Mejorando imagen…';
     const canvas=await preprocess(src);
     $('progtxt').textContent='Cargando motor OCR…';
@@ -638,9 +656,9 @@ async function uploadCanvas(canvas){
   const path='inv/'+Date.now()+'-'+Math.random().toString(36).slice(2,8)+'.jpg';
   const up=await sb.storage.from('invoices').upload(path,blob,{contentType:'image/jpeg'});
   if(up.error)throw new Error('subida: '+up.error.message);
-  const {data:pu}=sb.storage.from('invoices').getPublicUrl(path);
-  if(!pu||!pu.publicUrl)throw new Error('sin URL pública');
-  return {path,url:pu.publicUrl};
+  const {data:su,error:se}=await sb.storage.from('invoices').createSignedUrl(path,300);
+  if(se||!su||!su.signedUrl)throw new Error('sin URL firmada');
+  return {path,url:su.signedUrl};
 }
 async function aiScan(firstCanvas){
   AI_LAST_ERR=null;preUp=null;
@@ -741,11 +759,12 @@ async function uploadFile(file){
     const path='inv/'+Date.now()+'-'+Math.random().toString(36).slice(2,8)+'.'+ext;
     const {error}=await sb.storage.from('invoices').upload(path,file,{contentType:file.type});
     if(error)return {};
-    const {data}=sb.storage.from('invoices').getPublicUrl(path);
-    return {image_path:path,image_url:data?data.publicUrl:null};
+    const {data,error:se}=await sb.storage.from('invoices').createSignedUrl(path,300);
+    return {image_path:path,image_url:(!se&&data)?data.signedUrl:null};
   }catch(e){return {}}
 }
 $('btnSave').onclick=async()=>{
+  if(VIEW_RID){toast('Estás viendo otro restaurante (solo lectura). Cambiá a "El mío" en Ajustes para guardar.',true);return;}
   const inv=invFromForm();
   if(!(+inv.total_amount)){toast('Ingresa el monto total.',true);return;}
   $('btnSave').disabled=true;$('btnSave').textContent='Guardando…';
@@ -766,7 +785,7 @@ $('btnSave').onclick=async()=>{
     else toast('No se pudo actualizar: '+(r&&r.error||'sin conexión'),true);
     return;
   }
-  const up=(preUp&&preUp.image_url)?preUp:await uploadFile(curFile);
+  const up=(!isPdf&&preUp&&preUp.image_url)?preUp:await uploadFile(curFile);
   Object.assign(inv,up);
   // Deteccion de duplicados (solo al crear, no al editar)
   const dup=await rpc('api_check_duplicate',{p_code:CODE,p:inv});
@@ -825,7 +844,7 @@ $('btnRetry').onclick=()=>retryPending(false);
 let SUPS=[],editSup=null;
 const normTx=s=>String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
 async function loadSuppliers(){
-  const r=await rpc('api_list_suppliers',{p_code:CODE});
+  const r=await rpc('api_list_suppliers',{p_code:CODE,p_restaurant:VIEW_RID});
   if(r&&r.ok){SUPS=r.rows||[];
     $('supList').innerHTML=SUPS.map(s=>'<option value="'+esc(s.name)+'">').join('');
     const sel=$('fSup').value;
@@ -923,7 +942,7 @@ async function loadLvSales(monthTotal){
 const crc=n=>'₡'+Number(n).toLocaleString('es-CR',{maximumFractionDigits:0});
 let chCat=null,chMonth=null;
 async function loadDash(){
-  const r=await rpc('api_dashboard',{p_code:CODE});
+  const r=await rpc('api_dashboard',{p_code:CODE,p_restaurant:VIEW_RID});
   if(!(r&&r.ok)){toast('No se pudo cargar el dashboard.',true);return;}
   $('kTotal').textContent=crc(r.month_total);
   $('kCount').textContent=r.month_count+' facturas este mes';
@@ -962,7 +981,7 @@ async function loadHist(){
   $('mLabel').textContent=q?'Búsqueda: "'+q+'"':histDate.toLocaleDateString('es-CR',{month:'long',year:'numeric'});
   $('mTotal').textContent='';
   const box=$('histList');box.innerHTML='<div class="skl"></div><div class="skl"></div><div class="skl"></div>';
-  const r=await rpc('api_list_invoices',{p_code:CODE,p_limit:200,
+  const r=await rpc('api_list_invoices',{p_code:CODE,p_limit:200,p_restaurant:VIEW_RID,
     p_month:q?null:monthKey(histDate),
     p_supplier:$('fSup').value||null,
     p_status:$('fSt').value||null,
@@ -974,7 +993,7 @@ async function loadHist(){
   if(!HIST.length){box.innerHTML='<div class="empty">'+(q?'Sin resultados para esa búsqueda.':'Sin facturas con estos filtros. Usa ‹ › para cambiar de mes.')+'</div>';return;}
   box.innerHTML=HIST.map((x,i)=>
     '<div class="inv">'+
-    (x.image_url?'<a href="'+esc(x.image_url)+'" target="_blank" rel="noopener"><img class="thumb" src="'+esc(x.image_url)+'" alt=""></a>':'<div class="thumb">'+esc((x.supplier_name||'?').trim().charAt(0).toUpperCase())+'</div>')+
+    '<div class="thumb" id="thumb-'+i+'">'+esc((x.supplier_name||'?').trim().charAt(0).toUpperCase())+'</div>'+
     '<div class="mid"><div class="l1">'+esc(x.supplier_name||'—')+'</div>'+
     '<div class="l2">'+esc(x.invoice_date||'')+(x.invoice_number?' · #'+esc(x.invoice_number):'')+' · '+esc(x.category||'')+(x.created_by_name?' · por '+esc(x.created_by_name):'')+'</div>'+
     '<div style="margin-top:.4rem;display:flex;gap:.4rem;flex-wrap:wrap">'+
@@ -984,6 +1003,25 @@ async function loadHist(){
     '<div><div class="amt">'+crc(x.total_amount)+'</div>'+
     '<div style="text-align:right;margin-top:.2rem"><span class="tag '+(x.status==='PAGADA'?'pagada':'pendiente')+'">'+(x.status==='PAGADA'?'Pagada':'Pendiente')+'</span></div>'+
     '<div style="text-align:right;margin-top:.2rem"><span class="tag '+(x.sale_type==='CREDITO'?'credito':'contado')+'">'+(x.sale_type==='CREDITO'?'Crédito':'Contado')+'</span></div></div></div>').join('');
+  attachThumbs(HIST);
+}
+async function attachThumbs(rows){
+  if(!sb)return;
+  const items=rows.map((x,i)=>({i,path:x.image_path})).filter(o=>o.path);
+  if(!items.length)return;
+  try{
+    const {data,error}=await sb.storage.from('invoices').createSignedUrls(items.map(o=>o.path),300);
+    if(error||!data)return;
+    data.forEach((r,k)=>{
+      const {i}=items[k];
+      const el=document.getElementById('thumb-'+i);
+      if(!el||r.error||!r.signedUrl)return;
+      const a=document.createElement('a');
+      a.href=r.signedUrl;a.target='_blank';a.rel='noopener';
+      a.innerHTML='<img class="thumb" src="'+esc(r.signedUrl)+'" alt="">';
+      el.replaceWith(a);
+    });
+  }catch(e){}
 }
 $('btnCsv').onclick=()=>{
   if(!HIST.length){toast('No hay facturas para exportar.',true);return;}
@@ -1054,7 +1092,8 @@ fillCats();
       if(data&&data.session){await enterApp();return;}
     }catch(e){}
   }
-  if(CODE){show('scan');tryLogin(CODE,true);}else{show('login');setMode('in');}
+  localStorage.removeItem(LSC);CODE='';
+  show('login');setMode('in');
 })();
 </script>
 </body>
