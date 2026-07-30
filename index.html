@@ -247,6 +247,8 @@ canvas.chart{width:100%!important;max-height:240px}
     </div>
     <div class="slabel">Por categoría</div>
     <div class="card"><canvas class="chart" id="chCat"></canvas><div class="empty" id="emptyCat" style="display:none">Sin gastos este mes.</div></div>
+    <div class="slabel">Por proveedor</div>
+    <div class="card"><canvas class="chart" id="chSup"></canvas><div class="empty" id="emptySup" style="display:none">Sin gastos este mes.</div></div>
     <div class="slabel">Últimos 6 meses</div>
     <div class="card"><canvas class="chart" id="chMonth"></canvas></div>
   </section>
@@ -940,7 +942,7 @@ async function loadLvSales(monthTotal){
 
 /* ---------- Dashboard ---------- */
 const crc=n=>'₡'+Number(n).toLocaleString('es-CR',{maximumFractionDigits:0});
-let chCat=null,chMonth=null;
+let chCat=null,chMonth=null,chSup=null;
 async function loadDash(){
   const r=await rpc('api_dashboard',{p_code:CODE,p_restaurant:VIEW_RID});
   if(!(r&&r.ok)){toast('No se pudo cargar el dashboard.',true);return;}
@@ -959,6 +961,14 @@ async function loadDash(){
   if(chCat)chCat.destroy();
   if(cats.length)chCat=new Chart($('chCat'),{type:'bar',
     data:{labels:cats.map(c=>c.name),datasets:[{data:cats.map(c=>c.total),
+      backgroundColor:PAL,borderRadius:8}]},
+    options:{indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{ticks:{callback:v=>crc(v)}}}}});
+  const sups=r.by_supplier||[];
+  $('emptySup').style.display=sups.length?'none':'block';
+  $('chSup').style.display=sups.length?'block':'none';
+  if(chSup)chSup.destroy();
+  if(sups.length)chSup=new Chart($('chSup'),{type:'bar',
+    data:{labels:sups.map(s=>s.name),datasets:[{data:sups.map(s=>s.total),
       backgroundColor:PAL,borderRadius:8}]},
     options:{indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{ticks:{callback:v=>crc(v)}}}}});
   const ms=r.by_month||[];
