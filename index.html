@@ -21,6 +21,7 @@
   --avatar-bg:rgba(12,107,69,.10); --avatar-fg:#0C6B45;
   --sh:0 1px 2px rgba(12,42,30,.04),0 12px 30px -18px rgba(12,42,30,.16);
   --card-total:#0C2A1E;
+  --glow:rgba(12,107,69,.10); --glass-bg:rgba(255,255,255,.66); --glass-bd:rgba(12,42,30,.07);
   --r:20px; --rc:16px;
 }
 @media (prefers-color-scheme:dark){
@@ -32,10 +33,11 @@
     --avatar-bg:rgba(34,199,126,.14); --avatar-fg:#22C77E;
     --sh:0 1px 2px rgba(0,0,0,.3),0 12px 30px -18px rgba(0,0,0,.6);
     --card-total:#0E4A33;
+    --glow:rgba(34,199,126,.16); --glass-bg:rgba(20,26,22,.66); --glass-bd:rgba(34,199,126,.16);
   }
 }
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{background:var(--bg);color:var(--tx);font-family:'Inter',system-ui,sans-serif;min-height:100dvh;padding-bottom:104px;letter-spacing:-.014em;-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums}
+body{background:radial-gradient(ellipse 900px 560px at 50% -8%,var(--glow),transparent 70%),var(--bg);color:var(--tx);font-family:'Inter',system-ui,sans-serif;min-height:100dvh;padding-bottom:104px;letter-spacing:-.014em;-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums}
 .wrap{max-width:520px;margin:0 auto;padding:1rem 1.15rem 0}
 header{display:flex;align-items:center;justify-content:space-between;padding:.5rem 0 1.1rem}
 .brand{font-weight:800;font-size:1.15rem;letter-spacing:-.035em;display:flex;align-items:center;gap:.5rem}
@@ -44,8 +46,8 @@ header{display:flex;align-items:center;justify-content:space-between;padding:.5r
 .badge{font-size:.7rem;font-weight:600;color:var(--tx2);background:var(--s1);border:1px solid var(--bd);border-radius:99px;padding:.4rem .8rem;box-shadow:var(--sh)}
 .badge.on{color:var(--ac);border-color:transparent}
 .slabel{font-size:.72rem;font-weight:600;letter-spacing:-.005em;color:var(--tx3);margin:1.7rem 0 .7rem}
-.card{background:var(--s1);border:0;border-radius:var(--r);padding:1.2rem 1.3rem;box-shadow:var(--sh)}
-.scanzone{position:relative;background:var(--s1);border:0;border-radius:var(--r);min-height:230px;box-shadow:var(--sh);
+.card{background:var(--glass-bg);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--glass-bd);border-radius:var(--r);padding:1.2rem 1.3rem;box-shadow:var(--sh)}
+.scanzone{position:relative;background:var(--glass-bg);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--glass-bd);border-radius:var(--r);min-height:230px;box-shadow:var(--sh);
 display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;cursor:pointer;overflow:hidden;transition:transform .15s ease;text-align:center}
 .scanzone:active{transform:scale(.99)}
 .scancircle{width:72px;height:72px;border-radius:50%;background:var(--ac);display:flex;align-items:center;justify-content:center;box-shadow:0 10px 26px -8px rgba(12,107,69,.5);position:relative;z-index:1}
@@ -72,7 +74,7 @@ display:flex;flex-direction:column;align-items:center;justify-content:center;gap
 #review{display:none}
 .field{margin-bottom:.9rem}
 .field label{display:block;font-size:.72rem;font-weight:600;letter-spacing:-.005em;color:var(--tx2);margin-bottom:.45rem}
-.field input,.field select{width:100%;background:var(--s1);border:1px solid var(--bd);border-radius:15px;color:var(--tx);font:inherit;font-size:.95rem;font-weight:500;padding:.92rem 1rem;outline:none;transition:border-color .15s,box-shadow .15s}
+.field input,.field select{width:100%;background:var(--glass-bg);border:1px solid var(--glass-bd);border-radius:16px;color:var(--tx);font:inherit;font-size:.95rem;font-weight:500;padding:.92rem 1rem;outline:none;transition:border-color .15s,box-shadow .15s}
 .field input:focus,.field select:focus{border-color:var(--ac);box-shadow:0 0 0 4px rgba(12,107,69,.12)}
 @media (prefers-color-scheme:dark){.field input:focus,.field select:focus{box-shadow:0 0 0 4px rgba(34,199,126,.14)}}
 #f_total{font-size:1.15rem;font-weight:700;letter-spacing:-.03em}
@@ -114,13 +116,15 @@ display:flex;flex-direction:column;align-items:center;justify-content:center;gap
 .suprow input{flex:1;background:var(--s1);border:1px solid var(--ac);border-radius:12px;color:var(--tx);font:inherit;font-size:.9rem;padding:.6rem .8rem;outline:none;min-width:0}
 .sbtn{background:var(--bg);border:0;color:var(--tx2);border-radius:99px;padding:.42rem .8rem;font:inherit;font-size:.7rem;font-weight:600;cursor:pointer;flex:none}
 .sbtn:active{filter:brightness(.95)}
-.filt{width:100%;background:var(--s1);border:1px solid var(--bd);border-radius:14px;color:var(--tx);font:inherit;font-size:.9rem;font-weight:500;padding:.8rem .9rem;outline:none}
+.filt{width:100%;background:var(--glass-bg);border:1px solid var(--glass-bd);border-radius:16px;color:var(--tx);font:inherit;font-size:.9rem;font-weight:500;padding:.8rem .9rem;outline:none}
 .filt:focus{border-color:var(--ac)}
-#toast{position:fixed;left:50%;bottom:112px;transform:translateX(-50%) translateY(20px);opacity:0;background:var(--s1);border:0;border-left:4px solid var(--ok);border-radius:16px;padding:.85rem 1.2rem;font-size:.85rem;font-weight:500;line-height:1.45;box-shadow:0 12px 34px -12px rgba(12,42,30,.35);transition:.25s;pointer-events:none;max-width:88vw;z-index:60}
+.icon-field{position:relative}
+.icon-field svg{position:absolute;left:.95rem;top:50%;transform:translateY(-50%);width:17px;height:17px;color:var(--tx3);pointer-events:none}
+.icon-field .filt{padding-left:2.6rem}
+#toast{position:fixed;left:50%;bottom:112px;transform:translateX(-50%) translateY(20px);opacity:0;background:var(--glass-bg);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--glass-bd);border-left:4px solid var(--ok);border-radius:16px;padding:.85rem 1.2rem;font-size:.85rem;font-weight:500;line-height:1.45;box-shadow:0 12px 34px -12px rgba(12,42,30,.35);transition:.25s;pointer-events:none;max-width:88vw;z-index:60}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 #toast.err{border-left-color:var(--err)}
-nav{position:fixed;bottom:calc(1rem + env(safe-area-inset-bottom));left:1rem;right:1rem;max-width:496px;margin:0 auto;height:68px;background:rgba(255,255,255,.94);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:0;border-radius:24px;box-shadow:0 12px 34px -12px rgba(12,42,30,.28);display:none;z-index:50}
-@media (prefers-color-scheme:dark){nav{background:rgba(20,26,22,.92)}}
+nav{position:fixed;bottom:calc(1rem + env(safe-area-inset-bottom));left:1rem;right:1rem;max-width:496px;margin:0 auto;height:68px;background:var(--glass-bg);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid var(--glass-bd);border-radius:24px;box-shadow:0 12px 34px -12px rgba(12,42,30,.28);display:none;z-index:50}
 nav.on{display:flex}
 nav button{flex:1;background:none;border:0;color:var(--tx3);font:inherit;font-size:.64rem;font-weight:600;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.28rem;cursor:pointer;letter-spacing:-.01em}
 nav button.on{color:var(--ac)}
@@ -133,12 +137,28 @@ nav svg{width:22px;height:22px;stroke-width:2.1}
 @keyframes sh{from{transform:translateX(-100%)}to{transform:translateX(100%)}}
 #pg-login{min-height:82dvh;display:none;flex-direction:column;justify-content:center}
 #pg-login.on{display:flex}
-.loginbox{text-align:center}
-.loginlogo{width:56px;height:56px;border-radius:18px;background:var(--ac);display:flex;align-items:center;justify-content:center;margin:0 auto 1.1rem;box-shadow:0 10px 24px -8px rgba(12,107,69,.5)}
-.loginlogo svg{width:28px;height:28px;stroke:#fff}
-@media (prefers-color-scheme:dark){.loginlogo svg{stroke:#08130D}}
+.loginbox{text-align:center;max-width:340px;margin:0 auto;background:var(--glass-bg);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);border:1px solid var(--glass-bd);border-radius:24px;padding:2.4rem 1.6rem 1.8rem;box-shadow:0 28px 60px -26px rgba(0,0,0,.32)}
+.loginlogo{width:52px;height:52px;border-radius:50%;background:var(--avatar-bg);border:1px solid var(--glass-bd);display:flex;align-items:center;justify-content:center;margin:0 auto 1.1rem}
+.loginlogo svg{width:24px;height:24px;stroke:var(--ac)}
 .loginbox h1{font-size:1.4rem;font-weight:700;margin-bottom:.4rem;letter-spacing:-.03em}
 .loginbox p{font-size:.85rem;color:var(--tx2);margin-bottom:1.4rem;line-height:1.55}
+.choicecard{display:flex;align-items:center;gap:.9rem;text-align:left;background:var(--glass-bg);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid var(--glass-bd);border-radius:16px;padding:.9rem 1rem;margin-bottom:.7rem;cursor:pointer;transition:border-color .15s}
+.choicecard:hover{border-color:var(--ac)}
+.choiceicon{width:42px;height:42px;border-radius:12px;background:var(--bg);display:flex;align-items:center;justify-content:center;flex:none;color:var(--ac)}
+.choicetxt{flex:1}
+.choicetitle{font-size:.95rem;font-weight:700;color:var(--tx);margin:0}
+.choicesub{font-size:.78rem;color:var(--tx2);margin:.15rem 0 0}
+.acctrow{display:flex;align-items:center;gap:.75rem;padding:.7rem 0;border-bottom:1px solid var(--bd)}
+.acctrow:last-child{border-bottom:0}
+.acctrow.active{cursor:default}
+.acctrow:not(.active):not(.acctadd){cursor:pointer}
+.acctavatar{width:38px;height:38px;border-radius:50%;background:var(--bg);color:var(--ac);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85rem;flex:none}
+.acctavatar-add{background:transparent;border:1.5px dashed var(--ac);color:var(--ac)}
+.acctname{font-size:.88rem;font-weight:600;color:var(--tx);margin:0}
+.acctsub{font-size:.74rem;color:var(--tx3);margin:.1rem 0 0}
+.acctinfo{flex:1;min-width:0}
+.acctcheck{color:var(--ac);font-weight:700}
+.acctx{background:none;border:0;color:var(--tx3);font-size:1.1rem;cursor:pointer;padding:.2rem .4rem}
 #codeInput{text-align:center;font-size:1.1rem;letter-spacing:.22em;font-weight:700;text-transform:uppercase}
 canvas.chart{width:100%!important;max-height:240px}
 /* Aviso de factura repetida */
@@ -162,7 +182,7 @@ canvas.chart{width:100%!important;max-height:240px}
 <body>
 <div class="wrap">
   <header>
-    <div class="brand"><svg viewBox="0 0 24 24" fill="none" stroke="var(--ac)" stroke-width="2" stroke-linecap="round"><path d="M4 4h4M4 4v4M20 4h-4M20 4v4M4 20h4M4 20v-4M20 20h-4M20 20v-4"/><path d="M9 8h4l2 2v8H9z"/><path d="M11.5 12.5h1M9.5 15h5M9.5 17h5M10.5 19.5v-1.2M10 19h1"/></svg>Tick<span>sy</span></div>
+    <div class="brand"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4.2l1.4 1.4 1.4-1.4 1.4 1.4 1.4-1.4 1.4 1.4 1.4-1.4 1.4 1.4 1.4-1.4"/><path d="M5 19.8l1.4-1.4 1.4 1.4 1.4-1.4 1.4 1.4 1.4-1.4 1.4 1.4 1.4-1.4 1.4 1.4 1.4-1.4"/><path d="M5 4.2V19.8M19 4.2V19.8"/><path d="M8 9.5h7M8 12.5h7M8 15.5h4"/><text x="14.3" y="17.4" font-size="4.6" font-family="Arial" fill="var(--ac)" stroke="none" font-weight="700">$</text></svg>Tick<span>sy</span></div>
     <div class="badge" id="dbBadge"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v1"/></svg></div>
   </header>
   <div id="viewBanner" style="display:none;background:var(--warn);color:#fff;text-align:center;font-size:.78rem;font-weight:600;padding:.5rem;border-radius:8px;margin:.6rem 0"></div>
@@ -173,18 +193,31 @@ canvas.chart{width:100%!important;max-height:240px}
       <span class="loginlogo"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round"><path d="M4 7h3l2-3h6l2 3h3v13H4z"/><circle cx="12" cy="13" r="3.5"/></svg></span>
       <div class="brand" style="font-size:1.45rem;margin-bottom:.15rem;justify-content:center">Tick<span>sy</span></div>
       <h1 id="authTitle" style="font-size:1rem;color:var(--tx2);font-weight:600">Bienvenido de vuelta</h1>
-      <p id="authSub">Entra con tu cuenta para gestionar las facturas del restaurante.</p>
+      <p id="authSub">Entra con tu cuenta para gestionar las facturas de tu negocio.</p>
       <div class="row" style="margin-bottom:1rem">
         <button class="btn btn-p" id="tabIn">Entrar</button>
         <button class="btn btn-s" id="tabUp">Crear cuenta</button>
       </div>
-      <div class="field" id="rowName" style="display:none"><input class="filt" id="a_name" placeholder="Tu nombre" autocomplete="name"></div>
-      <div class="field"><input class="filt" id="a_email" type="email" placeholder="Correo" autocomplete="email"></div>
-      <div class="field"><input class="filt" id="a_pass" type="password" placeholder="Contraseña" autocomplete="current-password"></div>
-      <div class="field" id="rowInvite" style="display:none"><input class="filt" id="a_invite" placeholder="Código de invitación (si tu jefe te lo dio)" autocomplete="off" style="text-transform:uppercase"></div>
-      <div class="field" id="rowRestName" style="display:none"><input class="filt" id="a_restname" placeholder="Nombre de tu restaurante (si no tenés código)" autocomplete="off"></div>
-      <div class="row"><button class="btn btn-p" id="btnAuth">Entrar</button></div>
-      <p style="margin-top:1rem"><a href="#" id="lnkForgot" style="color:var(--tx3);font-size:.78rem">¿Olvidaste tu contraseña?</a></p>
+      <div id="signupChoice" style="display:none">
+        <div class="choicecard" id="choiceNew">
+          <span class="choiceicon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h3l2-3h6l2 3h3v13H4z"/><circle cx="12" cy="13" r="3.5"/></svg></span>
+          <span class="choicetxt"><p class="choicetitle">Crear mi negocio</p><p class="choicesub">Sos dueño o admin. Quedás con acceso total.</p></span>
+        </div>
+        <div class="choicecard" id="choiceJoin">
+          <span class="choiceicon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9l1-5h14l1 5"/><path d="M4 9a2.5 2.5 0 0 0 5 0 2.5 2.5 0 0 0 5 0 2.5 2.5 0 0 0 5 0"/><path d="M5 9v11h14V9"/><rect x="9" y="14" width="3" height="6"/><rect x="14" y="14" width="3" height="3"/></svg></span>
+          <span class="choicetxt"><p class="choicetitle">Unirme con un código</p><p class="choicesub">Tu jefe ya tiene un negocio en Ticksy.</p></span>
+        </div>
+      </div>
+      <div id="authForm">
+        <p id="backToChoice" style="display:none;margin-bottom:.9rem"><a href="#" style="color:var(--tx3);font-size:.78rem">← Elegir otra vez</a></p>
+        <div class="field" id="rowName" style="display:none"><input class="filt" id="a_name" placeholder="Tu nombre" autocomplete="name"></div>
+        <div class="field icon-field"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16v12H4z"/><path d="M4 7l8 6 8-6"/></svg><input class="filt" id="a_email" type="email" placeholder="Correo" autocomplete="email"></div>
+        <div class="field icon-field"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><input class="filt" id="a_pass" type="password" placeholder="Contraseña" autocomplete="current-password"></div>
+        <div class="field" id="rowInvite" style="display:none"><input class="filt" id="a_invite" placeholder="Código de invitación" autocomplete="off" style="text-transform:uppercase"></div>
+        <div class="field" id="rowRestName" style="display:none"><input class="filt" id="a_restname" placeholder="Nombre de tu negocio" autocomplete="off"></div>
+        <div class="row"><button class="btn btn-p" id="btnAuth">Entrar →</button></div>
+        <p style="margin-top:1rem"><a href="#" id="lnkForgot" style="color:var(--tx3);font-size:.78rem">¿Olvidaste tu contraseña?</a></p>
+      </div>
     </div>
   </section>
 
@@ -278,6 +311,12 @@ canvas.chart{width:100%!important;max-height:240px}
         <option value="PAGADA">Pagadas</option>
       </select>
     </div>
+    <div class="row">
+      <select class="filt" id="fDateField">
+        <option value="invoice">Filtrar por fecha de factura</option>
+        <option value="created">Filtrar por fecha en que se agregó</option>
+      </select>
+    </div>
     <div class="card" id="histList" style="margin-top:.7rem"><div class="empty">Cargando…</div></div>
   </section>
 
@@ -300,19 +339,33 @@ canvas.chart{width:100%!important;max-height:240px}
     </div>
     <div class="slabel">Mi cuenta</div>
     <div class="card" id="meCard"><p style="font-size:.85rem;color:var(--tx2)" id="meInfo">Sin sesión.</p></div>
+    <div class="slabel">Cambiar mi contraseña</div>
+    <div class="card">
+      <div class="field"><label for="newPass">Nueva contraseña (mín. 6 caracteres)</label><input id="newPass" type="password" placeholder="••••••••" autocomplete="new-password"></div>
+      <div class="row"><button class="btn btn-s" id="btnChangePass">Cambiar contraseña</button></div>
+    </div>
+    <div class="slabel">Cuentas</div>
+    <div class="card" id="acctBox"></div>
     <div class="slabel" id="ownerLbl" style="display:none">Cuenta maestra</div>
     <div class="card" id="ownerCard" style="display:none">
-      <div class="field"><label for="restSel">Ver otro restaurante</label>
+      <div class="field"><label for="restSel">Ver otro negocio</label>
         <select id="restSel"><option value="">— El mío —</option></select></div>
-      <div class="hint">Solo lectura: podés ver su historial y su dashboard. Las facturas que guardes siempre quedan en tu propio restaurante.</div>
+      <div class="hint">Solo lectura: podés ver su historial y su dashboard. Las facturas que guardes siempre quedan en tu propio negocio.</div>
     </div>
     <div class="slabel">Proveedores</div>
     <div class="card" id="supBox"><div class="empty">Cargando…</div></div>
-    <div class="slabel" id="codeLbl">Código de invitación al restaurante</div>
+    <div class="slabel" id="codeLbl">Código de invitación al negocio</div>
     <div class="card" id="codeCard">
       <div class="field"><label for="newCode">Nuevo código (mín. 6 caracteres)</label><input id="newCode" placeholder="NUEVO-CODIGO"></div>
       <div class="row"><button class="btn btn-s" id="btnChangeCode">Cambiar código de invitación</button></div>
-      <div class="hint">Compartí este código con tus empleados para que se registren en tu restaurante.</div>
+      <div class="hint">Compartí este código con tus empleados para que se registren en tu negocio.</div>
+    </div>
+    <div class="slabel" id="resetPwLbl">Contraseña de un empleado</div>
+    <div class="card" id="resetPwCard">
+      <div class="field"><label for="rpEmail">Correo del empleado</label><input id="rpEmail" type="email" placeholder="correo@empleado.com" autocomplete="off"></div>
+      <div class="field"><label for="rpNew">Nueva contraseña (mín. 6 caracteres)</label><input id="rpNew" placeholder="Contraseña temporal" autocomplete="off"></div>
+      <div class="row"><button class="btn btn-s" id="btnResetPw">Restablecer contraseña</button></div>
+      <div class="hint">Para cuando alguien se queda afuera y el correo de recuperación no le llega. Compartísela vos directamente; después puede cambiarla en "Cambiar mi contraseña".</div>
     </div>
     <div class="slabel">Sesión</div>
     <div class="card"><div class="row" style="margin-top:0">
@@ -362,6 +415,33 @@ const CFG=window.ROS_CONFIG||{};
 let sb=null;
 if(CFG.SUPABASE_URL&&CFG.SUPABASE_KEY&&window.supabase){
   try{sb=window.supabase.createClient(CFG.SUPABASE_URL,CFG.SUPABASE_KEY);}catch(e){}
+}
+const LSA='ticksy_accounts';
+let CURRENT_UID=null;
+function loadAccounts(){try{return JSON.parse(localStorage.getItem(LSA)||'[]');}catch(e){return [];}}
+function saveAccounts(list){try{localStorage.setItem(LSA,JSON.stringify(list));}catch(e){}}
+function upsertAccount(session,meInfo){
+  if(!session||!session.user)return;
+  const list=loadAccounts();
+  const i=list.findIndex(a=>a.user_id===session.user.id);
+  const prev=i>=0?list[i]:{};
+  const entry={
+    user_id:session.user.id,
+    email:session.user.email,
+    access_token:session.access_token,
+    refresh_token:session.refresh_token,
+    name:(meInfo&&meInfo.name)||prev.name||session.user.email,
+    business_name:(meInfo&&meInfo.restaurant_name)||prev.business_name||''
+  };
+  if(i>=0)list[i]=entry;else list.push(entry);
+  saveAccounts(list);
+}
+function removeAccount(uid){saveAccounts(loadAccounts().filter(a=>a.user_id!==uid));}
+if(sb){
+  sb.auth.onAuthStateChange((event,session)=>{
+    if(session&&session.user){CURRENT_UID=session.user.id;upsertAccount(session,ME);}
+    else if(event==='SIGNED_OUT'){CURRENT_UID=null;}
+  });
 }
 if(window.pdfjsLib) pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.worker.min.js';
 
@@ -426,19 +506,44 @@ function show(pg){
 document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>show(b.dataset.pg));
 
 /* ---------- Autenticación con cuentas ---------- */
-let ME=null,authMode='in';
+let ME=null,authMode='in',SIGNUP_PATH=null;
 function setMode(m){
   authMode=m;
   $('tabIn').className='btn '+(m==='in'?'btn-p':'btn-s');
   $('tabUp').className='btn '+(m==='up'?'btn-p':'btn-s');
-  $('rowName').style.display=m==='up'?'block':'none';
-  $('rowInvite').style.display=m==='up'?'block':'none';
-  $('rowRestName').style.display=m==='up'?'block':'none';
-  $('btnAuth').textContent=m==='up'?'Crear cuenta':(m==='reset'?'Guardar nueva contraseña':'Entrar');
-  $('authTitle').textContent=m==='up'?'Crear cuenta':(m==='reset'?'Nueva contraseña':'Bienvenido');
-  if(m==='reset'){$('a_email').style.display='none';$('rowName').style.display='none';$('rowInvite').style.display='none';$('rowRestName').style.display='none';}
+  if(m==='up'){
+    SIGNUP_PATH=null;
+    $('signupChoice').style.display='block';
+    $('authForm').style.display='none';
+    $('authTitle').textContent='Crear cuenta';
+    return;
+  }
+  $('signupChoice').style.display='none';
+  $('authForm').style.display='block';
+  $('rowName').style.display='none';
+  $('rowInvite').style.display='none';
+  $('rowRestName').style.display='none';
+  $('backToChoice').style.display='none';
+  $('btnAuth').textContent=m==='reset'?'Guardar nueva contraseña':'Entrar →';
+  $('authTitle').textContent=m==='reset'?'Nueva contraseña':'Bienvenido';
+  if(m==='reset'){$('a_email').style.display='none';}
   else $('a_email').style.display='block';
 }
+function chooseSignupPath(path){
+  SIGNUP_PATH=path;
+  $('signupChoice').style.display='none';
+  $('authForm').style.display='block';
+  $('a_email').style.display='block';
+  $('rowName').style.display='block';
+  $('rowInvite').style.display=path==='join'?'block':'none';
+  $('rowRestName').style.display=path==='new'?'block':'none';
+  $('backToChoice').style.display='block';
+  $('btnAuth').textContent='Crear cuenta →';
+  $('authTitle').textContent=path==='new'?'Creá tu negocio':'Unite a tu negocio';
+}
+$('choiceNew').onclick=()=>chooseSignupPath('new');
+$('choiceJoin').onclick=()=>chooseSignupPath('join');
+$('backToChoice').querySelector('a').onclick=e=>{e.preventDefault();setMode('up');};
 function syncStatus(){$('f_status').value=$('f_type').value==='CONTADO'?'PAGADA':'PENDIENTE';}
 $('f_type').onchange=syncStatus;
 $('tabIn').onclick=()=>setMode('in');
@@ -460,6 +565,7 @@ async function enterApp(){
   const me=await rpc('api_me',{});
   ME=(me&&me.ok)?me:null;
   if(ME&&!ME.active){toast('Tu cuenta espera aprobación: pide el código de invitación correcto.',true);await sb.auth.signOut();ME=null;show('login');return;}
+  if(ME&&sb){try{const {data}=await sb.auth.getSession();if(data&&data.session)upsertAccount(data.session,ME);}catch(e){}}
   const v=await rpc('api_verify_code',{p_code:''});
   if(v&&v.ok&&v.categories)CATS=v.categories.map(c=>c.name);
   fillCats();loadSuppliers();
@@ -470,12 +576,51 @@ function applyRole(){
   const emp=ME&&ME.role==='empleado';
   $('codeCard').style.display=emp?'none':'block';
   $('codeLbl').style.display=emp?'none':'block';
+  $('resetPwCard').style.display=emp?'none':'block';
+  $('resetPwLbl').style.display=emp?'none':'block';
   $('meInfo').textContent=ME?('Sesión: '+ME.name+' ('+ME.role+')'+(ME.restaurant_name?' · '+ME.restaurant_name:'')):'Sin sesión.';
+  renderAccountSwitcher();
   const owner=!!(ME&&ME.is_owner);
   $('ownerLbl').style.display=owner?'block':'none';
   $('ownerCard').style.display=owner?'block':'none';
   if(owner&&!OWNER_LOADED)loadOwnerRestaurants();
 }
+function renderAccountSwitcher(){
+  const box=$('acctBox');if(!box)return;
+  const list=loadAccounts();
+  if(!list.length){box.innerHTML='<div class="empty">Sin cuentas guardadas.</div>';return;}
+  box.innerHTML=list.map(a=>{
+    const active=a.user_id===CURRENT_UID;
+    const ini=(a.name||a.email||'?').trim().charAt(0).toUpperCase();
+    return '<div class="acctrow'+(active?' active':'')+'" data-uid="'+esc(a.user_id)+'">'+
+      '<div class="acctavatar">'+esc(ini)+'</div>'+
+      '<div class="acctinfo"><p class="acctname">'+esc(a.name||a.email)+'</p><p class="acctsub">'+esc(a.business_name||a.email)+'</p></div>'+
+      (active?'<span class="acctcheck">✓</span>':'<button class="acctx" data-forget="'+esc(a.user_id)+'" aria-label="Olvidar cuenta">×</button>')+
+      '</div>';
+  }).join('')+'<div class="acctrow acctadd" id="acctAdd"><div class="acctavatar acctavatar-add">+</div><p class="acctname">Agregar otra cuenta</p></div>';
+}
+async function switchAccount(uid){
+  const acc=loadAccounts().find(a=>a.user_id===uid);
+  if(!acc||!sb)return;
+  const {error}=await sb.auth.setSession({access_token:acc.access_token,refresh_token:acc.refresh_token});
+  if(error){toast('Esa sesión ya venció. Iniciá sesión de nuevo.',true);removeAccount(uid);renderAccountSwitcher();return;}
+  CURRENT_UID=uid;
+  await enterApp();
+  toast('Cambiaste a '+(acc.name||acc.email));
+}
+async function addAnotherAccount(){
+  if(sb)try{await sb.auth.signOut({scope:'local'});}catch(e){}
+  ME=null;VIEW_RID=null;OWNER_LOADED=false;
+  show('login');setMode('in');
+  toast('Iniciá sesión con la otra cuenta.');
+}
+$('acctBox').onclick=async e=>{
+  const forget=e.target.closest('[data-forget]');
+  if(forget){removeAccount(forget.dataset.forget);renderAccountSwitcher();return;}
+  if(e.target.closest('#acctAdd')){await addAnotherAccount();return;}
+  const row=e.target.closest('.acctrow[data-uid]');
+  if(row&&!row.classList.contains('active'))await switchAccount(row.dataset.uid);
+};
 let VIEW_RID=null,OWNER_LOADED=false;
 async function loadOwnerRestaurants(){
   OWNER_LOADED=true;
@@ -512,7 +657,9 @@ $('btnAuth').onclick=async()=>{
     }else if(authMode==='up'){
       const nm=$('a_name').value.trim(),inv=$('a_invite').value.trim().toUpperCase(),rn=$('a_restname').value.trim();
       if(!nm||!em||pw.length<6){toast('Completa nombre, correo y contraseña (mín. 6).',true);return;}
-      if(!inv&&!rn){toast('Ingresa un código de invitación o el nombre de tu restaurante.',true);return;}
+      if(SIGNUP_PATH==='join'&&!inv){toast('Ingresa el código de invitación.',true);return;}
+      if(SIGNUP_PATH==='new'&&!rn){toast('Ingresa el nombre de tu negocio.',true);return;}
+      if(!inv&&!rn){toast('Elige cómo entrar arriba.',true);return;}
       const {data,error}=await sb.auth.signUp({email:em,password:pw,options:{data:{name:nm,invite:inv,restaurant_name:rn}}});
       if(error){
         const m=error.message||'';
@@ -532,7 +679,14 @@ $('btnAuth').onclick=async()=>{
 
 
 function fillCats(){$('f_cat').innerHTML=CATS.map(c=>'<option>'+c+'</option>').join('');}
-$('btnLogout').onclick=async()=>{localStorage.removeItem(LSC);CODE='';ME=null;VIEW_RID=null;OWNER_LOADED=false;$('viewBanner').style.display='none';if(sb)try{await sb.auth.signOut();}catch(e){}show('login');};
+$('btnLogout').onclick=async()=>{
+  const uid=CURRENT_UID;
+  localStorage.removeItem(LSC);CODE='';ME=null;VIEW_RID=null;OWNER_LOADED=false;$('viewBanner').style.display='none';
+  if(sb)try{await sb.auth.signOut();}catch(e){}
+  if(uid)removeAccount(uid);
+  CURRENT_UID=null;
+  show('login');
+};
 
 /* ---------- Captura de archivo ---------- */
 let curFile=null,curCanvas=null,isPdf=false,extraFiles=[],addingSecond=false;
@@ -541,7 +695,9 @@ $('zone').onkeydown=e=>{if(e.key==='Enter'||e.key===' '){addingSecond=false;$('f
 $('btnRetake').onclick=()=>{addingSecond=false;extraFiles=[];$('file').click();};
 $('btnAdd2').onclick=()=>{addingSecond=true;$('file').click();};
 $('file').onchange=async e=>{
-  const files=Array.from(e.target.files||[]);if(!files.length)return;
+  const files=Array.from(e.target.files||[]);
+  e.target.value='';
+  if(!files.length)return;
   if(addingSecond&&curFile&&!isPdf){
     // Agregar segunda(s) foto(s) a la factura actual
     for(const f of files){if(f.type!=='application/pdf')extraFiles.push(f);}
@@ -766,7 +922,7 @@ async function uploadFile(file){
   }catch(e){return {}}
 }
 $('btnSave').onclick=async()=>{
-  if(VIEW_RID){toast('Estás viendo otro restaurante (solo lectura). Cambiá a "El mío" en Ajustes para guardar.',true);return;}
+  if(VIEW_RID){toast('Estás viendo otro negocio (solo lectura). Cambiá a "El mío" en Ajustes para guardar.',true);return;}
   const inv=invFromForm();
   if(!(+inv.total_amount)){toast('Ingresa el monto total.',true);return;}
   $('btnSave').disabled=true;$('btnSave').textContent='Guardando…';
@@ -985,7 +1141,7 @@ const monthKey=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
 $('mPrev').onclick=()=>{histDate.setMonth(histDate.getMonth()-1);loadHist();};
 $('mNext').onclick=()=>{histDate.setMonth(histDate.getMonth()+1);loadHist();};
 $('qNum').addEventListener('input',()=>{clearTimeout(qT);qT=setTimeout(loadHist,400);});
-$('fSup').onchange=loadHist;$('fSt').onchange=loadHist;
+$('fSup').onchange=loadHist;$('fSt').onchange=loadHist;$('fDateField').onchange=loadHist;
 async function loadHist(){
   const q=$('qNum').value.trim();
   $('mLabel').textContent=q?'Búsqueda: "'+q+'"':histDate.toLocaleDateString('es-CR',{month:'long',year:'numeric'});
@@ -995,6 +1151,7 @@ async function loadHist(){
     p_month:q?null:monthKey(histDate),
     p_supplier:$('fSup').value||null,
     p_status:$('fSt').value||null,
+    p_date_field:$('fDateField').value||'invoice',
     p_q:q||null});
   if(!(r&&r.ok)){box.innerHTML='<div class="empty">No se pudo cargar. Revisa tu conexión.</div>';return;}
   HIST=r.rows||[];
@@ -1005,7 +1162,7 @@ async function loadHist(){
     '<div class="inv">'+
     '<div class="thumb" id="thumb-'+i+'">'+esc((x.supplier_name||'?').trim().charAt(0).toUpperCase())+'</div>'+
     '<div class="mid"><div class="l1">'+esc(x.supplier_name||'—')+'</div>'+
-    '<div class="l2">'+esc(x.invoice_date||'')+(x.invoice_number?' · #'+esc(x.invoice_number):'')+' · '+esc(x.category||'')+(x.created_by_name?' · por '+esc(x.created_by_name):'')+'</div>'+
+    '<div class="l2">'+esc(x.invoice_date||'')+(x.invoice_number?' · #'+esc(x.invoice_number):'')+' · '+esc(x.category||'')+(x.created_by_name?' · por '+esc(x.created_by_name):'')+(x.transaction_number?' · txn '+esc(x.transaction_number):'')+'</div>'+
     '<div style="margin-top:.4rem;display:flex;gap:.4rem;flex-wrap:wrap">'+
       '<button class="sbtn" style="color:'+(x.status==='PAGADA'?'var(--warn)':'var(--ok)')+'" onclick="togglePay(\''+x.id+'\',\''+(x.status==='PAGADA'?'PENDIENTE':'PAGADA')+'\')">'+(x.status==='PAGADA'?'Marcar pendiente':'Marcar pagada')+'</button>'+
       '<button class="sbtn" onclick="editInv('+i+')">Editar</button>'+
@@ -1046,10 +1203,15 @@ $('btnCsv').onclick=()=>{
 let payBusy=false;
 window.togglePay=async(id,destino)=>{
   if(payBusy)return;
+  const st=(destino==='PAGADA')?'PAGADA':'PENDIENTE';
+  const payload={status:st};
+  if(st==='PAGADA'){
+    const txn=prompt('Número de transacción (opcional):','');
+    if(txn&&txn.trim())payload.transaction_number=txn.trim();
+  }
   payBusy=true;
   try{
-    const st=(destino==='PAGADA')?'PAGADA':'PENDIENTE';
-    const r=await rpc('api_update_invoice',{p_code:CODE,p_id:id,p:{status:st}});
+    const r=await rpc('api_update_invoice',{p_code:CODE,p_id:id,p:payload});
     if(r&&r.ok){toast(st==='PAGADA'?'Marcada como pagada.':'Marcada como pendiente.');await loadHist();}
     else toast('No se pudo cambiar el estado.',true);
   }finally{payBusy=false;}
@@ -1082,6 +1244,28 @@ $('btnChangeCode').onclick=async()=>{
   if(r&&r.ok){CODE=nc;localStorage.setItem(LSC,nc);$('newCode').value='';toast('Código actualizado. Compártelo con tu equipo.');}
   else toast('No se pudo cambiar el código.',true);
 };
+$('btnResetPw').onclick=async()=>{
+  const email=$('rpEmail').value.trim();
+  const pw=$('rpNew').value;
+  if(!email){toast('Ingresa el correo del empleado.',true);return;}
+  if(pw.length<6){toast('Mínimo 6 caracteres.',true);return;}
+  $('btnResetPw').disabled=true;
+  const r=await rpc('api_admin_reset_password',{p_email:email,p_new_password:pw});
+  $('btnResetPw').disabled=false;
+  if(r&&r.ok){$('rpEmail').value='';$('rpNew').value='';toast('Contraseña actualizada'+(r.name?' para '+r.name:'')+'. Compártesela.');}
+  else if(r&&r.error==='no_encontrado')toast('No hay ningún empleado tuyo con ese correo.',true);
+  else toast('No se pudo restablecer la contraseña.',true);
+};
+$('btnChangePass').onclick=async()=>{
+  if(!sb){toast('Sin conexión con la nube.',true);return;}
+  const pw=$('newPass').value;
+  if(pw.length<6){toast('Mínimo 6 caracteres.',true);return;}
+  $('btnChangePass').disabled=true;
+  const {error}=await sb.auth.updateUser({password:pw});
+  $('btnChangePass').disabled=false;
+  if(error)toast('No se pudo cambiar: '+error.message,true);
+  else{$('newPass').value='';toast('Contraseña actualizada.');}
+};
 $('btnExport').onclick=async()=>{
   const r=await rpc('api_list_invoices',{p_code:CODE,p_limit:1000});
   const blob=new Blob([JSON.stringify(r&&r.rows||[],null,2)],{type:'application/json'});
@@ -1099,7 +1283,7 @@ fillCats();
     }
     try{
       const {data}=await sb.auth.getSession();
-      if(data&&data.session){await enterApp();return;}
+      if(data&&data.session){CURRENT_UID=data.session.user.id;await enterApp();return;}
     }catch(e){}
   }
   localStorage.removeItem(LSC);CODE='';
