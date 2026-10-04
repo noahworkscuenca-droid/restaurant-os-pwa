@@ -366,6 +366,11 @@ canvas.chart{width:100%!important}
     </div>
     <div class="slabel">Mi cuenta</div>
     <div class="card" id="meCard"><p style="font-size:.85rem;color:var(--tx2)" id="meInfo">Sin sesión.</p></div>
+    <div class="card" id="subCard" style="display:none;background:#fff3d6;border-color:#f0dca0">
+      <div style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.03em;color:#8a5a00" id="subTag"></div>
+      <div style="font-size:.95rem;font-weight:700;margin-top:.2rem;color:#1c1b19" id="subTitle"></div>
+      <div style="font-size:.78rem;color:#6b5a2e;margin-top:.2rem" id="subDetail"></div>
+    </div>
     <div class="slabel">Cambiar mi contraseña</div>
     <div class="card">
       <div class="field"><label for="newPass">Nueva contraseña (mín. 6 caracteres)</label><input id="newPass" type="password" placeholder="••••••••" autocomplete="new-password"></div>
@@ -641,6 +646,7 @@ function applyRole(){
   $('resetPwLbl').style.display=emp?'none':'block';
   if(!emp&&ME)loadTeam();
   $('meInfo').textContent=ME?('Sesión: '+ME.name+' ('+ME.role+')'+(ME.restaurant_name?' · '+ME.restaurant_name:'')):'Sin sesión.';
+  renderSubscriptionCard();
   renderAccountSwitcher();
   const owner=!!(ME&&ME.is_owner);
   $('ownerLbl').style.display=owner?'block':'none';
@@ -1368,6 +1374,27 @@ $('btnChangeCode').onclick=async()=>{
   }
   else toast('No se pudo cambiar el código.',true);
 };
+function renderSubscriptionCard(){
+  const sub=ME&&ME.subscription;
+  const box=$('subCard');
+  if(!sub){box.style.display='none';return;}
+  box.style.display='block';
+  const fechas=sub.trial_ends_at?new Date(sub.trial_ends_at):null;
+  const fechaTxt=fechas?fechas.toLocaleDateString('es-CR',{day:'numeric',month:'long',year:'numeric'}):'';
+  if(sub.plan_status==='prueba'){
+    $('subTag').textContent='Prueba gratis';
+    $('subTitle').textContent=fechas?('Termina el '+fechaTxt):'En período de prueba';
+    $('subDetail').textContent='Después de la prueba, la suscripción sigue activa automáticamente salvo que la canceles.';
+  }else if(sub.plan_status==='activo'){
+    $('subTag').textContent='Suscripción activa';
+    $('subTitle').textContent=fechas?('Próximo cobro: '+fechaTxt):'Al día';
+    $('subDetail').textContent='Gracias por usar Ticksy.';
+  }else{
+    $('subTag').textContent='Suscripción vencida';
+    $('subTitle').textContent='Tu acceso puede verse afectado';
+    $('subDetail').textContent='Contactá a Ticksy para ponerte al día.';
+  }
+}
 async function loadTeam(){
   const r=await rpc('api_list_team',{});
   const box=$('teamBox');

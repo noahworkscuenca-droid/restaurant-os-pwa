@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Ticksy — Back Office</title>
+<script src="../config.js"></script>
+<script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<style>
+:root{
+  --bg:#E4EBE6; --s1:#FFFFFF; --s2:#F7FAF8; --bd:#DDE5E0;
+  --ink:#0C2A1E; --ac:#0C6B45; --ac2:#0E7D50; --err:#B3261E;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:1280px;margin:0 auto;padding:32px 24px 80px}
+.card{background:var(--s1);border:1px solid var(--bd);border-radius:14px;padding:18px 20px}
+.hdr{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;margin-bottom:22px}
+.hdr h1{font-size:21px;margin:0}
+.hdr p{font-size:13px;color:#6b7570;margin:2px 0 0}
+.btn{border:1px solid var(--bd);background:#fff;border-radius:8px;padding:8px 14px;font-size:13px;font-weight:600;cursor:pointer;color:var(--ink)}
+.btn:hover{background:var(--s2)}
+.btn.primary{background:var(--ink);color:#fff;border-color:var(--ink)}
+.btn.primary:hover{opacity:.9}
+input,select{font:inherit;padding:9px 11px;border:1px solid var(--bd);border-radius:8px;width:100%;background:#fff;color:var(--ink)}
+label{font-size:12px;font-weight:600;color:#50594f;display:block;margin-bottom:4px}
+.field{margin-bottom:12px}
+
+/* login */
+#loginWrap{max-width:360px;margin:12vh auto;padding:0 20px}
+#loginWrap .card{padding:26px 24px}
+#loginWrap h1{font-size:19px;margin:0 0 4px}
+#loginWrap p{font-size:13px;color:#6b7570;margin:0 0 20px}
+#loginErr{color:var(--err);font-size:13px;margin-top:10px;display:none}
+
+/* kpis */
+.kpis{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:22px}
+.kpi{background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:16px 18px;flex:1;min-width:150px}
+.kpi .n{font-size:26px;font-weight:700;line-height:1.1}
+.kpi .l{font-size:12px;color:#6b7570;margin-top:4px}
+
+.alert{background:#fbe4e1;border:1px solid #f0bdb6;border-radius:12px;padding:12px 16px;font-size:13px;color:#7a251b;margin-bottom:18px}
+
+/* table */
+.tablecard{overflow:hidden}
+.row{display:grid;grid-template-columns:1.5fr .85fr 1.2fr .7fr .8fr .8fr 1.3fr;align-items:center;gap:14px;padding:13px 0;border-bottom:1px solid var(--bd)}
+.row.head{font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:#8a857a;font-weight:700}
+.row.clickable{cursor:pointer}
+.row.clickable:hover{background:var(--s2)}
+.row.selected{background:#fdf6ee}
+.biz-name{font-weight:700;font-size:14px}
+.biz-sub{font-size:12px;color:#8a857a;margin-top:2px}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;font-size:12px;font-weight:600}
+.pill-prueba{background:#fff3d6;color:#8a5a00}
+.pill-activo{background:#e4f3e6;color:#1f7a38}
+.pill-vencido{background:#fbe4e1;color:#a3271b}
+.toggle{position:relative;width:40px;height:22px;border-radius:999px;background:#d8d4c8;border:none;cursor:pointer;flex:none;padding:0}
+.toggle.on{background:#1f7a38}
+.toggle .knob{position:absolute;top:2px;left:2px;width:18px;height:18px;border-radius:50%;background:#fff;transition:left .15s ease;box-shadow:0 1px 2px rgba(0,0,0,.25)}
+.toggle.on .knob{left:20px}
+
+.content-row{display:flex;gap:20px;align-items:flex-start}
+.drawer{width:340px;flex:none;padding:20px}
+.drawer h3{margin:0 0 2px;font-size:16px}
+.drawer .muted{font-size:12px;color:#8a857a;margin-bottom:14px}
+.stat-line{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #f1efe9;font-size:13px}
+.stat-line .l{color:#8a857a}
+.stat-line .v{font-weight:600;text-align:right}
+.mail-chip{display:inline-block;background:var(--s2);border-radius:6px;padding:3px 8px;font-size:11.5px;margin:3px 3px 0 0}
+.empty{font-size:13px;color:#8a857a;padding:20px 0;text-align:center}
+.foot{font-size:12px;color:#8a857a;margin-top:16px}
+#app{display:none}
+</style>
+</head>
+<body>
+
+<div id="loginWrap">
+  <div class="card">
+    <h1>Ticksy Back Office</h1>
+    <p>Acceso solo para administración de Divende.</p>
+    <div class="field"><label for="lEmail">Correo</label><input id="lEmail" type="email" autocomplete="email"></div>
+    <div class="field"><label for="lPass">Contraseña</label><input id="lPass" type="password" autocomplete="current-password"></div>
+    <button class="btn primary" id="btnLogin" style="width:100%">Entrar</button>
+    <div id="loginErr"></div>
+  </div>
+</div>
+
+<div id="app">
+<div class="wrap">
+  <div class="hdr">
+    <div>
+      <h1>Suscripciones — Ticksy</h1>
+      <p>Panel interno, aparte de la app que usan los restaurantes.</p>
+    </div>
+    <button class="btn" id="btnLogout">Salir</button>
+  </div>
+
+  <div id="alertBox"></div>
+
+  <div class="kpis" id="kpiBox"></div>
+
+  <div class="content-row">
+    <div class="card tablecard" style="flex:1;padding:0 20px">
+      <div class="row head">
+        <div>Negocio</div><div>Estado</div><div>Prueba / cobro</div><div>Cuentas</div><div>Facturas/mes</div><div>Visible</div><div>Acciones</div>
+      </div>
+      <div id="tableBox"><div class="empty">Cargando…</div></div>
+    </div>
+    <div class="card drawer" id="drawer" style="display:none"></div>
+  </div>
+
+  <div class="foot">"Visible" deja que ese restaurante vea su propio estado de suscripción dentro de Ticksy. Click en una fila para ver el detalle.</div>
+</div>
+</div>
+
+<script>
+'use strict';
+const $=id=>document.getElementById(id);
+let sb=null, ROWS=[], SELECTED=null, TEAM_CACHE={};
+
+function initSb(){
+  if(sb) return sb;
+  const c=window.ROS_CONFIG;
+  if(!c||!c.SUPABASE_URL||!c.SUPABASE_KEY) return null;
+  sb=supabase.createClient(c.SUPABASE_URL, c.SUPABASE_KEY);
+  return sb;
+}
+async function rpc(fn,args){
+  if(!sb&&!initSb()) return {ok:false,error:'sin_conexion'};
+  const {data,error}=await sb.rpc(fn,args||{});
+  if(error) return {ok:false,error:error.message};
+  return data;
+}
+
+function showApp(on){
+  $('loginWrap').style.display=on?'none':'block';
+  $('app').style.display=on?'block':'none';
+}
+
+$('btnLogin').onclick=async()=>{
+  if(!initSb()){$('loginErr').textContent='No se pudo conectar.';$('loginErr').style.display='block';return;}
+  const email=$('lEmail').value.trim(), pass=$('lPass').value;
+  if(!email||!pass){return;}
+  $('btnLogin').disabled=true;
+  const {error}=await sb.auth.signInWithPassword({email,password:pass});
+  $('btnLogin').disabled=false;
+  if(error){$('loginErr').textContent='Correo o contraseña incorrectos.';$('loginErr').style.display='block';return;}
+  await boot();
+};
+$('btnLogout').onclick=async()=>{await sb.auth.signOut();location.reload();};
+
+async function boot(){
+  const r=await rpc('api_super_list_restaurants',{});
+  if(!r||!r.ok){
+    $('loginErr').textContent='Esta cuenta no tiene acceso al Back Office.';
+    $('loginErr').style.display='block';
+    await sb.auth.signOut();
+    showApp(false);
+    return;
+  }
+  ROWS=r.rows||[];
+  showApp(true);
+  render();
+}
+
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function fmtDate(d){ return d? new Date(d).toLocaleDateString('es-CR',{day:'numeric',month:'short',year:'numeric'}) : '—'; }
+function fmtDateTime(d){ return d? new Date(d).toLocaleString('es-CR',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}) : 'Sin actividad'; }
+
+function render(){
+  const activos=ROWS.filter(b=>b.plan_status==='activo').length;
+  const prueba=ROWS.filter(b=>b.plan_status==='prueba').length;
+  const vencidos=ROWS.filter(b=>b.plan_status==='vencido').length;
+  const correos=ROWS.reduce((s,b)=>s+Number(b.cuentas||0),0);
+  const facturasMes=ROWS.reduce((s,b)=>s+Number(b.facturas_mes||0),0);
+
+  $('kpiBox').innerHTML=[
+    ['Negocios activos',activos],['En prueba',prueba],['Vencidos',vencidos],
+    ['Correos registrados',correos],['Facturas este mes',facturasMes]
+  ].map(([l,n])=>'<div class="kpi"><div class="n">'+n+'</div><div class="l">'+l+'</div></div>').join('');
+
+  const needsAttention=ROWS.filter(b=>b.plan_status==='vencido'||
+    (b.plan_status==='prueba'&&b.trial_ends_at&&(new Date(b.trial_ends_at)-Date.now())<3*86400000));
+  $('alertBox').innerHTML=needsAttention.length
+    ? '<div class="alert">⚠ '+needsAttention.length+' negocio(s) necesitan atención: pagos vencidos o prueba por terminar.</div>'
+    : '';
+
+  const pillTxt={prueba:'En prueba',activo:'Activo',vencido:'Vencido'};
+
+  $('tableBox').innerHTML = ROWS.length ? ROWS.map(b=>(
+    '<div class="row clickable'+(SELECTED===b.id?' selected':'')+'" data-id="'+b.id+'">'+
+      '<div><div class="biz-name">'+esc(b.nombre)+'</div></div>'+
+      '<div><span class="pill pill-'+b.plan_status+'">'+pillTxt[b.plan_status]+'</span></div>'+
+      '<div>'+fmtDate(b.trial_ends_at)+'</div>'+
+      '<div>'+b.cuentas+'</div>'+
+      '<div>'+b.facturas_mes+'</div>'+
+      '<div><button class="toggle'+(b.owner_visible?' on':'')+'" data-vis="'+b.id+'"><span class="knob"></span></button></div>'+
+      '<div><button class="btn" data-pay="'+b.id+'">Marcar pagado</button></div>'+
+    '</div>'
+  )).join('') : '<div class="empty">Todavía no hay negocios.</div>';
+
+  document.querySelectorAll('.row[data-id]').forEach(el=>{
+    el.onclick=(e)=>{ if(e.target.closest('[data-vis],[data-pay]')) return; selectRow(el.dataset.id); };
+  });
+  document.querySelectorAll('[data-vis]').forEach(el=>{
+    el.onclick=async(e)=>{
+      e.stopPropagation();
+      const id=el.dataset.vis, row=ROWS.find(b=>b.id===id);
+      const r=await rpc('api_super_set_owner_visible',{p_restaurant_id:id,p_visible:!row.owner_visible});
+      if(r&&r.ok){ row.owner_visible=!row.owner_visible; render(); if(SELECTED===id) renderDrawer(); }
+    };
+  });
+  document.querySelectorAll('[data-pay]').forEach(el=>{
+    el.onclick=async(e)=>{
+      e.stopPropagation();
+      const id=el.dataset.pay;
+      const dias=prompt('¿Cuántos días de suscripción activa agregar desde hoy?','30');
+      if(dias===null) return;
+      const n=parseInt(dias,10); if(!n||n<=0) return;
+      const nueva=new Date(Date.now()+n*86400000).toISOString();
+      const r=await rpc('api_super_set_plan',{p_restaurant_id:id,p_status:'activo',p_trial_ends_at:nueva});
+      if(r&&r.ok){ await boot(); } else alert('No se pudo actualizar.');
+    };
+  });
+
+  if(SELECTED) renderDrawer();
+}
+
+async function selectRow(id){
+  SELECTED = SELECTED===id ? null : id;
+  render();
+}
+
+async function renderDrawer(){
+  const d=$('drawer');
+  const row=ROWS.find(b=>b.id===SELECTED);
+  if(!row){d.style.display='none';return;}
+  d.style.display='block';
+  const pillTxt={prueba:'En prueba',activo:'Activo',vencido:'Vencido'};
+  d.innerHTML =
+    '<div style="display:flex;justify-content:space-between;align-items:flex-start">'+
+      '<h3>'+esc(row.nombre)+'</h3>'+
+      '<button class="btn" id="drawerClose" style="padding:3px 9px">✕</button>'+
+    '</div>'+
+    '<div class="muted">Creado '+fmtDate(row.created_at)+'</div>'+
+    '<div class="stat-line"><span class="l">Estado</span><span class="v">'+pillTxt[row.plan_status]+'</span></div>'+
+    '<div class="stat-line"><span class="l">Prueba / cobro</span><span class="v">'+fmtDate(row.trial_ends_at)+'</span></div>'+
+    '<div class="stat-line"><span class="l">Facturas este mes</span><span class="v">'+row.facturas_mes+'</span></div>'+
+    '<div class="stat-line"><span class="l">Última actividad</span><span class="v">'+fmtDateTime(row.ultima_actividad)+'</span></div>'+
+    '<div style="margin-top:12px"><button class="btn" id="btnShowEmails" style="width:100%">Ver correos ('+row.cuentas+')</button></div>'+
+    '<div id="emailsBox" style="margin-top:8px"></div>'+
+    '<div style="margin-top:14px;display:flex;gap:8px">'+
+      '<button class="btn" data-setstatus="vencido">Marcar vencido</button>'+
+      '<button class="btn" data-setstatus="prueba">Volver a prueba</button>'+
+    '</div>';
+
+  $('drawerClose').onclick=()=>{SELECTED=null;render();};
+  $('btnShowEmails').onclick=async()=>{
+    const box=$('emailsBox');
+    if(box.dataset.open==='1'){box.innerHTML='';box.dataset.open='0';return;}
+    box.innerHTML='<span class="muted">Cargando…</span>';
+    const r=TEAM_CACHE[row.id] || await rpc('api_super_list_team',{p_restaurant_id:row.id});
+    TEAM_CACHE[row.id]=r;
+    if(r&&r.ok){
+      box.innerHTML=(r.rows||[]).map(u=>'<span class="mail-chip">'+esc(u.email)+' · '+u.role+'</span>').join('')||'<span class="muted">Sin cuentas.</span>';
+      box.dataset.open='1';
+    }
+  };
+  d.querySelectorAll('[data-setstatus]').forEach(btn=>{
+    btn.onclick=async()=>{
+      const r=await rpc('api_super_set_plan',{p_restaurant_id:row.id,p_status:btn.dataset.setstatus});
+      if(r&&r.ok) await boot();
+    };
+  });
+}
+
+(async function start(){
+  if(!initSb()) return;
+  const {data}=await sb.auth.getSession();
+  if(data&&data.session){ await boot(); }
+})();
+</script>
+</body>
+</html>
