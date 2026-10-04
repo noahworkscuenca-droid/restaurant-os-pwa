@@ -1,4 +1,4 @@
-const CACHE = 'ticksy-v23';
+const CACHE = 'ticksy-v24';
 const ASSETS = ['./', './index.html', './config.js', './manifest.json', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', e => {
@@ -14,6 +14,24 @@ self.addEventListener('activate', e => {
 
 self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET') return;
+
+  // Paginas HTML (navegacion, incluye /admin/): siempre intenta la red primero,
+  // asi un cambio se ve de inmediato. Si no hay internet, usa el cache como respaldo.
+  const isHtmlPage = e.request.mode === 'navigate' || (e.request.headers.get('accept') || '').includes('text/html');
+  if (isHtmlPage) {
+    e.respondWith(
+      fetch(e.request).then(res => {
+        if (res.ok) {
+          const clone = res.clone();
+          caches.open(CACHE).then(c => c.put(e.request, clone));
+        }
+        return res;
+      }).catch(() => caches.match(e.request).then(cached => cached || caches.match('./index.html')))
+    );
+    return;
+  }
+
+  // Resto de archivos (JS, CSS, imagenes, fuentes): cache primero, mas rapido y funciona offline.
   e.respondWith(
     caches.match(e.request).then(cached =>
       cached || fetch(e.request).then(res => {
