@@ -384,10 +384,14 @@ canvas.chart{width:100%!important}
     <div class="card" id="supBox"><div class="empty">Cargando…</div></div>
     <div class="slabel" id="codeLbl">Código de invitación al negocio</div>
     <div class="card" id="codeCard">
+      <div class="field"><label for="newCodeRole">Ese código deja entrar como</label>
+        <select id="newCodeRole"><option value="empleado">Empleado</option><option value="admin">Administrador</option></select></div>
       <div class="field"><label for="newCode">Nuevo código (mín. 6 caracteres)</label><input id="newCode" placeholder="NUEVO-CODIGO"></div>
-      <div class="row"><button class="btn btn-s" id="btnChangeCode">Cambiar código de invitación</button></div>
-      <div class="hint">Compartí este código con tus empleados para que se registren en tu negocio.</div>
+      <div class="row"><button class="btn btn-s" id="btnChangeCode">Guardar código</button></div>
+      <div class="hint">Compartí el código de "Empleado" con tu equipo. Usá "Administrador" solo si querés dar acceso total a otra persona (un socio, otro dueño).</div>
     </div>
+    <div class="slabel" id="teamLbl">Equipo</div>
+    <div class="card" id="teamBox"><div class="empty">Cargando…</div></div>
     <div class="slabel" id="resetPwLbl">Contraseña de un empleado</div>
     <div class="card" id="resetPwCard">
       <div class="field"><label for="rpEmail">Correo del empleado</label><input id="rpEmail" type="email" placeholder="correo@empleado.com" autocomplete="off"></div>
@@ -631,8 +635,11 @@ function applyRole(){
   const emp=ME&&ME.role==='empleado';
   $('codeCard').style.display=emp?'none':'block';
   $('codeLbl').style.display=emp?'none':'block';
+  $('teamBox').style.display=emp?'none':'block';
+  $('teamLbl').style.display=emp?'none':'block';
   $('resetPwCard').style.display=emp?'none':'block';
   $('resetPwLbl').style.display=emp?'none':'block';
+  if(!emp&&ME)loadTeam();
   $('meInfo').textContent=ME?('Sesión: '+ME.name+' ('+ME.role+')'+(ME.restaurant_name?' · '+ME.restaurant_name:'')):'Sin sesión.';
   renderAccountSwitcher();
   const owner=!!(ME&&ME.is_owner);
@@ -1351,11 +1358,46 @@ window.delInv=async id=>{
 /* ---------- Ajustes ---------- */
 $('btnChangeCode').onclick=async()=>{
   const nc=$('newCode').value.trim().toUpperCase();
+  const role=$('newCodeRole').value;
   if(nc.length<6){toast('El código debe tener al menos 6 caracteres.',true);return;}
-  const r=await rpc('api_change_code',{p_old:CODE,p_new:nc});
-  if(r&&r.ok){CODE=nc;localStorage.setItem(LSC,nc);$('newCode').value='';toast('Código actualizado. Compártelo con tu equipo.');}
+  const r=await rpc('api_change_code',{p_old:CODE,p_new:nc,p_role:role});
+  if(r&&r.ok){
+    if(role==='empleado'){CODE=nc;localStorage.setItem(LSC,nc);}
+    $('newCode').value='';
+    toast('Código de '+(role==='admin'?'administrador':'empleado')+' actualizado. Compártelo con cuidado.');
+  }
   else toast('No se pudo cambiar el código.',true);
 };
+async function loadTeam(){
+  const r=await rpc('api_list_team',{});
+  const box=$('teamBox');
+  if(!r||!r.ok){box.innerHTML='<div class="empty">No se pudo cargar el equipo.</div>';return;}
+  const rows=r.rows||[];
+  if(!rows.length){box.innerHTML='<div class="empty">Todavía no hay nadie en el equipo.</div>';return;}
+  box.innerHTML=rows.map(u=>(
+    '<div class="row" style="justify-content:space-between;align-items:center">'+
+      '<div style="min-width:0"><div style="font-weight:600">'+esc(u.name)+(u.active?'':' <span style="color:var(--err)">(inactivo)</span>')+'</div>'+
+      '<div style="font-size:.78rem;color:var(--tx3)">'+esc(u.email)+'</div></div>'+
+      '<select data-uid="'+u.user_id+'" class="teamRoleSel" style="width:auto">'+
+        '<option value="empleado"'+(u.role==='empleado'?' selected':'')+'>Empleado</option>'+
+        '<option value="admin"'+(u.role==='admin'?' selected':'')+'>Administrador</option>'+
+      '</select>'+
+    '</div>'
+  )).join('');
+  box.querySelectorAll('.teamRoleSel').forEach(sel=>{
+    sel.onchange=async()=>{
+      const uid=sel.dataset.uid,role=sel.value;
+      sel.disabled=true;
+      const r2=await rpc('api_set_user_role',{p_user_id:uid,p_role:role});
+      sel.disabled=false;
+      if(r2&&r2.ok){toast('Rol actualizado.');}
+      else{
+        toast(r2&&r2.error==='debe_quedar_un_admin'?'Tiene que quedar al menos un administrador.':'No se pudo cambiar el rol.',true);
+        loadTeam();
+      }
+    };
+  });
+}
 $('btnResetPw').onclick=async()=>{
   const email=$('rpEmail').value.trim();
   const pw=$('rpNew').value;
