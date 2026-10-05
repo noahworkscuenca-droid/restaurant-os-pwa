@@ -168,6 +168,19 @@ label{font-size:12px;font-weight:500;color:var(--muted);display:block;margin-bot
     <button class="btn primary" id="btnLogin" style="width:100%">Entrar</button>
     <div id="loginErr"></div>
   </div>
+  <div class="card" id="mfaCard" style="display:none">
+    <div class="brand mono">TICKSY</div>
+    <h1 id="mfaTitle">Verificación en dos pasos</h1>
+    <p id="mfaMsg"></p>
+    <div id="mfaEnroll" style="display:none">
+      <div id="mfaQr" style="background:#fff;border-radius:10px;padding:10px;width:200px;height:200px;margin:0 auto 12px"></div>
+      <div class="mono" style="font-size:11px;color:var(--muted);text-align:center;word-break:break-all;margin-bottom:14px">¿No podés escanear? Clave manual:<br><span id="mfaSecret" style="color:var(--ink)"></span></div>
+    </div>
+    <div class="field"><label for="mfaCode">Código de 6 dígitos</label><input id="mfaCode" inputmode="numeric" autocomplete="one-time-code" maxlength="6" class="mono" style="letter-spacing:.3em;text-align:center"></div>
+    <button class="btn primary" id="btnMfa" style="width:100%">Verificar</button>
+    <button class="btn" id="btnMfaOut" style="width:100%;margin-top:8px">Cancelar</button>
+    <div id="mfaErr" style="color:var(--bad);font-size:13px;margin-top:10px;display:none"></div>
+  </div>
 </div>
 
 <div id="app">
@@ -275,8 +288,48 @@ $('btnLogin').onclick=async()=>{
   const {error}=await sb.auth.signInWithPassword({email,password:pass});
   $('btnLogin').disabled=false;
   if(error){$('loginErr').textContent='Correo o contraseña incorrectos.';$('loginErr').style.display='block';return;}
+  await gate();
+};
+// Segundo paso obligatorio (TOTP): si la sesión no está en aal2, se pide o se registra el autenticador.
+let MFA_FACTOR=null;
+function mfaErr(t){const e=$('mfaErr');e.textContent=t||'';e.style.display=t?'block':'none';}
+async function gate(){
+  const aal=await sb.auth.mfa.getAuthenticatorAssuranceLevel();
+  if(aal.data&&aal.data.currentLevel==='aal2'){await boot();return;}
+  const lf=await sb.auth.mfa.listFactors();
+  if(lf.error){await sb.auth.signOut();showApp(false);$('loginErr').textContent='No se pudo verificar la cuenta.';$('loginErr').style.display='block';return;}
+  const ok=(lf.data.totp||[]).find(f=>f.status==='verified');
+  $('loginWrap').querySelector('.card').style.display='none';
+  $('mfaCard').style.display='block';showApp(false);mfaErr('');$('mfaCode').value='';
+  if(ok){
+    MFA_FACTOR=ok.id;$('mfaEnroll').style.display='none';
+    $('mfaTitle').textContent='Código de verificación';
+    $('mfaMsg').textContent='Abrí tu app de autenticador e ingresá el código de 6 dígitos.';
+  }else{
+    for(const f of (lf.data.all||[])){if(f.status!=='verified'){await sb.auth.mfa.unenroll({factorId:f.id});}}
+    const en=await sb.auth.mfa.enroll({factorType:'totp',friendlyName:'Back Office '+Date.now()});
+    if(en.error){mfaErr('No se pudo iniciar el registro: '+en.error.message);return;}
+    MFA_FACTOR=en.data.id;
+    $('mfaTitle').textContent='Activar verificación en dos pasos';
+    $('mfaMsg').textContent='Escaneá este código QR con Google Authenticator, Authy o similar y escribí el código que muestra.';
+    $('mfaQr').innerHTML='<img alt="QR" style="width:100%;height:100%" src="'+en.data.totp.qr_code+'">';
+    $('mfaSecret').textContent=en.data.totp.secret;
+    $('mfaEnroll').style.display='block';
+  }
+  $('mfaCode').focus();
+}
+$('btnMfa').onclick=async()=>{
+  const code=$('mfaCode').value.replace(/\D/g,'');
+  if(code.length!==6||!MFA_FACTOR){mfaErr('Ingresá los 6 dígitos.');return;}
+  $('btnMfa').disabled=true;mfaErr('');
+  const r=await sb.auth.mfa.challengeAndVerify({factorId:MFA_FACTOR,code});
+  $('btnMfa').disabled=false;
+  if(r.error){mfaErr('Código incorrecto o vencido. Probá con el siguiente.');$('mfaCode').value='';return;}
+  $('mfaCard').style.display='none';$('loginWrap').querySelector('.card').style.display='block';
   await boot();
 };
+$('mfaCode').addEventListener('keydown',e=>{if(e.key==='Enter')$('btnMfa').click();});
+$('btnMfaOut').onclick=async()=>{await sb.auth.signOut();location.reload();};
 $('btnLogout').onclick=async()=>{await sb.auth.signOut();location.reload();};
 
 async function loadAll(){
@@ -295,7 +348,7 @@ function applyData({a,b,c}){
 async function boot(){
   const d=await loadAll();
   if(!d.a||!d.a.ok){
-    $('loginErr').textContent='Esta cuenta no tiene acceso al Back Office.';
+    $('loginErr').textContent=(d.a&&d.a.error==='mfa_requerido')?'Falta la verificación en dos pasos.':'Esta cuenta no tiene acceso al Back Office.';
     $('loginErr').style.display='block';
     await sb.auth.signOut();
     showApp(false);
@@ -659,7 +712,7 @@ $('btnTestPush').onclick=async()=>{
 (async function start(){
   if(!initSb()) return;
   const {data}=await sb.auth.getSession();
-  if(data&&data.session){ await boot(); }
+  if(data&&data.session){ await gate(); }
 })();
 </script>
 </body>
