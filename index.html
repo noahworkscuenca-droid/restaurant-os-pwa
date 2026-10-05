@@ -403,9 +403,14 @@ canvas.chart{width:100%!important}
         <select id="restSel"><option value="">— El mío —</option></select></div>
       <div class="hint">Solo lectura: podés ver su historial y su dashboard. Las facturas que guardes siempre quedan en tu propio negocio.</div>
     </div>
-    <div class="slabel">Proveedores</div>
-    <div class="field"><input id="supSearch" placeholder="🔍 Buscar proveedor" autocomplete="off"></div>
-    <div class="card" id="supBox"><div class="empty">Cargando…</div></div>
+    <button type="button" id="supToggle" style="width:100%;display:flex;align-items:center;justify-content:space-between;gap:.5rem;background:none;border:0;padding:0;margin:1.7rem 0 0;cursor:pointer;color:inherit;font:inherit;text-align:left">
+      <span class="slabel" style="margin:0 0 .7rem">Proveedores <span id="supCount" style="color:var(--tx3);font-weight:500"></span></span>
+      <svg id="supChev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex:none;margin-bottom:.7rem;transition:transform .2s"><path d="M6 9l6 6 6-6"/></svg>
+    </button>
+    <div id="supPanel" style="display:none">
+      <div class="field"><input id="supSearch" placeholder="🔍 Buscar proveedor" autocomplete="off"></div>
+      <div class="card" id="supBox"><div class="empty">Cargando…</div></div>
+    </div>
     <div class="slabel" id="codeLbl">Código de invitación al negocio</div>
     <div class="card" id="codeCard">
       <div class="field"><label for="newCodeRole">Ese código deja entrar como</label>
@@ -1093,9 +1098,16 @@ let SUPS=[],editSup=null,supQ='';
 const normTx=s=>String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
 const sortedSups=()=>[...SUPS].sort((a,b)=>a.name.localeCompare(b.name,'es',{sensitivity:'base'}));
 $('supSearch').addEventListener('input',()=>{supQ=$('supSearch').value.trim();renderSuppliers();});
+$('supToggle').onclick=()=>{
+  const open=$('supPanel').style.display!=='none';
+  $('supPanel').style.display=open?'none':'block';
+  $('supChev').style.transform=open?'':'rotate(180deg)';
+  if(!open)$('supSearch').focus();
+};
 async function loadSuppliers(){
   const r=await rpc('api_list_suppliers',{p_code:CODE,p_restaurant:VIEW_RID});
   if(r&&r.ok){SUPS=r.rows||[];
+    $('supCount').textContent=SUPS.length?('· '+SUPS.length):'';
     const alpha=sortedSups();
     $('supList').innerHTML=alpha.map(s=>'<option value="'+esc(s.name)+'">').join('');
     const sel=$('fSup').value;
