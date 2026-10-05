@@ -15,7 +15,7 @@
   --bg:#0E1217; --panel:#181D23; --panel2:#1E242B; --line:#262D35; --line2:#1C2227;
   --ink:#ECEFF2; --muted:#8B949E; --dim:#6E7781; --faint:#5C6670;
   --good:#35D07F; --good-bg:#16321F; --good-bd:#2C5B3C;
-  --warn:#E8A23D; --bad:#FF6B5E;
+  --warn:#E8A23D; --bad:#FF6B5E; --info:#6CA6F0;
 }
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:'Space Grotesk',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
@@ -28,10 +28,14 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:'Space Grotesk',
 .hdr p{font-size:13px;color:var(--muted);margin:3px 0 0}
 .btn{border:1px solid var(--line);background:var(--panel2);border-radius:9px;padding:9px 14px;font-size:13px;font-weight:500;cursor:pointer;color:var(--ink);font-family:inherit}
 .btn:hover{border-color:#3A434D}
+.btn:disabled{opacity:.55;cursor:default}
 .btn.primary{background:var(--good-bg);color:var(--good);border-color:var(--good-bd)}
 .btn.primary:hover{opacity:.9}
-input,select{font:inherit;padding:10px 12px;border:1px solid var(--line);border-radius:9px;width:100%;background:var(--panel2);color:var(--ink)}
-input::placeholder{color:var(--faint)}
+.btn.danger{color:var(--bad)}
+.btn.small{padding:5px 10px;font-size:12px}
+input,select,textarea{font:inherit;padding:10px 12px;border:1px solid var(--line);border-radius:9px;width:100%;background:var(--panel2);color:var(--ink)}
+textarea{resize:vertical;line-height:1.4}
+input::placeholder,textarea::placeholder{color:var(--faint)}
 label{font-size:12px;font-weight:500;color:var(--muted);display:block;margin-bottom:5px}
 .field{margin-bottom:12px}
 
@@ -57,6 +61,26 @@ label{font-size:12px;font-weight:500;color:var(--muted);display:block;margin-bot
 
 .section-label{font-size:13px;color:var(--dim);margin:4px 2px 12px}
 
+/* avisos */
+.badge{display:inline-block;min-width:19px;padding:1px 7px;border-radius:10px;background:var(--bad);color:#fff;font-size:11px;font-weight:600;margin-left:7px;line-height:17px;text-align:center}
+.notices{margin-bottom:18px;padding:0;overflow:hidden}
+.notices-head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;padding:13px 18px;border-bottom:1px dashed #30383F}
+.notices-head .t{font-size:14px;font-weight:600}
+.notices-head .acts{display:flex;gap:8px}
+.notice{display:flex;gap:12px;align-items:flex-start;padding:12px 18px;border-bottom:1px solid var(--line2);cursor:pointer}
+.notice:last-child{border-bottom:0}
+.notice:hover{background:var(--panel2)}
+.notice .nd{width:8px;height:8px;border-radius:50%;margin-top:6px;flex:none}
+.notice .nd.nuevo_registro{background:var(--good)}
+.notice .nd.prueba_por_vencer{background:var(--warn)}
+.notice .nd.prueba_vencida{background:var(--bad)}
+.notice .nt{font-size:14px}
+.notice.unread .nt{font-weight:600}
+.notice:not(.unread){opacity:.6}
+.notice .ns{font-size:12px;color:var(--muted);margin-top:2px}
+.notice .nw{margin-left:auto;font-size:11px;color:var(--dim);flex:none;white-space:nowrap;padding-left:8px}
+.notices .none{font-size:13px;color:var(--muted);padding:14px 18px}
+
 /* ticket cards (replace table) */
 .content-row{display:flex;flex-wrap:wrap;gap:18px;align-items:flex-start}
 .list{flex:999 1 420px;min-width:0;display:flex;flex-direction:column;gap:12px}
@@ -72,9 +96,11 @@ label{font-size:12px;font-weight:500;color:var(--muted);display:block;margin-bot
 .dot-prueba{background:var(--warn)} .status.prueba{color:var(--warn)}
 .dot-activo{background:var(--good)} .status.activo{color:var(--good)}
 .dot-vencido{background:var(--bad)} .status.vencido{color:var(--bad)}
+.dot-cortesia{background:var(--info)} .status.cortesia{color:var(--info)}
 .date-col{text-align:right;flex:none}
 .date-col .l{font-size:11px;color:var(--dim)}
 .date-col .v{font-size:13px;color:#C7CCD1;margin-top:2px}
+.date-col .s{font-size:11px;color:var(--dim);margin-top:2px}
 .tear{border-top:1px dashed #30383F;margin:0 18px}
 .ticket .bottom{padding:13px 18px;display:flex;align-items:center;justify-content:space-between}
 .stat-pair{display:flex;gap:22px}
@@ -102,6 +128,31 @@ label{font-size:12px;font-weight:500;color:var(--muted);display:block;margin-bot
 .mail-chip{display:inline-block;background:var(--panel2);border:1px solid var(--line);border-radius:7px;padding:4px 9px;font-size:11.5px;margin:3px 5px 0 0}
 .empty{font-size:13px;color:var(--muted);padding:24px 0;text-align:center}
 .foot{font-size:12px;color:var(--faint);margin-top:18px;line-height:1.5}
+
+/* aprobar plazo */
+.approve{margin-top:16px;border:1px solid var(--good-bd);border-radius:10px;padding:14px}
+.approve .ttl{font-size:13px;font-weight:600;color:var(--good);margin-bottom:10px}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{border:1px solid var(--line);background:var(--panel2);color:var(--ink);border-radius:8px;padding:7px 12px;font-size:13px;cursor:pointer;font-family:inherit}
+.chip.on{background:var(--good-bg);color:var(--good);border-color:var(--good-bd)}
+.check{display:flex;align-items:center;gap:8px;font-size:13px;margin:12px 0;cursor:pointer;color:var(--ink)}
+.check input{width:16px;height:16px;padding:0;accent-color:var(--good)}
+.preview{font-size:12px;color:var(--muted);margin:10px 0 12px;line-height:1.45}
+.preview b{color:var(--ink);font-weight:600}
+.hist{margin-top:16px;border-top:1px dashed #30383F;padding-top:12px}
+.hist .h{font-size:12px;color:var(--dim);margin-bottom:6px}
+.hrow{display:flex;justify-content:space-between;gap:10px;font-size:12px;color:var(--muted);padding:5px 0;line-height:1.4}
+.hrow .hv{color:var(--ink)}
+.hrow .hw{flex:none;color:var(--dim);white-space:nowrap}
+
+/* ajustes */
+.settings-toggle{width:100%;display:flex;justify-content:space-between;align-items:center;text-align:left}
+.settings-body{margin-top:16px;display:none}
+.row2{display:flex;gap:8px;align-items:center}
+.row2 .btn{flex:none}
+
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--panel2);border:1px solid var(--line);padding:10px 16px;border-radius:9px;font-size:13px;display:none;z-index:50;max-width:90vw}
+.toast.err{color:#FFB199;border-color:#5A3226}
 #app{display:none}
 </style>
 </head>
@@ -130,6 +181,8 @@ label{font-size:12px;font-weight:500;color:var(--muted);display:block;margin-bot
     <button class="btn" id="btnLogout">Salir</button>
   </div>
 
+  <div id="noticesBox"></div>
+
   <div id="alertBox"></div>
 
   <div class="kpis"><div class="kpirow" id="kpiBox"></div></div>
@@ -141,14 +194,42 @@ label{font-size:12px;font-weight:500;color:var(--muted);display:block;margin-bot
     <div class="card drawer" id="drawer" style="display:none"></div>
   </div>
 
-  <div class="foot">"Visible" deja que ese restaurante vea su propio estado de suscripción dentro de Ticksy. Tocá una tarjeta para ver el detalle.</div>
+  <div class="card" id="settingsCard" style="margin-top:22px">
+    <button class="btn settings-toggle" id="btnToggleSettings"><span>Cobro provisional y avisos al celular</span><span id="settingsChev">▾</span></button>
+    <div class="settings-body" id="settingsBody">
+      <div class="field">
+        <label for="sPay">Instrucciones de pago (las ve el cliente cuando se le acaba el plazo)</label>
+        <textarea id="sPay" rows="4" maxlength="1000" placeholder="Ej: Pagá ₡15 000 por SINPE Móvil al 8888-7777 a nombre de Noah Cuenca y envianos el comprobante por WhatsApp."></textarea>
+      </div>
+      <div class="field">
+        <label for="sWa">WhatsApp para que te escriban (con código de país, solo números)</label>
+        <input id="sWa" inputmode="numeric" placeholder="50688887777">
+      </div>
+      <div class="field">
+        <label for="sTopic">Notificaciones al celular (tema de ntfy)</label>
+        <div class="row2">
+          <input id="sTopic" placeholder="vacío = apagado" autocomplete="off" spellcheck="false">
+          <button class="btn" id="btnGenTopic" type="button">Generar</button>
+          <button class="btn" id="btnTestPush" type="button">Probar</button>
+        </div>
+      </div>
+      <div class="foot" style="margin-top:0;margin-bottom:14px">
+        Instalá la app gratuita <b>ntfy</b> en tu celular y suscribite a este mismo tema: cada registro nuevo, plazo por vencer o vencido te llega como notificación. Se envía el nombre del negocio al servicio ntfy.sh, por eso usá un tema largo y secreto. Si lo dejás vacío, los avisos solo se ven aquí arriba.
+      </div>
+      <button class="btn primary" id="btnSaveSettings">Guardar ajustes</button>
+    </div>
+  </div>
+
+  <div class="foot">"Visible" deja que ese restaurante vea su propio estado de suscripción dentro de Ticksy. El bloqueo, en cambio, aplica siempre cuando se acaba el plazo (salvo en Cortesía). Tocá una tarjeta para ver el detalle y aprobar más días.</div>
 </div>
 </div>
+<div class="toast" id="toast"></div>
 
 <script>
 'use strict';
 const $=id=>document.getElementById(id);
-let sb=null, ROWS=[], SELECTED=null, TEAM_CACHE={};
+let sb=null, ROWS=[], NOTICES=[], UNREAD=0, SETTINGS=null, SHOW_ALL=false, SELECTED=null, TEAM_CACHE={}, POLL=null;
+let APPROVE={rid:null,days:30,custom:'',paid:true,amount:'',note:''};
 
 function initSb(){
   if(sb) return sb;
@@ -163,6 +244,23 @@ async function rpc(fn,args){
   if(error) return {ok:false,error:error.message};
   return data;
 }
+
+let toastT;
+function toast(msg,err){
+  const t=$('toast');t.textContent=msg;t.className='toast'+(err?' err':'');t.style.display='block';
+  clearTimeout(toastT);toastT=setTimeout(()=>{t.style.display='none';},3600);
+}
+const ERR={
+  dias_invalidos:'Cantidad de días inválida (1 a 366).',
+  es_cortesia:'Está en Cortesía. Primero quitá la cortesía (botón de abajo) y luego aprobá días.',
+  monto_invalido:'Monto inválido.',
+  requiere_fecha_futura:'Para prueba o activo hace falta una fecha futura. Usá "Aprobar plazo".',
+  solo_superadmin:'Tu cuenta no tiene permiso para esto.',
+  whatsapp_invalido:'Número de WhatsApp inválido.',
+  tema_invalido:'El tema solo puede tener letras, números, guion y guion bajo (máx. 64).',
+  sin_tema:'Primero guardá un tema.',
+  sin_conexion:'Sin conexión.'
+};
 
 function showApp(on){
   $('loginWrap').style.display=on?'none':'block';
@@ -181,45 +279,136 @@ $('btnLogin').onclick=async()=>{
 };
 $('btnLogout').onclick=async()=>{await sb.auth.signOut();location.reload();};
 
+async function loadAll(){
+  const [a,b,c]=await Promise.all([
+    rpc('api_super_list_restaurants',{}),
+    rpc('api_super_list_notices',{p_limit:60}),
+    rpc('api_super_get_settings',{})
+  ]);
+  return {a,b,c};
+}
+function applyData({a,b,c}){
+  ROWS=a.rows||[];
+  if(b&&b.ok){NOTICES=b.rows||[];UNREAD=b.unread||0;}
+  if(c&&c.ok)SETTINGS=c;
+}
 async function boot(){
-  const r=await rpc('api_super_list_restaurants',{});
-  if(!r||!r.ok){
+  const d=await loadAll();
+  if(!d.a||!d.a.ok){
     $('loginErr').textContent='Esta cuenta no tiene acceso al Back Office.';
     $('loginErr').style.display='block';
     await sb.auth.signOut();
     showApp(false);
     return;
   }
-  ROWS=r.rows||[];
+  applyData(d);
   showApp(true);
+  fillSettings();
+  render();
+  if(!POLL) POLL=setInterval(refreshQuiet,60000);
+}
+// Refresco silencioso cada minuto: trae registros nuevos y avisos sin tocar lo que estas escribiendo.
+async function refreshQuiet(){
+  if(document.hidden||!sb) return;
+  const ae=document.activeElement;
+  if(ae&&(ae.closest('#drawer')||ae.closest('#settingsCard'))) return;
+  const d=await loadAll();
+  if(!d.a||!d.a.ok) return;
+  applyData(d);
   render();
 }
 
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
 function fmtDate(d){ return d? new Date(d).toLocaleDateString('es-CR',{day:'numeric',month:'short',year:'numeric'}) : '—'; }
 function fmtDateTime(d){ return d? new Date(d).toLocaleString('es-CR',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}) : 'Sin actividad'; }
+function crc(n){return '₡'+Math.round(Number(n)||0).toLocaleString('es-CR');}
+function ago(ts){
+  const m=Math.floor((Date.now()-new Date(ts))/60000);
+  if(m<1) return 'ahora';
+  if(m<60) return 'hace '+m+' min';
+  const h=Math.floor(m/60);
+  if(h<24) return 'hace '+h+' h';
+  const d=Math.floor(h/24);
+  return d===1?'ayer':'hace '+d+' días';
+}
+function leftTxt(b){
+  if(b.plan_status==='cortesia') return 'sin vencimiento';
+  if(!b.trial_ends_at) return '';
+  const diff=new Date(b.trial_ends_at)-Date.now();
+  if(diff<0){
+    const d=Math.floor(-diff/86400000);
+    return d===0?'venció hoy':'venció hace '+d+(d===1?' día':' días');
+  }
+  const d=Math.ceil(diff/86400000);
+  return d===1?'queda 1 día':'quedan '+d+' días';
+}
 
-const PILL_TXT={prueba:'En prueba',activo:'Activo',vencido:'Vencido'};
+const PILL_TXT={prueba:'En prueba',activo:'Activo',vencido:'Vencido',cortesia:'Cortesía'};
 
+/* ---------- avisos ---------- */
+function renderNotices(){
+  const box=$('noticesBox');
+  document.title=(UNREAD>0?'('+UNREAD+') ':'')+'Ticksy — Back Office';
+  if(!NOTICES.length){box.innerHTML='';return;}
+  const list=SHOW_ALL?NOTICES:NOTICES.filter(n=>!n.read_at).slice(0,8);
+  box.innerHTML=
+    '<div class="card notices">'+
+      '<div class="notices-head">'+
+        '<div class="t">Avisos'+(UNREAD>0?'<span class="badge">'+UNREAD+'</span>':'')+'</div>'+
+        '<div class="acts">'+
+          (UNREAD>0?'<button class="btn small" id="btnReadAll">Marcar leídos</button>':'')+
+          '<button class="btn small" id="btnToggleAll">'+(SHOW_ALL?'Solo nuevos':'Ver historial')+'</button>'+
+        '</div>'+
+      '</div>'+
+      (list.length?list.map(n=>(
+        '<div class="notice'+(n.read_at?'':' unread')+'" data-nid="'+n.id+'" data-rid="'+esc(n.restaurant_id||'')+'">'+
+          '<span class="nd '+n.kind+'"></span>'+
+          '<div><div class="nt">'+esc(n.title)+'</div>'+(n.detail?'<div class="ns">'+esc(n.detail)+'</div>':'')+'</div>'+
+          '<div class="nw">'+ago(n.created_at)+'</div>'+
+        '</div>'
+      )).join(''):'<div class="none">Sin avisos nuevos.</div>')+
+    '</div>';
+  const ra=$('btnReadAll');
+  if(ra) ra.onclick=async()=>{await rpc('api_super_mark_notices_read',{});await refreshNow();};
+  $('btnToggleAll').onclick=()=>{SHOW_ALL=!SHOW_ALL;renderNotices();};
+  box.querySelectorAll('.notice').forEach(el=>{
+    el.onclick=async()=>{
+      const rid=el.dataset.rid, nid=el.dataset.nid;
+      if(el.classList.contains('unread')) await rpc('api_super_mark_notices_read',{p_ids:[nid]});
+      if(rid&&ROWS.some(b=>b.id===rid)){SELECTED=rid;resetApprove(rid);}
+      await refreshNow();
+      if(rid){const d=$('drawer');if(d&&d.style.display!=='none')d.scrollIntoView({behavior:'smooth',block:'start'});}
+    };
+  });
+}
+async function refreshNow(){
+  const d=await loadAll();
+  if(d.a&&d.a.ok){applyData(d);render();}
+}
+
+/* ---------- lista ---------- */
 function render(){
   const activos=ROWS.filter(b=>b.plan_status==='activo').length;
   const prueba=ROWS.filter(b=>b.plan_status==='prueba').length;
   const vencidos=ROWS.filter(b=>b.plan_status==='vencido').length;
+  const cortesia=ROWS.filter(b=>b.plan_status==='cortesia').length;
   const correos=ROWS.reduce((s,b)=>s+Number(b.cuentas||0),0);
   const facturasMes=ROWS.reduce((s,b)=>s+Number(b.facturas_mes||0),0);
 
-  $('kpiBox').innerHTML=[
-    ['Negocios activos',activos],['En prueba',prueba],['Vencidos',vencidos],
-    ['Correos registrados',correos],['Facturas este mes',facturasMes]
-  ].map(([l,n])=>'<div class="kpi"><div class="n mono">'+n+'</div><div class="l">'+l+'</div></div>').join('');
+  const kp=[['Negocios activos',activos],['En prueba',prueba],['Vencidos',vencidos]];
+  if(cortesia) kp.push(['Cortesía',cortesia]);
+  kp.push(['Correos registrados',correos],['Facturas este mes',facturasMes]);
+  $('kpiBox').innerHTML=kp.map(([l,n])=>'<div class="kpi"><div class="n mono">'+n+'</div><div class="l">'+l+'</div></div>').join('');
 
   $('countLabel').textContent = ROWS.length + (ROWS.length===1?' negocio':' negocios') + ' · ordenados por próximo vencimiento';
 
   const needsAttention=ROWS.filter(b=>b.plan_status==='vencido'||
-    (b.plan_status==='prueba'&&b.trial_ends_at&&(new Date(b.trial_ends_at)-Date.now())<3*86400000));
+    ((b.plan_status==='prueba'||b.plan_status==='activo')&&b.trial_ends_at&&(new Date(b.trial_ends_at)-Date.now())<5*86400000));
   $('alertBox').innerHTML=needsAttention.length
-    ? '<div class="alert">⚠ '+needsAttention.length+' negocio(s) necesitan atención: pagos vencidos o prueba por terminar.</div>'
+    ? '<div class="alert">⚠ '+needsAttention.length+' negocio(s) necesitan atención: plazo vencido o por terminar (5 días o menos).</div>'
     : '';
+
+  renderNotices();
 
   $('tableBox').innerHTML = ROWS.length ? ROWS.map(b=>(
     '<div class="ticket'+(SELECTED===b.id?' selected':'')+'" data-id="'+b.id+'">'+
@@ -228,7 +417,7 @@ function render(){
           '<div class="biz-name">'+esc(b.nombre)+'</div>'+
           '<div class="status '+b.plan_status+'"><span class="dot dot-'+b.plan_status+'"></span>'+PILL_TXT[b.plan_status]+'</div>'+
         '</div>'+
-        '<div class="date-col"><div class="l">prueba / cobro</div><div class="v mono">'+fmtDate(b.trial_ends_at)+'</div></div>'+
+        '<div class="date-col"><div class="l">acceso hasta</div><div class="v mono">'+(b.plan_status==='cortesia'?'—':fmtDate(b.trial_ends_at))+'</div><div class="s">'+leftTxt(b)+'</div></div>'+
       '</div>'+
       '<div class="tear"></div>'+
       '<div class="bottom">'+
@@ -249,34 +438,68 @@ function render(){
       e.stopPropagation();
       const id=el.dataset.vis, row=ROWS.find(b=>b.id===id);
       const r=await rpc('api_super_set_owner_visible',{p_restaurant_id:id,p_visible:!row.owner_visible});
-      if(r&&r.ok){ row.owner_visible=!row.owner_visible; render(); if(SELECTED===id) renderDrawer(); }
+      if(r&&r.ok){ row.owner_visible=!row.owner_visible; render(); }
     };
   });
 
   if(SELECTED) renderDrawer();
+  else $('drawer').style.display='none';
 }
 
-async function selectRow(id){
+function resetApprove(rid){
+  APPROVE={rid:rid,days:30,custom:'',paid:true,amount:'',note:''};
+}
+function selectRow(id){
   SELECTED = SELECTED===id ? null : id;
+  if(SELECTED) resetApprove(SELECTED);
   render();
 }
+function approveDays(){
+  if(APPROVE.days==='otro'){const n=parseInt(APPROVE.custom,10);return (n>=1&&n<=366)?n:0;}
+  return APPROVE.days;
+}
 
-async function renderDrawer(){
+/* ---------- detalle + aprobar plazo ---------- */
+function renderDrawer(){
   const d=$('drawer');
   const row=ROWS.find(b=>b.id===SELECTED);
   if(!row){d.style.display='none';return;}
+  if(APPROVE.rid!==row.id) resetApprove(row.id);
   d.style.display='block';
+
+  const isCourtesy=row.plan_status==='cortesia';
+  const days=approveDays();
+  const base=Math.max(Date.now(), row.trial_ends_at?new Date(row.trial_ends_at).getTime():0);
+  const endPreview=days?new Date(base+days*86400000):null;
+  const dayBtn=v=>'<button class="chip'+(APPROVE.days===v?' on':'')+'" data-days="'+v+'">'+(v==='otro'?'Otro':v+' días')+'</button>';
+
+  const approveHtml=isCourtesy
+    ? '<div class="approve"><div class="ttl">Cortesía</div><div class="preview">Este negocio no vence nunca. Para cobrarle, quitá la cortesía: pasa a vencido y ahí aprobás los días que corresponda.</div>'+
+      '<button class="btn" id="btnUnCourtesy" style="width:100%">Quitar cortesía</button></div>'
+    : '<div class="approve">'+
+        '<div class="ttl">Aprobar plazo</div>'+
+        '<div class="chips">'+dayBtn(30)+dayBtn(15)+dayBtn(7)+dayBtn('otro')+'</div>'+
+        (APPROVE.days==='otro'?'<div class="field" style="margin:10px 0 0"><input id="apCustom" type="number" min="1" max="366" inputmode="numeric" placeholder="Cantidad de días" value="'+esc(APPROVE.custom)+'"></div>':'')+
+        '<label class="check"><input type="checkbox" id="apPaid"'+(APPROVE.paid?' checked':'')+'> Pago recibido (queda como Activo)</label>'+
+        '<div class="field" style="margin-bottom:8px"><input id="apAmount" inputmode="numeric" placeholder="Monto recibido en ₡ (opcional)" value="'+esc(APPROVE.amount)+'"></div>'+
+        '<div class="field" style="margin-bottom:0"><input id="apNote" maxlength="300" placeholder="Nota (ej. SINPE 4123, paga el 5)" value="'+esc(APPROVE.note)+'"></div>'+
+        '<div class="preview">'+(endPreview
+          ? 'Con esto el acceso llegará hasta <b>'+fmtDate(endPreview)+'</b>'+(row.plan_status==='vencido'?' (cuenta desde hoy, porque ya estaba vencido)':' (suma al vencimiento actual)')+'.'
+          : 'Escribí cuántos días aprobar.')+'</div>'+
+        '<button class="btn primary" id="btnApprove" style="width:100%"'+(days?'':' disabled')+'>'+(days?'Aprobar +'+days+' días':'Aprobar')+'</button>'+
+      '</div>';
+
   d.innerHTML =
     '<div class="drawer-head">'+
       '<div class="top">'+
         '<div>'+
           '<div class="brand mono" style="font-size:11px">TICKSY · NEGOCIO</div>'+
           '<h3>'+esc(row.nombre)+'</h3>'+
-          '<div class="status '+row.plan_status+'" style="margin-top:8px"><span class="dot dot-'+row.plan_status+'"></span>'+PILL_TXT[row.plan_status]+' · vence '+fmtDate(row.trial_ends_at)+'</div>'+
+          '<div class="status '+row.plan_status+'" style="margin-top:8px"><span class="dot dot-'+row.plan_status+'"></span>'+PILL_TXT[row.plan_status]+(isCourtesy?'':' · hasta '+fmtDate(row.trial_ends_at))+'</div>'+
         '</div>'+
         '<button class="btn" id="drawerClose" style="padding:3px 9px">✕</button>'+
       '</div>'+
-      '<div class="muted">Creado '+fmtDate(row.created_at)+'</div>'+
+      '<div class="muted">Creado '+fmtDate(row.created_at)+(isCourtesy?'':' · '+leftTxt(row))+'</div>'+
     '</div>'+
     '<div class="stat-grid">'+
       '<div class="cell"><div class="n mono">'+row.cuentas+'</div><div class="l">cuentas</div></div>'+
@@ -284,24 +507,69 @@ async function renderDrawer(){
       '<div class="cell" style="grid-column:1 / -1"><div class="n mono" style="font-size:13px">'+fmtDateTime(row.ultima_actividad)+'</div><div class="l">última actividad</div></div>'+
     '</div>'+
     '<div class="drawer-body">'+
+      approveHtml+
+      '<div class="hist"><div class="h">Historial de pagos y plazos</div><div id="histBox"><span class="muted">Cargando…</span></div></div>'+
       '<div style="margin-top:16px"><button class="btn" id="btnShowEmails" style="width:100%">Ver correos ('+row.cuentas+')</button></div>'+
       '<div id="emailsBox" style="margin-top:8px"></div>'+
-      '<div style="margin-top:14px;display:flex;flex-direction:column;gap:8px">'+
-        '<button class="btn primary" id="btnMarkPaid">Marcar pagado</button>'+
-        '<button class="btn" data-setstatus="vencido">Marcar vencido</button>'+
-        '<button class="btn" data-setstatus="prueba">Volver a prueba</button>'+
-      '</div>'+
+      (isCourtesy?'':'<div style="margin-top:14px;display:flex;flex-direction:column;gap:8px">'+
+        (row.plan_status==='vencido'?'':'<button class="btn danger" id="btnBlockNow">Bloquear ahora</button>')+
+        '<button class="btn" id="btnCourtesy">Pasar a Cortesía (sin vencimiento)</button>'+
+      '</div>')+
     '</div>';
 
   $('drawerClose').onclick=()=>{SELECTED=null;render();};
-  $('btnMarkPaid').onclick=async()=>{
-    const dias=prompt('¿Cuántos días de suscripción activa agregar desde hoy?','30');
-    if(dias===null) return;
-    const n=parseInt(dias,10); if(!n||n<=0) return;
-    const nueva=new Date(Date.now()+n*86400000).toISOString();
-    const r=await rpc('api_super_set_plan',{p_restaurant_id:row.id,p_status:'activo',p_trial_ends_at:nueva});
-    if(r&&r.ok){ await boot(); renderDrawer(); } else alert('No se pudo actualizar.');
+
+  d.querySelectorAll('[data-days]').forEach(b=>{
+    b.onclick=()=>{const v=b.dataset.days;APPROVE.days=v==='otro'?'otro':parseInt(v,10);renderDrawer();};
+  });
+  const apCustom=$('apCustom');
+  if(apCustom) apCustom.oninput=()=>{APPROVE.custom=apCustom.value;updateApproveBtn(row);};
+  const apPaid=$('apPaid');
+  if(apPaid) apPaid.onchange=()=>{APPROVE.paid=apPaid.checked;};
+  const apAmount=$('apAmount');
+  if(apAmount) apAmount.oninput=()=>{APPROVE.amount=apAmount.value;};
+  const apNote=$('apNote');
+  if(apNote) apNote.oninput=()=>{APPROVE.note=apNote.value;};
+
+  const btnApprove=$('btnApprove');
+  if(btnApprove) btnApprove.onclick=async()=>{
+    const n=approveDays();
+    if(!n){toast('Escribí cuántos días.',true);return;}
+    const amt=String(APPROVE.amount).replace(/[^0-9.]/g,'');
+    btnApprove.disabled=true;
+    const r=await rpc('api_super_extend',{
+      p_restaurant_id:row.id,p_days:n,p_paid:!!APPROVE.paid,
+      p_amount:amt===''?null:Number(amt),p_note:APPROVE.note.trim()||null
+    });
+    if(r&&r.ok){
+      toast('Listo: '+row.nombre+' tiene acceso hasta '+fmtDate(r.trial_ends_at)+'.');
+      resetApprove(row.id);
+      await refreshNow();
+    }else{
+      btnApprove.disabled=false;
+      toast(ERR[r&&r.error]||'No se pudo aprobar el plazo.',true);
+    }
   };
+
+  const bn=$('btnBlockNow');
+  if(bn) bn.onclick=async()=>{
+    if(!confirm('¿Bloquear ahora a "'+row.nombre+'"? No podrán usar Ticksy hasta que apruebes más días.')) return;
+    const r=await rpc('api_super_set_plan',{p_restaurant_id:row.id,p_status:'vencido'});
+    if(r&&r.ok){toast('Bloqueado.');await refreshNow();} else toast(ERR[r&&r.error]||'No se pudo.',true);
+  };
+  const bc=$('btnCourtesy');
+  if(bc) bc.onclick=async()=>{
+    if(!confirm('¿Pasar "'+row.nombre+'" a Cortesía? No vencerá nunca ni se bloqueará.')) return;
+    const r=await rpc('api_super_set_plan',{p_restaurant_id:row.id,p_status:'cortesia'});
+    if(r&&r.ok){toast('Ahora está en Cortesía.');await refreshNow();} else toast(ERR[r&&r.error]||'No se pudo.',true);
+  };
+  const bu=$('btnUnCourtesy');
+  if(bu) bu.onclick=async()=>{
+    if(!confirm('¿Quitar la cortesía de "'+row.nombre+'"? Quedará vencido (bloqueado) hasta que apruebes días.')) return;
+    const r=await rpc('api_super_set_plan',{p_restaurant_id:row.id,p_status:'vencido'});
+    if(r&&r.ok){toast('Cortesía quitada.');await refreshNow();} else toast(ERR[r&&r.error]||'No se pudo.',true);
+  };
+
   $('btnShowEmails').onclick=async()=>{
     const box=$('emailsBox');
     if(box.dataset.open==='1'){box.innerHTML='';box.dataset.open='0';return;}
@@ -309,17 +577,84 @@ async function renderDrawer(){
     const r=TEAM_CACHE[row.id] || await rpc('api_super_list_team',{p_restaurant_id:row.id});
     TEAM_CACHE[row.id]=r;
     if(r&&r.ok){
-      box.innerHTML=(r.rows||[]).map(u=>'<span class="mail-chip">'+esc(u.email)+' · '+u.role+'</span>').join('')||'<span class="muted">Sin cuentas.</span>';
+      box.innerHTML=(r.rows||[]).map(u=>'<span class="mail-chip">'+esc(u.email)+' · '+esc(u.role)+'</span>').join('')||'<span class="muted">Sin cuentas.</span>';
       box.dataset.open='1';
     }
   };
-  d.querySelectorAll('[data-setstatus]').forEach(btn=>{
-    btn.onclick=async()=>{
-      const r=await rpc('api_super_set_plan',{p_restaurant_id:row.id,p_status:btn.dataset.setstatus});
-      if(r&&r.ok) await boot();
-    };
-  });
+
+  loadHistory(row.id);
 }
+function updateApproveBtn(row){
+  const b=$('btnApprove'); if(!b) return;
+  const n=approveDays();
+  b.disabled=!n;
+  b.textContent=n?'Aprobar +'+n+' días':'Aprobar';
+}
+const KIND_TXT={pago:'Pago',extension:'Extensión',estado:'Cambio de estado'};
+async function loadHistory(rid){
+  const r=await rpc('api_super_billing_history',{p_restaurant_id:rid});
+  const box=$('histBox');
+  if(!box||SELECTED!==rid) return;
+  if(!r||!r.ok){box.innerHTML='<span class="muted">No se pudo cargar.</span>';return;}
+  const rows=r.rows||[];
+  box.innerHTML=rows.length?rows.map(e=>{
+    const parts=[KIND_TXT[e.kind]||e.kind];
+    if(e.days) parts.push('+'+e.days+' días');
+    if(e.amount_crc!=null) parts.push(crc(e.amount_crc));
+    const sub=[];
+    if(e.new_ends_at && e.kind!=='estado') sub.push('hasta '+fmtDate(e.new_ends_at));
+    if(e.kind==='estado'&&e.new_status) sub.push('→ '+(PILL_TXT[e.new_status]||e.new_status));
+    if(e.note&&e.kind!=='estado') sub.push(esc(e.note));
+    return '<div class="hrow"><div><span class="hv">'+esc(parts.join(' · '))+'</span>'+(sub.length?'<br>'+sub.join(' · '):'')+'</div><div class="hw">'+fmtDate(e.created_at)+'</div></div>';
+  }).join(''):'<span class="muted">Todavía sin movimientos.</span>';
+}
+
+/* ---------- ajustes de cobro y avisos ---------- */
+function fillSettings(){
+  if(!SETTINGS) return;
+  $('sPay').value=SETTINGS.pay_instructions||'';
+  $('sWa').value=SETTINGS.pay_whatsapp||'';
+  $('sTopic').value=SETTINGS.push_topic||'';
+}
+$('btnToggleSettings').onclick=()=>{
+  const b=$('settingsBody'), open=b.style.display==='block';
+  b.style.display=open?'none':'block';
+  $('settingsChev').textContent=open?'▾':'▴';
+};
+$('btnGenTopic').onclick=()=>{
+  const a=new Uint8Array(12);crypto.getRandomValues(a);
+  $('sTopic').value='ticksy-'+Array.from(a,x=>x.toString(36).padStart(2,'0')).join('').slice(0,20);
+};
+async function saveSettings(){
+  const r=await rpc('api_super_set_settings',{
+    p_pay_instructions:$('sPay').value,
+    p_pay_whatsapp:$('sWa').value,
+    p_push_topic:$('sTopic').value
+  });
+  if(r&&r.ok){
+    SETTINGS={ok:true,pay_instructions:$('sPay').value.trim(),pay_whatsapp:$('sWa').value.replace(/\D/g,''),push_topic:$('sTopic').value.trim()};
+    fillSettings();
+    return true;
+  }
+  toast(ERR[r&&r.error]||'No se pudieron guardar los ajustes.',true);
+  return false;
+}
+$('btnSaveSettings').onclick=async()=>{
+  $('btnSaveSettings').disabled=true;
+  const ok=await saveSettings();
+  $('btnSaveSettings').disabled=false;
+  if(ok) toast('Ajustes guardados.');
+};
+$('btnTestPush').onclick=async()=>{
+  if(!$('sTopic').value.trim()){toast('Generá o escribí un tema primero.',true);return;}
+  $('btnTestPush').disabled=true;
+  const saved=await saveSettings();
+  if(saved){
+    const r=await rpc('api_super_test_push',{});
+    toast(r&&r.ok?'Enviada. Si ya te suscribiste al tema en ntfy, te llega en segundos.':(ERR[r&&r.error]||'No se pudo enviar.'),!(r&&r.ok));
+  }
+  $('btnTestPush').disabled=false;
+};
 
 (async function start(){
   if(!initSb()) return;

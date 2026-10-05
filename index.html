@@ -138,7 +138,7 @@ display:flex;flex-direction:column;align-items:center;justify-content:center;gap
 .icon-field{position:relative}
 .icon-field svg{position:absolute;left:.95rem;top:50%;transform:translateY(-50%);width:17px;height:17px;color:var(--tx3);pointer-events:none}
 .icon-field .filt{padding-left:2.6rem}
-#toast{position:fixed;left:50%;bottom:112px;transform:translateX(-50%) translateY(20px);opacity:0;background:var(--glass-bg);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--glass-bd);border-left:4px solid var(--ok);border-radius:16px;padding:.85rem 1.2rem;font-size:.85rem;font-weight:500;line-height:1.45;box-shadow:0 12px 34px -12px rgba(12,42,30,.35);transition:.25s;pointer-events:none;max-width:88vw;z-index:60}
+#toast{position:fixed;left:50%;bottom:112px;transform:translateX(-50%) translateY(20px);opacity:0;background:var(--glass-bg);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid var(--glass-bd);border-left:4px solid var(--ok);border-radius:16px;padding:.85rem 1.2rem;font-size:.85rem;font-weight:500;line-height:1.45;box-shadow:0 12px 34px -12px rgba(12,42,30,.35);transition:.25s;pointer-events:none;max-width:88vw;z-index:120}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 #toast.err{border-left-color:var(--err)}
 nav{position:fixed;bottom:calc(1rem + env(safe-area-inset-bottom));left:1rem;right:1rem;max-width:496px;margin:0 auto;height:68px;background:var(--glass-bg);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid var(--glass-bd);border-radius:24px;box-shadow:0 12px 34px -12px rgba(12,42,30,.28);display:none;z-index:50}
@@ -200,6 +200,22 @@ canvas.chart{width:100%!important}
 #payCard{background:var(--s1);border-radius:24px;padding:1.5rem 1.4rem 1.3rem;width:100%;max-width:420px;box-shadow:0 24px 60px -20px rgba(0,0,0,.5);animation:dupUp .25s cubic-bezier(.2,.8,.3,1)}
 .pmopt{flex:1 1 auto;border:1px solid var(--bd)}
 .pmopt.sel{background:var(--ac);color:#fff;border-color:var(--ac)}
+/* Acceso / suscripcion (cobro manual provisional) */
+#lockWrap{position:fixed;inset:0;background:rgba(8,19,13,.82);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;z-index:100;padding:1.2rem;overflow-y:auto}
+#lockWrap.on{display:flex;animation:dupFade .2s ease}
+#lockCard{background:var(--s1);border:1px solid var(--glass-bd);border-radius:24px;padding:1.6rem 1.4rem 1.3rem;width:100%;max-width:420px;box-shadow:0 24px 60px -20px rgba(0,0,0,.55);animation:dupUp .25s cubic-bezier(.2,.8,.3,1);margin:auto}
+.lockIcon{width:52px;height:52px;border-radius:17px;background:var(--avatar-bg);color:var(--avatar-fg);display:flex;align-items:center;justify-content:center;margin-bottom:.95rem}
+.lockIcon svg{width:26px;height:26px;stroke:currentColor}
+#lockCard h3{font-size:1.15rem;font-weight:800;letter-spacing:-.03em;margin-bottom:.4rem}
+#lockMsg{font-size:.86rem;color:var(--tx2);line-height:1.5}
+.lockPay{margin-top:1rem;background:var(--bg);border-radius:16px;padding:.9rem 1rem}
+.lockPay .lh{font-size:.7rem;font-weight:600;color:var(--tx3);margin-bottom:.3rem}
+#lockPayTxt{font-size:.85rem;line-height:1.5;color:var(--tx);white-space:pre-wrap;word-break:break-word}
+#lockCard .btn{display:flex;align-items:center;justify-content:center;width:100%;margin-top:.7rem;text-decoration:none;text-align:center}
+#subBanner{display:none;align-items:center;justify-content:space-between;gap:.7rem;background:rgba(180,83,9,.1);border:1px solid rgba(180,83,9,.32);color:var(--warn);border-radius:14px;padding:.6rem .85rem;font-size:.78rem;font-weight:600;margin:.6rem 0;line-height:1.35}
+#subBanner.on{display:flex}
+#subBanner button{flex:none;background:none;border:0;color:inherit;font:inherit;text-decoration:underline;cursor:pointer;padding:0}
+@media (prefers-color-scheme:dark){#subBanner{background:rgba(240,176,86,.1);border-color:rgba(240,176,86,.35)}}
 </style>
 </head>
 <body>
@@ -209,6 +225,7 @@ canvas.chart{width:100%!important}
     <div class="badge" id="dbBadge"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v1"/></svg></div>
   </header>
   <div id="viewBanner" style="display:none;background:var(--warn);color:#fff;text-align:center;font-size:.78rem;font-weight:600;padding:.5rem;border-radius:8px;margin:.6rem 0"></div>
+  <div id="subBanner"><span id="subBannerTxt"></span><button type="button" id="subBannerBtn">Cómo renovar</button></div>
 
   <!-- ===== LOGIN ===== -->
   <section class="page" id="pg-login">
@@ -435,6 +452,18 @@ canvas.chart{width:100%!important}
 </div>
 
 <div id="toast"></div>
+<div id="lockWrap" role="dialog" aria-modal="true" aria-labelledby="lockTitle">
+  <div id="lockCard">
+    <div class="lockIcon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></div>
+    <h3 id="lockTitle">Tu plazo en Ticksy terminó</h3>
+    <p id="lockMsg"></p>
+    <div class="lockPay" id="lockPay" style="display:none"><div class="lh">Cómo renovar</div><div id="lockPayTxt"></div></div>
+    <a class="btn btn-p" id="lockWa" href="#" target="_blank" rel="noopener" style="display:none">Escribir por WhatsApp</a>
+    <button type="button" class="btn btn-s" id="lockRetry">Ya renové, actualizar</button>
+    <button type="button" class="btn btn-s" id="lockOut" style="color:var(--err)">Cerrar sesión</button>
+    <button type="button" class="btn btn-s" id="lockClose" style="display:none">Entendido</button>
+  </div>
+</div>
 <div id="dupWrap" role="dialog" aria-modal="true" aria-labelledby="dupTitle">
   <div id="dupCard">
     <div class="dupIcon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4h9a2 2 0 0 1 2 2v9"/><rect x="4" y="8" width="11" height="12" rx="2"/></svg></div>
@@ -539,9 +568,73 @@ async function rpc(fn,args){
   try{
     const {data,error}=await sb.rpc(fn,args);
     if(error) return {ok:false,error:error.message};
+    if(data&&data.error==='suscripcion_vencida')onBlockedByServer();
     return data;
   }catch(e){return {ok:false,error:String(e)}}
 }
+
+/* ---------- Acceso / suscripción (cobro manual provisional) ---------- */
+function fmtLong(d){return new Date(d).toLocaleDateString('es-CR',{day:'numeric',month:'long',year:'numeric'});}
+function showLock(soft){
+  const a=(ME&&ME.access)||{};
+  const admin=!!ME&&ME.role!=='empleado';
+  const biz=(ME&&ME.restaurant_name)||'tu negocio';
+  const ends=a.ends_at?fmtLong(a.ends_at):'';
+  if(soft){
+    $('lockTitle').textContent='Tu plazo termina pronto';
+    $('lockMsg').textContent='El acceso de «'+biz+'» llega hasta el '+ends+'. Después de esa fecha Ticksy se pausa hasta que se renueve el plazo; tus datos no se pierden.';
+  }else if(admin){
+    $('lockTitle').textContent='Tu plazo en Ticksy terminó';
+    $('lockMsg').textContent='El acceso de «'+biz+'» venció'+(ends?' el '+ends:'')+'. Tus facturas y datos siguen guardados: en cuanto se renueve el plazo volvés a entrar como siempre.';
+  }else{
+    $('lockTitle').textContent='Ticksy está en pausa';
+    $('lockMsg').textContent='El plazo de uso de «'+biz+'» terminó. Avisale al administrador para que lo renueve; mientras tanto no se pueden registrar facturas.';
+  }
+  const pay=(admin&&a.pay_instructions)?String(a.pay_instructions).trim():'';
+  $('lockPay').style.display=pay?'block':'none';
+  $('lockPayTxt').textContent=pay;
+  const wa=admin&&a.pay_whatsapp?String(a.pay_whatsapp).replace(/\D/g,''):'';
+  $('lockWa').style.display=wa?'flex':'none';
+  if(wa)$('lockWa').href='https://wa.me/'+wa+'?text='+encodeURIComponent('Hola, quiero renovar Ticksy para '+biz+'.');
+  $('lockRetry').style.display=soft?'none':'flex';
+  $('lockOut').style.display=soft?'none':'flex';
+  $('lockClose').style.display=soft?'flex':'none';
+  $('lockWrap').classList.add('on');
+  if(!soft)document.body.style.overflow='hidden';
+}
+function hideLock(){$('lockWrap').classList.remove('on');document.body.style.overflow='';}
+function renderAccess(){
+  const a=ME&&ME.access;
+  const b=$('subBanner');
+  b.classList.remove('on');
+  if(!a){hideLock();return;}
+  if(a.blocked){showLock(false);return;}
+  hideLock();
+  const admin=ME.role!=='empleado';
+  if(admin&&a.days_left!=null&&a.days_left<=5&&(a.plan_status==='prueba'||a.plan_status==='activo')){
+    const what=a.plan_status==='prueba'?'Tu período de prueba':'Tu suscripción';
+    $('subBannerTxt').textContent=what+(a.days_left<=1?' termina en 24 horas o menos.':' termina en '+a.days_left+' días.');
+    b.classList.add('on');
+  }
+}
+function onBlockedByServer(){
+  if(!ME)return;
+  ME.access=Object.assign({},ME.access||{},{blocked:true,plan_status:'vencido'});
+  showLock(false);
+}
+$('subBannerBtn').onclick=()=>showLock(true);
+$('lockClose').onclick=hideLock;
+$('lockOut').onclick=()=>{hideLock();$('btnLogout').click();};
+$('lockRetry').onclick=async()=>{
+  $('lockRetry').disabled=true;
+  const me=await rpc('api_me',{});
+  $('lockRetry').disabled=false;
+  if(me&&me.ok&&me.access&&!me.access.blocked){
+    hideLock();
+    await enterApp();
+    toast('Listo, ya tenés acceso de nuevo.');
+  }else toast('Todavía no vemos la renovación. Apenas se confirme, se activa.',true);
+};
 
 /* ---------- Aviso de factura repetida ---------- */
 function avisoRepetida(m,reason){
@@ -669,6 +762,7 @@ function applyRole(){
   if(!emp&&ME)loadTeam();
   $('meInfo').textContent=ME?('Sesión: '+ME.name+' ('+ME.role+')'+(ME.restaurant_name?' · '+ME.restaurant_name:'')):'Sin sesión.';
   renderSubscriptionCard();
+  renderAccess();
   renderAccountSwitcher();
   const owner=!!(ME&&ME.is_owner);
   $('ownerLbl').style.display=owner?'block':'none';
@@ -772,6 +866,7 @@ function fillCats(){$('f_cat').innerHTML=CATS.map(c=>'<option>'+c+'</option>').j
 $('btnLogout').onclick=async()=>{
   const uid=CURRENT_UID;
   localStorage.removeItem(LSC);CODE='';ME=null;VIEW_RID=null;OWNER_LOADED=false;$('viewBanner').style.display='none';
+  hideLock();$('subBanner').classList.remove('on');
   if(sb)try{await sb.auth.signOut();}catch(e){}
   if(uid)removeAccount(uid);
   CURRENT_UID=null;
@@ -936,7 +1031,7 @@ async function aiScan(firstCanvas){
       signal:ctl.signal
     }).finally(()=>clearTimeout(tm));
     const r=await resp.json().catch(()=>null);
-    if(!r||!r.ok){AI_LAST_ERR=(r&&r.error)||('HTTP '+resp.status);return null;}
+    if(!r||!r.ok){AI_LAST_ERR=(r&&r.error)||('HTTP '+resp.status);if(r&&r.error==='suscripcion_vencida')onBlockedByServer();return null;}
     if(!r.data)return null;
     return r.data;
   }catch(e){AI_LAST_ERR=e.message||String(e);return null;}
@@ -1426,15 +1521,15 @@ function renderSubscriptionCard(){
   if(sub.plan_status==='prueba'){
     $('subTag').textContent='Prueba gratis';
     $('subTitle').textContent=fechas?('Termina el '+fechaTxt):'En período de prueba';
-    $('subDetail').textContent='Después de la prueba, la suscripción sigue activa automáticamente salvo que la canceles.';
+    $('subDetail').textContent='Al terminar la prueba, el acceso se pausa hasta que se renueve el plazo. No se cobra nada automáticamente.';
   }else if(sub.plan_status==='activo'){
     $('subTag').textContent='Suscripción activa';
-    $('subTitle').textContent=fechas?('Próximo cobro: '+fechaTxt):'Al día';
-    $('subDetail').textContent='Gracias por usar Ticksy.';
+    $('subTitle').textContent=fechas?('Acceso hasta el '+fechaTxt):'Al día';
+    $('subDetail').textContent='Gracias por usar Ticksy. Antes de esa fecha te avisamos para renovar.';
   }else{
-    $('subTag').textContent='Suscripción vencida';
-    $('subTitle').textContent='Tu acceso puede verse afectado';
-    $('subDetail').textContent='Contactá a Ticksy para ponerte al día.';
+    $('subTag').textContent='Plazo vencido';
+    $('subTitle').textContent='Tu acceso está en pausa';
+    $('subDetail').textContent='Contactá a Ticksy para renovar el plazo.';
   }
 }
 async function loadTeam(){
