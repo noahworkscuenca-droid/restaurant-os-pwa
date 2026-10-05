@@ -127,6 +127,14 @@ display:flex;flex-direction:column;align-items:center;justify-content:center;gap
 .roleSeg button:disabled{opacity:.6}
 .filt{width:100%;background:var(--glass-bg);border:1px solid var(--glass-bd);border-radius:16px;color:var(--tx);font:inherit;font-size:.9rem;font-weight:500;padding:.8rem .9rem;outline:none}
 .filt:focus{border-color:var(--ac)}
+.histchips{display:flex;gap:.45rem;overflow-x:auto;margin-top:.7rem;padding-bottom:2px;scrollbar-width:none}
+.histchips::-webkit-scrollbar{display:none}
+.chipsel{flex:none;appearance:none;-webkit-appearance:none;background:var(--glass-bg) url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="%237E8C85" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>') no-repeat right .6rem center;background-size:13px;border:1px solid var(--glass-bd);border-radius:99px;color:var(--tx);font:inherit;font-size:.78rem;font-weight:600;padding:.5rem 1.7rem .5rem .85rem;outline:none;max-width:160px;text-overflow:ellipsis}
+.chipsel.active{background-color:rgba(34,199,126,.14);border-color:rgba(34,199,126,.4);color:var(--ac)}
+.chipicon{flex:none;width:38px;height:38px;border-radius:99px;background:var(--glass-bg);border:1px solid var(--glass-bd);color:var(--tx2);display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0}
+.chipicon.active{color:var(--ac);border-color:rgba(34,199,126,.4)}
+.morefilt{margin-top:.6rem;background:var(--s1);border:1px solid var(--bd);border-radius:16px;padding:.7rem .9rem}
+.morefilt .mflabel{font-size:.7rem;font-weight:600;color:var(--tx3);margin-bottom:.4rem}
 .icon-field{position:relative}
 .icon-field svg{position:absolute;left:.95rem;top:50%;transform:translateY(-50%);width:17px;height:17px;color:var(--tx3);pointer-events:none}
 .icon-field .filt{padding-left:2.6rem}
@@ -325,32 +333,34 @@ canvas.chart{width:100%!important}
       <button class="mbtn" id="mNext" aria-label="Mes siguiente">›</button>
     </div>
     <div class="row" style="margin-top:.7rem">
-      <button class="btn btn-s" id="btnCsv" style="display:flex;align-items:center;justify-content:center;gap:.5rem"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex:none"><path d="M12 3v12M7 11l5 4 5-4M5 21h14"/></svg>Exportar mes a Excel (CSV)</button>
-    </div>
-    <div class="row" style="margin-top:.7rem">
       <input class="filt" id="qNum" placeholder="🔍 Buscar por N° de factura" autocomplete="off">
     </div>
-    <div class="row">
-      <select class="filt" id="fSup"><option value="">Todos los proveedores</option></select>
-      <select class="filt" id="fSt" style="max-width:42%">
-        <option value="">Todas</option>
+    <div class="histchips" id="histChips">
+      <select class="chipsel" id="fSup"><option value="">Proveedor</option></select>
+      <select class="chipsel" id="fSt">
+        <option value="">Estado</option>
         <option value="PENDIENTE">Pendientes</option>
         <option value="PAGADA">Pagadas</option>
       </select>
-    </div>
-    <div class="row">
-      <select class="filt" id="fPm">
-        <option value="">Todos los métodos de pago</option>
+      <select class="chipsel" id="fPm">
+        <option value="">Método de pago</option>
         <option value="SINPE Móvil">Sinpe Móvil</option>
         <option value="Tarjeta">Tarjeta</option>
         <option value="Efectivo">Efectivo</option>
         <option value="Transferencia">Transferencia</option>
       </select>
+      <button type="button" class="chipicon" id="btnMoreFilt" aria-label="Más filtros">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg>
+      </button>
+      <button type="button" class="chipicon" id="btnCsv" aria-label="Exportar mes a Excel">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 11l5 4 5-4M5 21h14"/></svg>
+      </button>
     </div>
-    <div class="row">
+    <div class="morefilt" id="moreFiltPanel" style="display:none">
+      <div class="mflabel">Ordenar / filtrar fecha por</div>
       <select class="filt" id="fDateField">
-        <option value="invoice">Filtrar por fecha de factura</option>
-        <option value="created">Filtrar por fecha en que se agregó</option>
+        <option value="invoice">Fecha de factura</option>
+        <option value="created">Fecha en que se agregó</option>
       </select>
     </div>
     <div class="card" id="histList" style="margin-top:.7rem"><div class="empty">Cargando…</div></div>
@@ -1089,8 +1099,9 @@ async function loadSuppliers(){
     const alpha=sortedSups();
     $('supList').innerHTML=alpha.map(s=>'<option value="'+esc(s.name)+'">').join('');
     const sel=$('fSup').value;
-    $('fSup').innerHTML='<option value="">Todos los proveedores</option>'+
+    $('fSup').innerHTML='<option value="">Proveedor</option>'+
       alpha.map(s=>'<option value="'+s.id+'"'+(s.id===sel?' selected':'')+'>'+esc(s.name)+'</option>').join('');
+    $('fSup').classList.toggle('active',!!$('fSup').value);
     if(document.getElementById('pg-set').classList.contains('on'))renderSuppliers();
   }
 }
@@ -1249,7 +1260,19 @@ const monthKey=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
 $('mPrev').onclick=()=>{histDate.setMonth(histDate.getMonth()-1);loadHist();};
 $('mNext').onclick=()=>{histDate.setMonth(histDate.getMonth()+1);loadHist();};
 $('qNum').addEventListener('input',()=>{clearTimeout(qT);qT=setTimeout(loadHist,400);});
-$('fSup').onchange=loadHist;$('fSt').onchange=loadHist;$('fDateField').onchange=loadHist;$('fPm').onchange=loadHist;
+function chipSync(sel){sel.classList.toggle('active',!!sel.value);}
+['fSup','fSt','fPm'].forEach(id=>{
+  const sel=$(id);
+  sel.onchange=()=>{chipSync(sel);loadHist();};
+});
+$('fDateField').onchange=()=>{
+  $('btnMoreFilt').classList.toggle('active',$('fDateField').value!=='invoice');
+  loadHist();
+};
+$('btnMoreFilt').onclick=()=>{
+  const p=$('moreFiltPanel');
+  p.style.display=p.style.display==='none'?'block':'none';
+};
 async function loadHist(){
   const q=$('qNum').value.trim();
   $('mLabel').textContent=q?'Búsqueda: "'+q+'"':histDate.toLocaleDateString('es-CR',{month:'long',year:'numeric'});
