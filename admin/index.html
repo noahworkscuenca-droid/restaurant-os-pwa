@@ -319,7 +319,13 @@ async function gate(){
     MFA_FACTOR=en.data.id;
     $('mfaTitle').textContent='Activá los dos pasos';
     $('mfaMsg').textContent='Escaneá este código QR con Google Authenticator, Authy o similar y escribí el código que muestra.';
-    $('mfaQr').innerHTML='<img alt="QR" src="'+en.data.totp.qr_code+'">';
+    {
+      let q=String(en.data.totp.qr_code||'');
+      const i=q.indexOf('<svg');
+      if(i>=0) q='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(q.slice(i));
+      const img=new Image();img.alt='QR';img.src=q;
+      $('mfaQr').textContent='';$('mfaQr').appendChild(img);
+    }
     $('mfaSecret').textContent=en.data.totp.secret;
     $('mfaEnroll').style.display='block';
   }
