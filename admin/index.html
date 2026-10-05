@@ -45,6 +45,13 @@ label{font-size:12px;font-weight:500;color:var(--muted);display:block;margin-bot
 #loginWrap .brand{font-size:12px}
 #loginWrap h1{font-size:18px;margin:4px 0 4px;font-weight:600}
 #loginWrap p{font-size:13px;color:var(--muted);margin:0 0 20px}
+#loginWrap{max-width:400px}
+#mfaCard{padding:26px 24px}
+#mfaCard h1{font-size:18px;margin:4px 0 6px;font-weight:600}
+#mfaCard p{font-size:13px;color:var(--muted);margin:0 0 18px;line-height:1.5}
+#mfaQr{background:#fff;border-radius:12px;padding:12px;width:232px;height:232px;margin:0 auto 14px;box-sizing:border-box}
+#mfaQr img{width:100%;height:100%;display:block;image-rendering:pixelated}
+#mfaCode{font-size:24px;letter-spacing:.45em;text-align:center;padding:12px 8px 12px calc(8px + .45em);font-weight:600}
 #loginErr{color:var(--bad);font-size:13px;margin-top:10px;display:none}
 
 /* ticket-strip kpis */
@@ -173,10 +180,10 @@ label{font-size:12px;font-weight:500;color:var(--muted);display:block;margin-bot
     <h1 id="mfaTitle">Verificación en dos pasos</h1>
     <p id="mfaMsg"></p>
     <div id="mfaEnroll" style="display:none">
-      <div id="mfaQr" style="background:#fff;border-radius:10px;padding:10px;width:200px;height:200px;margin:0 auto 12px"></div>
+      <div id="mfaQr"></div>
       <div class="mono" style="font-size:11px;color:var(--muted);text-align:center;word-break:break-all;margin-bottom:14px">¿No podés escanear? Clave manual:<br><span id="mfaSecret" style="color:var(--ink)"></span></div>
     </div>
-    <div class="field"><label for="mfaCode">Código de 6 dígitos</label><input id="mfaCode" inputmode="numeric" autocomplete="one-time-code" maxlength="6" class="mono" style="letter-spacing:.3em;text-align:center"></div>
+    <div class="field"><label for="mfaCode">Código de 6 dígitos</label><input id="mfaCode" inputmode="numeric" autocomplete="one-time-code" maxlength="6" class="mono" placeholder="000000"></div>
     <button class="btn primary" id="btnMfa" style="width:100%">Verificar</button>
     <button class="btn" id="btnMfaOut" style="width:100%;margin-top:8px">Cancelar</button>
     <div id="mfaErr" style="color:var(--bad);font-size:13px;margin-top:10px;display:none"></div>
@@ -310,9 +317,9 @@ async function gate(){
     const en=await sb.auth.mfa.enroll({factorType:'totp',friendlyName:'Back Office '+Date.now()});
     if(en.error){mfaErr('No se pudo iniciar el registro: '+en.error.message);return;}
     MFA_FACTOR=en.data.id;
-    $('mfaTitle').textContent='Activar verificación en dos pasos';
+    $('mfaTitle').textContent='Activá los dos pasos';
     $('mfaMsg').textContent='Escaneá este código QR con Google Authenticator, Authy o similar y escribí el código que muestra.';
-    $('mfaQr').innerHTML='<img alt="QR" style="width:100%;height:100%" src="'+en.data.totp.qr_code+'">';
+    $('mfaQr').innerHTML='<img alt="QR" src="'+en.data.totp.qr_code+'">';
     $('mfaSecret').textContent=en.data.totp.secret;
     $('mfaEnroll').style.display='block';
   }
