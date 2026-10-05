@@ -195,7 +195,7 @@ label{font-size:12px;font-weight:500;color:var(--muted);display:block;margin-bot
   </div>
 
   <div class="card" id="settingsCard" style="margin-top:22px">
-    <button class="btn settings-toggle" id="btnToggleSettings"><span>Cobro provisional y avisos al celular</span><span id="settingsChev">▾</span></button>
+    <button class="btn settings-toggle" id="btnToggleSettings"><span>Cobro, avisos y límites de IA</span><span id="settingsChev">▾</span></button>
     <div class="settings-body" id="settingsBody">
       <div class="field">
         <label for="sPay">Instrucciones de pago (las ve el cliente cuando se le acaba el plazo)</label>
@@ -215,6 +215,17 @@ label{font-size:12px;font-weight:500;color:var(--muted);display:block;margin-bot
       </div>
       <div class="foot" style="margin-top:0;margin-bottom:14px">
         Instalá la app gratuita <b>ntfy</b> en tu celular y suscribite a este mismo tema: cada registro nuevo, plazo por vencer o vencido te llega como notificación. Se envía el nombre del negocio al servicio ntfy.sh, por eso usá un tema largo y secreto. Si lo dejás vacío, los avisos solo se ven aquí arriba.
+      </div>
+      <div class="field">
+        <label for="sCapD">Tope de escaneos con IA por negocio, por día</label>
+        <input id="sCapD" type="number" min="1" max="1000" inputmode="numeric" placeholder="60">
+      </div>
+      <div class="field">
+        <label for="sCapG">Tope global de escaneos con IA entre todos los negocios, por día</label>
+        <input id="sCapG" type="number" min="1" max="10000" inputmode="numeric" placeholder="300">
+      </div>
+      <div class="foot" style="margin-top:0;margin-bottom:14px" id="sCapInfo">
+        Limita el gasto de IA si alguien abusa del escaneo. Al llegar al tope, la app usa el escaneo gratis. Tus propios escaneos como superadmin no cuentan.
       </div>
       <button class="btn primary" id="btnSaveSettings">Guardar ajustes</button>
     </div>
@@ -259,6 +270,7 @@ const ERR={
   whatsapp_invalido:'Número de WhatsApp inválido.',
   tema_invalido:'El tema solo puede tener letras, números, guion y guion bajo (máx. 64).',
   sin_tema:'Primero guardá un tema.',
+  tope_invalido:'Los topes deben ser números: por negocio de 1 a 1000 y global de 1 a 10000.',
   sin_conexion:'Sin conexión.'
 };
 
@@ -615,6 +627,9 @@ function fillSettings(){
   $('sPay').value=SETTINGS.pay_instructions||'';
   $('sWa').value=SETTINGS.pay_whatsapp||'';
   $('sTopic').value=SETTINGS.push_topic||'';
+  $('sCapD').value=SETTINGS.scan_daily_cap!=null?SETTINGS.scan_daily_cap:60;
+  $('sCapG').value=SETTINGS.scan_global_cap!=null?SETTINGS.scan_global_cap:300;
+  $('sCapInfo').textContent='Limita el gasto de IA si alguien abusa del escaneo. Al llegar al tope, la app usa el escaneo gratis. Tus propios escaneos como superadmin no cuentan. Hoy se han usado '+(SETTINGS.scans_today||0)+' escaneos entre todos los negocios.';
 }
 $('btnToggleSettings').onclick=()=>{
   const b=$('settingsBody'), open=b.style.display==='block';
@@ -632,7 +647,10 @@ async function saveSettings(){
     p_push_topic:$('sTopic').value
   });
   if(r&&r.ok){
-    SETTINGS={ok:true,pay_instructions:$('sPay').value.trim(),pay_whatsapp:$('sWa').value.replace(/\D/g,''),push_topic:$('sTopic').value.trim()};
+    const cd=parseInt($('sCapD').value,10), cg=parseInt($('sCapG').value,10);
+    const rc=await rpc('api_super_set_scan_caps',{p_daily:cd,p_global:cg});
+    if(!(rc&&rc.ok)){toast(ERR[rc&&rc.error]||'No se pudieron guardar los topes.',true);return false;}
+    SETTINGS={ok:true,pay_instructions:$('sPay').value.trim(),pay_whatsapp:$('sWa').value.replace(/\D/g,''),push_topic:$('sTopic').value.trim(),scan_daily_cap:cd,scan_global_cap:cg,scans_today:SETTINGS?SETTINGS.scans_today:0};
     fillSettings();
     return true;
   }
