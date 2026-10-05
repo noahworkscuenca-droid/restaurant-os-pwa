@@ -150,7 +150,7 @@ body.noscroll{overflow:hidden}
 .paycard .pi{width:42px;height:42px;border-radius:13px;background:var(--amber-bg);color:var(--amber);display:flex;align-items:center;justify-content:center;flex:none}
 .paycard .pt{flex:1;min-width:0}
 .paycard .pl{display:block;font-size:.82rem;color:var(--tx2);font-weight:500}
-.paycard .ps{display:block;font-size:.82rem;color:var(--amber);font-weight:650;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.paycard .ps{display:block;font-size:.82rem;color:var(--amber);font-weight:650;margin-top:2px;line-height:1.3}
 .paycard .pv{font-size:clamp(1.05rem,4.6vw,1.25rem);font-weight:750;letter-spacing:-.03em;white-space:nowrap}
 .paycard.zero .pi{background:var(--ac-soft);color:var(--ac)}
 .paycard.zero .ps{color:var(--tx3)}
@@ -335,6 +335,32 @@ nav svg{width:22px;height:22px;stroke-width:2}
 #subBanner button{flex:none;background:none;border:0;color:inherit;font:inherit;text-decoration:underline;cursor:pointer;min-height:36px}
 #viewBanner{display:none;background:var(--amber-bg);color:var(--amber);text-align:center;font-size:.8rem;font-weight:650;padding:.55rem;border-radius:12px;margin:0 0 .8rem}
 #codeInput{text-align:center;font-size:1.1rem;letter-spacing:.22em;font-weight:700;text-transform:uppercase}
+
+/* Pagar varias */
+#pmView{position:fixed;inset:0;background:var(--bg);z-index:70;display:none;overflow-y:auto;-webkit-overflow-scrolling:touch}
+#pmView.on{display:block;animation:fade .18s ease}
+#pmView .pmin{max-width:520px;margin:0 auto;padding:calc(.6rem + env(safe-area-inset-top)) 1.15rem 0}
+.pmbar{display:flex;align-items:center;justify-content:space-between;gap:.5rem;min-height:44px}
+.pmbar .tb{min-height:44px;border:0;background:none;padding:0 .2rem;font-size:.94rem;font-weight:600;color:var(--tx2);cursor:pointer}
+.pmbar .tb.all{color:var(--ac);font-weight:700;font-size:.875rem}
+.pmbar h2{font-size:1.06rem;font-weight:800;letter-spacing:-.03em;text-align:center}
+.pmsub{font-size:.82rem;color:var(--tx2);margin:.4rem .1rem .75rem}
+.pmsub b{color:var(--amber)}
+.pmlist{background:var(--s1);border:1px solid var(--bd);border-radius:18px;padding:0 .9rem}
+.pmrow{display:flex;align-items:center;gap:.75rem;padding:.8rem 0;cursor:pointer}
+.pmrow+.pmrow{border-top:1px solid var(--line)}
+.pmrow input{width:22px;height:22px;accent-color:var(--ac);margin:0;flex:none;cursor:pointer}
+.pmrow .pn{display:block;font-size:.94rem;font-weight:650;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pmrow .pd{display:block;font-size:.78rem;color:var(--tx3);margin-top:2px}
+.pmrow .pd.old{color:var(--amber)}
+.pmrow b{font-size:.94rem;flex:none}
+.pmpanel{position:fixed;left:0;right:0;bottom:0;max-width:520px;margin:0 auto;background:var(--s1);border-radius:26px 26px 0 0;box-shadow:var(--sh-sheet);padding:.6rem 1.25rem calc(1.2rem + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:.9rem}
+.pmtot{display:flex;justify-content:space-between;align-items:flex-end;gap:.5rem}
+.pmtot .l{font-size:.82rem;color:var(--tx2);font-weight:600}
+.pmtot .v{font-size:2.1rem;font-weight:800;letter-spacing:-.045em;line-height:1.1}
+.pmtot .c{font-size:.82rem;color:var(--tx2);font-weight:600;padding-bottom:.4rem;text-align:right}
+.pmq{font-size:.75rem;font-weight:650;color:var(--tx2);margin-bottom:.45rem}
+.pmhint{font-size:.86rem;color:var(--tx3);text-align:center;padding:.4rem 0 .2rem}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -679,6 +705,35 @@ nav svg{width:22px;height:22px;stroke-width:2}
   <button type="button" class="pclose" id="photoClose" aria-label="Cerrar">✕</button>
   <img id="photoImg" alt="Foto de la factura">
 </div>
+
+<!-- Pagar varias -->
+<section id="pmView" role="dialog" aria-modal="true" aria-labelledby="pmTitle">
+  <div class="pmin">
+    <div class="pmbar">
+      <button type="button" class="tb" id="pmCancel">Cancelar</button>
+      <h2 id="pmTitle">Pagar varias</h2>
+      <button type="button" class="tb all" id="pmAll">Todas</button>
+    </div>
+    <div class="pmsub" id="pmSub">Cargando…</div>
+    <div class="pmlist" id="pmList"><div class="empty">Cargando…</div></div>
+    <div class="pmpanel" id="pmPanel">
+      <div class="grab"></div>
+      <div id="pmEmpty" class="pmhint">Marcá las facturas que pagaste.</div>
+      <div id="pmForm" style="display:none;flex-direction:column;gap:.9rem">
+        <div class="pmtot"><div><div class="l">Total a pagar</div><div class="v" id="pmTotal">₡0</div></div><div class="c" id="pmCount"></div></div>
+        <div><div class="pmq">¿Cómo se pagó?</div>
+          <div class="pmgrid" id="pmMethods">
+            <button type="button" class="pmopt" data-pm="SINPE Móvil">Sinpe Móvil</button>
+            <button type="button" class="pmopt" data-pm="Transferencia">Transferencia</button>
+            <button type="button" class="pmopt" data-pm="Efectivo">Efectivo</button>
+            <button type="button" class="pmopt" data-pm="Tarjeta">Tarjeta</button>
+          </div></div>
+        <div class="field" style="margin:0"><label for="pmTxn">N° de comprobante (opcional)</label><input id="pmTxn" placeholder="Ej. 2026100512345" inputmode="numeric" autocomplete="off"></div>
+        <button type="button" class="btn btn-p dmain" id="pmGo">Marcar como pagadas</button>
+      </div>
+    </div>
+  </div>
+</section>
 
 <nav id="mainNav">
   <button data-pg="scan" class="on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 7V5a2 2 0 0 1 2-2h2M17 3h2a2 2 0 0 1 2 2v2M21 17v2a2 2 0 0 1-2 2h-2M7 21H5a2 2 0 0 1-2-2v-2M3 12h18"/></svg>Escanear</button>
@@ -1508,6 +1563,7 @@ function closeSheet(id){$(id).classList.remove('on');if(!document.querySelector(
 document.querySelectorAll('.sheetwrap').forEach(w=>w.addEventListener('click',e=>{if(e.target===w)closeSheet(w.id);}));
 document.addEventListener('keydown',e=>{
   if(e.key!=='Escape')return;
+  if($('pmView').classList.contains('on')&&!document.querySelector('.sheetwrap.on')&&!$('payWrap').classList.contains('on')){closePayMany();return;}
   if($('photoWrap').classList.contains('on')){$('photoWrap').classList.remove('on');return;}
   const open=[...document.querySelectorAll('.sheetwrap.on')].pop();if(open)closeSheet(open.id);
 });
@@ -1551,7 +1607,7 @@ async function loadDash(){
   const pcard=$('payCardBtn');
   pcard.classList.toggle('zero',pc===0);
   if(VIEW_RID){$('kCredSub').textContent=plural(pc,'factura','facturas')+' · solo lectura';pcard.disabled=true;}
-  else{$('kCredSub').textContent=pc?plural(pc,'factura','facturas')+' · pagar varias':'Nada pendiente';pcard.disabled=pc===0;}
+  else{$('kCredSub').textContent=pc===1?'1 factura · pagar':pc?pc+' facturas · pagar varias':'Nada pendiente';pcard.disabled=pc===0;}
   renderSupTop(r.by_supplier||[],cur);
   loadLvSales(cur);
 }
@@ -1832,6 +1888,97 @@ window.delInv=async(id,confirmed)=>{
   if(r&&r.ok){toast('Factura borrada.');loadHist();}
   else toast('No se pudo borrar.',true);
 };
+
+
+/* ---------- Pagar varias ---------- */
+let PM={rows:[],sel:new Set(),method:'',busy:false,from:null};
+function diasDesde(iso){const d=isoToDate(iso);if(!d)return null;const t=new Date();t.setHours(0,0,0,0);return Math.round((t-d)/86400000);}
+function haceTxt(n){if(n==null)return '';if(n<=0)return 'hoy';if(n===1)return 'ayer';return 'hace '+n+' días';}
+async function openPayMany(){
+  if(VIEW_RID){toast('Estás viendo otro negocio: solo lectura.',true);return;}
+  PM={rows:[],sel:new Set(),method:'',busy:false,from:document.querySelector('.page.on')?document.querySelector('.page.on').id:null};
+  $('pmTxn').value='';
+  document.querySelectorAll('#pmMethods .pmopt').forEach(b=>b.classList.remove('sel'));
+  $('pmList').innerHTML='<div class="empty">Cargando…</div>';$('pmSub').textContent='Cargando…';
+  $('pmView').classList.add('on');$('pmView').scrollTop=0;document.body.classList.add('noscroll');
+  $('mainNav').classList.remove('on');
+  renderPmPanel();
+  const r=await rpc('api_list_invoices_v2',{p_code:CODE,p_limit:500,p_status:'PENDIENTE',p_month:null,p_restaurant:null,p_date_field:'invoice'});
+  if(!(r&&r.ok)){$('pmList').innerHTML='<div class="empty">No se pudieron cargar las pendientes. Revisá tu conexión.</div>';$('pmSub').textContent='';return;}
+  PM.rows=(r.rows||[]).slice().sort((a,b)=>String(a.invoice_date).localeCompare(String(b.invoice_date))||String(a.created_at).localeCompare(String(b.created_at)));
+  renderPmList();
+}
+function closePayMany(){
+  $('pmView').classList.remove('on');document.body.classList.remove('noscroll');
+  $('mainNav').classList.add('on');
+}
+function renderPmList(){
+  const rows=PM.rows;
+  const tot=rows.reduce((s,x)=>s+(+x.total_amount||0),0);
+  $('pmSub').innerHTML=rows.length?'Pendientes de pago · '+plural(rows.length,'factura','facturas')+' · <b>'+crc(tot)+'</b>':'';
+  $('pmAll').style.visibility=rows.length?'visible':'hidden';
+  if(!rows.length){$('pmList').innerHTML='<div class="empty">No hay facturas pendientes de pago.</div>';renderPmPanel();return;}
+  $('pmList').innerHTML=rows.map((x,i)=>{
+    const n=diasDesde(x.invoice_date);
+    return '<label class="pmrow"><input type="checkbox" data-i="'+i+'"'+(PM.sel.has(x.id)?' checked':'')+' aria-label="'+esc(x.supplier_name||'Factura')+' '+crc(x.total_amount)+'">'+
+      '<span style="flex:1;min-width:0"><span class="pn">'+esc(x.supplier_name||'—')+'</span>'+
+      '<span class="pd'+(n!=null&&n>30?' old':'')+'">'+esc(fmtDia(x.invoice_date).replace(/^\S+\s/,''))+' · '+haceTxt(n)+(x.invoice_number?' · #'+esc(String(x.invoice_number).slice(-6)):'')+'</span></span>'+
+      '<b>'+crc(x.total_amount)+'</b></label>';
+  }).join('');
+  renderPmPanel();
+}
+function renderPmPanel(){
+  const sel=PM.rows.filter(x=>PM.sel.has(x.id));
+  const n=sel.length;
+  $('pmTitle').textContent=n?(n===1?'1 seleccionada':n+' seleccionadas'):'Pagar varias';
+  $('pmAll').textContent=(n&&n===PM.rows.length)?'Ninguna':'Todas';
+  $('pmEmpty').style.display=n?'none':'block';
+  $('pmEmpty').textContent=PM.rows.length?'Marcá las facturas que pagaste.':'Nada pendiente por ahora.';
+  $('pmForm').style.display=n?'flex':'none';
+  requestAnimationFrame(()=>{$('pmView').querySelector('.pmin').style.paddingBottom=($('pmPanel').offsetHeight+16)+'px';});
+  if(!n)return;
+  $('pmTotal').textContent=crc(sel.reduce((s,x)=>s+(+x.total_amount||0),0));
+  const provs=new Set(sel.map(x=>x.supplier_id||x.supplier_name)).size;
+  $('pmCount').textContent=plural(n,'factura','facturas')+' · '+plural(provs,'proveedor','proveedores');
+  $('pmGo').textContent=n===1?'Marcar 1 como pagada':'Marcar '+n+' como pagadas';
+}
+$('pmList').addEventListener('change',e=>{
+  const cb=e.target.closest('input[type=checkbox]');if(!cb)return;
+  const x=PM.rows[+cb.dataset.i];if(!x)return;
+  if(cb.checked)PM.sel.add(x.id);else PM.sel.delete(x.id);
+  renderPmPanel();
+});
+$('pmAll').onclick=()=>{
+  const all=PM.sel.size===PM.rows.length&&PM.rows.length>0;
+  PM.sel=all?new Set():new Set(PM.rows.map(x=>x.id));
+  $('pmList').querySelectorAll('input[type=checkbox]').forEach(cb=>cb.checked=!all);
+  renderPmPanel();
+};
+$('pmMethods').onclick=e=>{
+  const b=e.target.closest('.pmopt');if(!b)return;
+  PM.method=PM.method===b.dataset.pm?'':b.dataset.pm;
+  $('pmMethods').querySelectorAll('.pmopt').forEach(x=>x.classList.toggle('sel',x.dataset.pm===PM.method));
+};
+$('pmCancel').onclick=closePayMany;
+$('pmGo').onclick=async()=>{
+  if(PM.busy||!PM.sel.size)return;
+  const ids=PM.rows.filter(x=>PM.sel.has(x.id)).map(x=>x.id);
+  PM.busy=true;$('pmGo').disabled=true;$('pmGo').textContent='Guardando…';
+  const r=await rpc('api_pay_invoices',{p_ids:ids,p_method:PM.method||null,p_txn:$('pmTxn').value.trim()||null});
+  PM.busy=false;$('pmGo').disabled=false;
+  if(r&&r.ok){
+    const n=+r.updated||0;
+    closePayMany();
+    if(n===ids.length)toast(n===1?'1 factura marcada como pagada.':n+' facturas marcadas como pagadas.');
+    else toast(n+' de '+ids.length+' marcadas: las demás ya estaban pagadas.');
+    if($('pg-dash').classList.contains('on'))loadDash();
+    if($('pg-hist').classList.contains('on'))loadHist();
+  }else{
+    renderPmPanel();
+    if(!(r&&r.error==='suscripcion_vencida'))toast('No se pudieron marcar: '+((r&&r.error)||'sin conexión'),true);
+  }
+};
+$('btnSelect').onclick=openPayMany;
 
 /* ---------- Ajustes ---------- */
 $('btnChangeCode').onclick=async()=>{
