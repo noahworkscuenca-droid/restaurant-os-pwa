@@ -250,7 +250,7 @@ nav svg{width:22px;height:22px;stroke-width:2}
 @keyframes sh{from{transform:translateX(-100%)}to{transform:translateX(100%)}}
 
 /* Toast */
-#toast{position:fixed;left:50%;bottom:calc(92px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(20px);opacity:0;background:var(--total);color:#fff;border-radius:14px;padding:.8rem 1.1rem;font-size:.86rem;font-weight:550;line-height:1.45;box-shadow:0 12px 34px -12px rgba(0,0,0,.4);transition:.25s;pointer-events:none;max-width:88vw;z-index:120}
+#toast{position:fixed;left:50%;bottom:calc(92px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(20px);opacity:0;background:var(--total);color:#fff;border-radius:14px;padding:.8rem 1.1rem;font-size:.86rem;font-weight:550;line-height:1.45;box-shadow:0 12px 34px -12px rgba(0,0,0,.4);transition:.25s;pointer-events:none;width:max-content;max-width:min(88vw,440px);text-align:center;z-index:120}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 #toast.err{background:#5C1F1F}
 
@@ -361,6 +361,54 @@ nav svg{width:22px;height:22px;stroke-width:2}
 .pmtot .c{font-size:.82rem;color:var(--tx2);font-weight:600;padding-bottom:.4rem;text-align:right}
 .pmq{font-size:.75rem;font-weight:650;color:var(--tx2);margin-bottom:.45rem}
 .pmhint{font-size:.86rem;color:var(--tx3);text-align:center;padding:.4rem 0 .2rem}
+
+/* Ajustes agrupado */
+.setv{display:none}
+.setv.on{display:block;animation:fade .18s ease}
+.backbtn{display:inline-flex;align-items:center;min-height:44px;border:0;background:none;padding:0 .1rem;font-size:.94rem;font-weight:600;color:var(--ac);cursor:pointer}
+.ptitle.sub{margin:.1rem 0 .9rem}
+.profcard{width:100%;text-align:left;background:var(--s1);border:1px solid var(--bd);border-radius:18px;padding:.75rem 1rem;display:flex;align-items:center;gap:.75rem;cursor:pointer;font:inherit;color:inherit}
+.pav{width:44px;height:44px;border-radius:99px;background:var(--total);color:var(--mint);font-weight:800;font-size:1.06rem;display:flex;align-items:center;justify-content:center;flex:none}
+.pn1{display:block;font-size:.94rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pn2{display:block;font-size:.8rem;color:var(--tx2);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.glabel{font-size:.75rem;font-weight:650;color:var(--tx2);margin:.35rem .25rem .45rem}
+.group{background:var(--s1);border:1px solid var(--bd);border-radius:18px;padding:0 1rem}
+.grow{width:100%;display:flex;align-items:center;justify-content:space-between;gap:.75rem;min-height:50px;border:0;background:none;font:inherit;color:inherit;font-size:.94rem;font-weight:600;text-align:left;cursor:pointer;padding:.35rem 0}
+div.grow{cursor:default}
+.group>.grow+.grow,.group>.grow+div,.group>div+.grow{border-top:1px solid var(--line)}
+.group>*:not(:first-child){border-top:1px solid var(--line)}
+.gv{display:inline-flex;align-items:center;gap:.4rem;color:var(--tx2);font-weight:500;font-size:.875rem;flex:none}
+.gv svg{width:16px;height:16px;color:var(--tx3)}
+.gsub{display:block;font-size:.78rem;color:var(--amber);font-weight:500;margin-top:2px}
+.gsel{flex-direction:column;align-items:stretch;gap:.4rem;padding:.75rem 0}
+.gsel label{font-size:.75rem;font-weight:650;color:var(--tx2)}
+.gsel select{width:100%;background:var(--s1);border:1px solid var(--bd);border-radius:12px;color:var(--tx);font:inherit;font-size:.9rem;min-height:44px;padding:0 .8rem}
+.lvst{display:inline-flex;align-items:center;gap:6px;font-size:.84rem}
+.lvst::before{content:'';width:7px;height:7px;border-radius:99px;background:var(--tx3)}
+.lvst.on{color:var(--ac);font-weight:600}
+.lvst.on::before{background:var(--ac)}
+.seg.mini{padding:3px;border-radius:10px;background:var(--bg);border:0;flex:none}
+.seg.mini button{min-height:32px;font-size:.75rem;padding:0 .6rem;border-radius:8px}
+.seg.mini button.on{background:var(--s1);color:var(--tx);font-weight:700;box-shadow:0 1px 2px rgba(0,0,0,.12)}
+.kv2{display:flex;justify-content:space-between;gap:1rem;font-size:.875rem;padding:.45rem 0}
+.kv2+.kv2{border-top:1px solid var(--line)}
+.kv2 span{color:var(--tx2)}
+.kv2 b{font-weight:650;text-align:right;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.trow .tr2{display:block;font-size:.78rem;color:var(--tx2);font-weight:500;margin-top:2px}
+.rolepill{font-size:.75rem;font-weight:650;border-radius:99px;padding:.25rem .6rem;background:var(--bg);color:var(--tx2)}
+.rolepill.admin{background:var(--ac-soft);color:var(--ac)}
+.crow{display:flex;align-items:center;gap:.6rem;min-height:56px;padding:.4rem 0}
+.crow .cn{font-size:.94rem;font-weight:650;display:flex;align-items:center;gap:.45rem;min-width:0}
+.crow .cn span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.crow .cm{display:block;font-size:.78rem;color:var(--tx3);margin-top:2px}
+.ctag{font-size:.66rem;font-weight:700;border-radius:99px;padding:.15rem .5rem;flex:none}
+.ctag.fixed{background:var(--bg);color:var(--tx2)}
+.ctag.new{background:var(--ac-soft);color:var(--ac)}
+.cbtn{width:40px;height:40px;flex:none;border-radius:12px;border:1px solid var(--bd);background:var(--s1);color:var(--tx2);display:flex;align-items:center;justify-content:center;cursor:pointer}
+.cbtn svg{width:17px;height:17px}
+.cbtn.del{color:var(--err)}
+.cbtn.del.armed{background:var(--err-bg);border-color:transparent}
+.crow input{flex:1;min-width:0;min-height:42px;border:1px solid var(--ac);border-radius:12px;padding:0 .8rem;font:inherit;font-size:.9rem;background:var(--s1);color:var(--tx);outline:none}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -514,72 +562,160 @@ nav svg{width:22px;height:22px;stroke-width:2}
 
   <!-- ===== AJUSTES ===== -->
   <section class="page" id="pg-set">
-    <div class="ptop"><h1 class="ptitle">Ajustes</h1></div>
-    <div class="slabel">Pendientes de subir</div>
-    <div class="card">
-      <p style="font-size:.85rem;color:var(--tx2)" id="pendInfo">Sin facturas pendientes.</p>
-      <div class="row" id="pendRow" style="display:none"><button class="btn btn-p" id="btnRetry">Reintentar subida</button></div>
-    </div>
-    <div class="slabel">Integración Loyverse (opcional)</div>
-    <div class="card">
-      <p style="font-size:.82rem;color:var(--tx2);margin-bottom:.8rem" id="lvInfo">Conecta tu POS para ver ventas vs compras y controlar lo que entra y sale del inventario.</p>
-      <div class="field" id="lvTokRow"><input class="filt" id="lvTok" type="password" placeholder="Token de acceso de Loyverse" autocomplete="off"></div>
-      <div class="row" style="margin-top:0">
-        <button class="btn btn-p" id="btnLv">Conectar</button>
-        <button class="btn btn-s" id="btnLvOff" style="display:none;color:var(--err)">Desconectar</button>
+    <!-- Ajustes: principal -->
+    <div class="setv on" id="sv-main">
+      <div class="ptop"><h1 class="ptitle">Ajustes</h1></div>
+      <div class="stack">
+        <button type="button" class="profcard" data-go="me">
+          <span class="pav" id="profIni">?</span>
+          <span style="flex:1;min-width:0"><span class="pn1" id="profName">—</span><span class="pn2" id="profSub">—</span></span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" width="16" height="16"><path d="M9 6l6 6-6 6"/></svg>
+        </button>
+        <div class="card subcard" id="subCard" style="display:none">
+          <div class="stag" id="subTag"></div>
+          <div class="stit" id="subTitle"></div>
+          <div class="sdet" id="subDetail"></div>
+        </div>
+
+        <div id="grpNeg">
+          <div class="glabel">Negocio</div>
+          <div class="group">
+            <button type="button" class="grow adm" data-go="team"><span>Equipo</span><span class="gv"><span id="teamCnt"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" width="16" height="16"><path d="M9 6l6 6-6 6"/></svg></span></button>
+            <button type="button" class="grow" data-go="sups"><span>Proveedores</span><span class="gv"><span id="supCount"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" width="16" height="16"><path d="M9 6l6 6-6 6"/></svg></span></button>
+            <button type="button" class="grow adm" data-go="cats"><span>Categorías</span><span class="gv"><span id="catCnt"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" width="16" height="16"><path d="M9 6l6 6-6 6"/></svg></span></button>
+            <button type="button" class="grow adm" data-go="code"><span>Código de invitación</span><span class="gv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" width="16" height="16"><path d="M9 6l6 6-6 6"/></svg></span></button>
+            <div class="grow gsel" id="ownerCard" style="display:none">
+              <label for="restSel">Ver otro negocio</label>
+              <select id="restSel"><option value="">El mío</option></select>
+            </div>
+          </div>
+        </div>
+
+        <div id="grpInt">
+          <div class="glabel">Integraciones</div>
+          <div class="group">
+            <button type="button" class="grow" data-go="lv"><span>Loyverse POS</span><span class="gv"><span class="lvst" id="lvState">Desconectado</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" width="16" height="16"><path d="M9 6l6 6-6 6"/></svg></span></button>
+          </div>
+        </div>
+
+        <div>
+          <div class="glabel">Preferencias y datos</div>
+          <div class="group">
+            <div class="grow">
+              <span>Apariencia</span>
+              <div class="seg mini" id="themeSeg" role="group" aria-label="Apariencia">
+                <button type="button" data-th="system">Sistema</button>
+                <button type="button" data-th="light">Claro</button>
+                <button type="button" data-th="dark">Oscuro</button>
+              </div>
+            </div>
+            <button type="button" class="grow" id="btnExportXls"><span>Exportar a Excel</span><span class="gv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" width="16" height="16"><path d="M9 6l6 6-6 6"/></svg></span></button>
+            <div class="grow" id="pendRowG" style="display:none">
+              <span><span style="display:block">Facturas sin subir</span><span class="gsub" id="pendInfo"></span></span>
+              <button type="button" class="sbtn" id="btnRetry" style="color:var(--ac)">Reintentar</button>
+            </div>
+          </div>
+        </div>
+
+        <button type="button" class="btn btn-s" id="btnLogout" style="color:var(--err);font-weight:700;margin-top:.3rem">Cerrar sesión</button>
+        <p class="legallinks" style="text-align:center;margin:.2rem 0 .5rem"><a href="../terminos.html" target="_blank" rel="noopener">Términos</a> · <a href="../privacidad.html" target="_blank" rel="noopener">Privacidad</a></p>
       </div>
-      <div class="hint">El token se genera en Loyverse → Integraciones → Tokens de acceso, y se guarda solo en este teléfono.</div>
     </div>
-    <div class="slabel">Mi cuenta</div>
-    <div class="card" id="meCard"><p style="font-size:.85rem;color:var(--tx2)" id="meInfo">Sin sesión.</p></div>
-    <div class="card subcard" id="subCard" style="display:none;margin-top:.75rem">
-      <div class="stag" id="subTag"></div>
-      <div class="stit" id="subTitle"></div>
-      <div class="sdet" id="subDetail"></div>
+
+    <!-- Mi cuenta -->
+    <div class="setv" id="sv-me">
+      <button type="button" class="backbtn" data-go="main">‹ Ajustes</button><h1 class="ptitle sub">Mi cuenta</h1>
+      <div class="stack">
+        <div class="card" id="meCard"><div class="kv2"><span>Nombre</span><b id="meName">—</b></div><div class="kv2"><span>Correo</span><b id="meEmail">—</b></div><div class="kv2"><span>Rol</span><b id="meRole">—</b></div><div class="kv2"><span>Negocio</span><b id="meBiz">—</b></div></div>
+        <div class="card">
+          <div class="field"><label for="newPass">Nueva contraseña (mín. 6 caracteres)</label><input id="newPass" type="password" placeholder="••••••••" autocomplete="new-password"></div>
+          <button type="button" class="btn btn-s" id="btnChangePass" style="width:100%">Cambiar contraseña</button>
+        </div>
+        <div class="glabel" style="margin-top:.2rem">Cuentas en este teléfono</div>
+        <div class="card" id="acctBox"></div>
+      </div>
     </div>
-    <div class="slabel">Cambiar mi contraseña</div>
-    <div class="card">
-      <div class="field"><label for="newPass">Nueva contraseña (mín. 6 caracteres)</label><input id="newPass" type="password" placeholder="••••••••" autocomplete="new-password"></div>
-      <div class="row"><button class="btn btn-s" id="btnChangePass">Cambiar contraseña</button></div>
+
+    <!-- Equipo -->
+    <div class="setv" id="sv-team">
+      <button type="button" class="backbtn" data-go="main">‹ Ajustes</button><h1 class="ptitle sub">Equipo</h1>
+      <div class="stack">
+        <div class="group" id="teamBox"><div class="empty">Cargando…</div></div>
+        <p class="hint" style="margin:0 .3rem">Tocá una persona para cambiar su rol o restablecer su contraseña.</p>
+      </div>
     </div>
-    <div class="slabel">Cuentas</div>
-    <div class="card" id="acctBox"></div>
-    <div class="slabel" id="ownerLbl" style="display:none">Cuenta maestra</div>
-    <div class="card" id="ownerCard" style="display:none">
-      <div class="field"><label for="restSel">Ver otro negocio</label>
-        <select id="restSel"><option value="">— El mío —</option></select></div>
-      <div class="hint">Solo lectura: podés ver su historial y su dashboard. Las facturas que guardes siempre quedan en tu propio negocio.</div>
+
+    <!-- Persona del equipo -->
+    <div class="setv" id="sv-person">
+      <button type="button" class="backbtn" data-go="team">‹ Equipo</button><h1 class="ptitle sub" id="perName">—</h1>
+      <div class="stack">
+        <div class="card"><div class="kv2"><span>Correo</span><b id="perEmail">—</b></div><div class="kv2"><span>Estado</span><b id="perState">—</b></div></div>
+        <div class="card">
+          <div class="field" style="margin-bottom:0"><label>Rol</label>
+            <div class="seg" id="perRole" role="group" aria-label="Rol"><button type="button" data-role="empleado">Empleado</button><button type="button" data-role="admin">Administrador</button></div>
+          </div>
+          <p class="hint">Un administrador ve todo y puede cambiar ajustes. Un empleado registra facturas.</p>
+        </div>
+        <div class="card" id="resetPwCard">
+          <div class="field"><label for="rpNew">Restablecer contraseña</label><input id="rpNew" placeholder="Contraseña temporal (mín. 6)" autocomplete="off"></div>
+          <input type="hidden" id="rpEmail">
+          <button type="button" class="btn btn-s" id="btnResetPw" style="width:100%">Restablecer contraseña</button>
+          <p class="hint">Para cuando alguien se queda afuera y el correo de recuperación no le llega. Pasásela vos directamente; después la cambia en "Mi cuenta".</p>
+        </div>
+      </div>
     </div>
-    <button type="button" id="supToggle" style="width:100%;display:flex;align-items:center;justify-content:space-between;gap:.5rem;background:none;border:0;padding:0;margin:1.7rem 0 0;cursor:pointer;color:inherit;font:inherit;text-align:left">
-      <span class="slabel" style="margin:0 0 .7rem">Proveedores <span id="supCount" style="color:var(--tx3);font-weight:500"></span></span>
-      <svg id="supChev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex:none;margin-bottom:.7rem;transition:transform .2s"><path d="M6 9l6 6 6-6"/></svg>
-    </button>
-    <div id="supPanel" style="display:none">
-      <div class="field icon-field"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg><input id="supSearch" class="filt" placeholder="Buscar proveedor" autocomplete="off"></div>
-      <div class="card" id="supBox"><div class="empty">Cargando…</div></div>
+
+    <!-- Proveedores -->
+    <div class="setv" id="sv-sups">
+      <button type="button" class="backbtn" data-go="main">‹ Ajustes</button><h1 class="ptitle sub">Proveedores</h1>
+      <div class="stack">
+        <div class="icon-field"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg><input id="supSearch" class="filt" placeholder="Buscar proveedor" aria-label="Buscar proveedor" autocomplete="off" type="search"></div>
+        <div class="card" id="supBox" style="padding:.2rem 1.1rem"><div class="empty">Cargando…</div></div>
+      </div>
     </div>
-    <div class="slabel" id="codeLbl">Código de invitación al negocio</div>
-    <div class="card" id="codeCard">
-      <div class="field"><label for="newCodeRole">Ese código deja entrar como</label>
-        <select id="newCodeRole"><option value="empleado">Empleado</option><option value="admin">Administrador</option></select></div>
-      <div class="field"><label for="newCode">Nuevo código (mín. 6 caracteres)</label><input id="newCode" placeholder="NUEVO-CODIGO"></div>
-      <div class="row"><button class="btn btn-s" id="btnChangeCode">Guardar código</button></div>
-      <div class="hint">Compartí el código de "Empleado" con tu equipo. Usá "Administrador" solo si querés dar acceso total a otra persona (un socio, otro dueño).</div>
+
+    <!-- Categorías -->
+    <div class="setv" id="sv-cats">
+      <button type="button" class="backbtn" data-go="main">‹ Ajustes</button><h1 class="ptitle sub">Categorías</h1>
+      <div class="stack">
+        <p class="hint" style="margin:0 .3rem;font-size:.86rem">Las usás para clasificar cada factura. Las nuevas aparecen al revisar un escaneo.</p>
+        <div style="display:flex;gap:.5rem">
+          <input class="filt" id="catNew" placeholder="Nueva categoría" aria-label="Nueva categoría" maxlength="40" autocomplete="off" style="flex:1">
+          <button type="button" class="btn btn-p" id="catAdd" style="flex:none;padding:0 1.2rem">Agregar</button>
+        </div>
+        <div class="group" id="catList"><div class="empty">Cargando…</div></div>
+        <p class="hint" style="margin:0 .3rem">Solo se puede borrar una categoría sin facturas. Si tiene, renombrala o pasá sus facturas a otra.</p>
+      </div>
     </div>
-    <div class="slabel" id="teamLbl">Equipo</div>
-    <div class="card" id="teamBox"><div class="empty">Cargando…</div></div>
-    <div class="slabel" id="resetPwLbl">Contraseña de un empleado</div>
-    <div class="card" id="resetPwCard">
-      <div class="field"><label for="rpEmail">Correo del empleado</label><input id="rpEmail" type="email" placeholder="correo@empleado.com" autocomplete="off"></div>
-      <div class="field"><label for="rpNew">Nueva contraseña (mín. 6 caracteres)</label><input id="rpNew" placeholder="Contraseña temporal" autocomplete="off"></div>
-      <div class="row"><button class="btn btn-s" id="btnResetPw">Restablecer contraseña</button></div>
-      <div class="hint">Para cuando alguien se queda afuera y el correo de recuperación no le llega. Compartísela vos directamente; después puede cambiarla en "Cambiar mi contraseña".</div>
+
+    <!-- Código de invitación -->
+    <div class="setv" id="sv-code">
+      <button type="button" class="backbtn" data-go="main">‹ Ajustes</button><h1 class="ptitle sub">Código de invitación</h1>
+      <div class="stack">
+        <div class="card" id="codeCard">
+          <div class="field"><label for="newCodeRole">Ese código deja entrar como</label>
+            <div class="seg" id="codeRoleSeg" role="group" aria-label="Rol del código"><button type="button" data-role="empleado" class="on">Empleado</button><button type="button" data-role="admin">Administrador</button></div>
+            <input type="hidden" id="newCodeRole" value="empleado"></div>
+          <div class="field"><label for="newCode">Nuevo código (mín. 6 caracteres)</label><input id="newCode" placeholder="NUEVO-CODIGO" autocomplete="off" style="text-transform:uppercase"></div>
+          <button type="button" class="btn btn-s" id="btnChangeCode" style="width:100%">Guardar código</button>
+          <p class="hint">Compartí el código de "Empleado" con tu equipo. Usá "Administrador" solo para dar acceso total a otra persona (un socio, otro dueño).</p>
+        </div>
+      </div>
     </div>
-    <div class="slabel">Sesión</div>
-    <div class="card"><div class="row" style="margin-top:0">
-      <button class="btn btn-s" id="btnExport">Exportar respaldo</button>
-      <button class="btn btn-s" id="btnLogout" style="color:var(--err)">Salir</button>
-    </div></div>
+
+    <!-- Loyverse -->
+    <div class="setv" id="sv-lv">
+      <button type="button" class="backbtn" data-go="main">‹ Ajustes</button><h1 class="ptitle sub">Loyverse POS</h1>
+      <div class="stack">
+        <div class="card">
+          <p style="font-size:.86rem;color:var(--tx2);margin-bottom:.9rem;line-height:1.5" id="lvInfo">Conectá tu POS para ver ventas vs compras.</p>
+          <div class="field" id="lvTokRow"><label for="lvTok">Token de acceso</label><input id="lvTok" type="password" placeholder="Pegá el token de Loyverse" autocomplete="off"></div>
+          <button type="button" class="btn btn-p" id="btnLv" style="width:100%">Conectar</button>
+          <button type="button" class="btn btn-s" id="btnLvOff" style="display:none;width:100%;color:var(--err)">Desconectar</button>
+          <p class="hint">El token se genera en Loyverse → Integraciones → Tokens de acceso, y se guarda solo en este teléfono.</p>
+        </div>
+      </div>
+    </div>
   </section>
 </div>
 
@@ -704,6 +840,16 @@ nav svg{width:22px;height:22px;stroke-width:2}
 <div id="photoWrap" role="dialog" aria-modal="true" aria-label="Foto de la factura">
   <button type="button" class="pclose" id="photoClose" aria-label="Cerrar">✕</button>
   <img id="photoImg" alt="Foto de la factura">
+</div>
+
+<!-- Nueva categoría (desde revisar/editar) -->
+<div class="sheetwrap" id="ncWrap">
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="ncTitle">
+    <div class="grab"></div>
+    <h3 id="ncTitle">Nueva categoría</h3>
+    <div class="field" style="margin:0"><label for="ncName">Nombre</label><input id="ncName" maxlength="40" placeholder="Ej. Mantenimiento" autocomplete="off"></div>
+    <div class="row" style="margin-top:0"><button type="button" class="btn btn-s" id="ncCancel">Cancelar</button><button type="button" class="btn btn-p" id="ncOk">Crear</button></div>
+  </div>
 </div>
 
 <!-- Pagar varias -->
@@ -910,7 +1056,7 @@ function show(pg){
   window.scrollTo(0,0);
   if(pg==='dash') loadDash();
   if(pg==='hist') loadHist();
-  if(pg==='set'){renderPending();loadSuppliers();lvUI();}
+  if(pg==='set'){setView('main');renderProfile();renderPending();loadSuppliers();lvUI();}
 }
 document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>show(b.dataset.pg));
 
@@ -990,21 +1136,16 @@ async function enterApp(){
 }
 function applyRole(){
   const emp=ME&&ME.role==='empleado';
-  $('codeCard').style.display=emp?'none':'block';
-  $('codeLbl').style.display=emp?'none':'block';
-  $('teamBox').style.display=emp?'none':'block';
-  $('teamLbl').style.display=emp?'none':'block';
-  $('resetPwCard').style.display=emp?'none':'block';
-  $('resetPwLbl').style.display=emp?'none':'block';
+  document.querySelectorAll('#pg-set .adm').forEach(el=>el.style.display=emp?'none':'');
   if(!emp&&ME)loadTeam();
-  $('meInfo').textContent=ME?('Sesión: '+ME.name+' ('+ME.role+')'+(ME.restaurant_name?' · '+ME.restaurant_name:'')):'Sin sesión.';
+  renderProfile();
   renderSubscriptionCard();
   renderAccess();
   renderAccountSwitcher();
   const owner=!!(ME&&ME.is_owner);
-  $('ownerLbl').style.display=owner?'block':'none';
-  $('ownerCard').style.display=owner?'block':'none';
+  $('ownerCard').style.display=owner?'':'none';
   if(owner&&!OWNER_LOADED)loadOwnerRestaurants();
+  syncThemeSeg();updateCatCount();
 }
 function renderAccountSwitcher(){
   const box=$('acctBox');if(!box)return;
@@ -1100,7 +1241,11 @@ $('btnAuth').onclick=async()=>{
 };
 
 
-function fillCats(){$('f_cat').innerHTML=CATS.map(c=>'<option>'+c+'</option>').join('');}
+function fillCats(){
+  const cur=$('f_cat').value;
+  $('f_cat').innerHTML=CATS.map(c=>'<option>'+esc(c)+'</option>').join('')+'<option value="__new__">+ Nueva categoría…</option>';
+  if(cur&&CATS.includes(cur))$('f_cat').value=cur;
+}
 $('btnLogout').onclick=async()=>{
   const uid=CURRENT_UID;
   localStorage.removeItem(LSC);CODE='';ME=null;VIEW_RID=null;OWNER_LOADED=false;$('viewBanner').style.display='none';
@@ -1267,7 +1412,7 @@ async function aiScan(firstCanvas){
     const resp=await fetch(CFG.SUPABASE_URL+'/functions/v1/ai-scan',{
       method:'POST',
       headers:{'Content-Type':'text/plain'},
-      body:JSON.stringify({image_urls:urls,image_url:urls[0],code:CODE||'',jwt}),
+      body:JSON.stringify({image_urls:urls,image_url:urls[0],code:CODE||'',jwt,categories:CATS}),
       signal:ctl.signal
     }).finally(()=>clearTimeout(tm));
     const r=await resp.json().catch(()=>null);
@@ -1284,6 +1429,7 @@ function aiFill(d){
   $('f_date').value=(d.invoice_date&&!isNaN(Date.parse(d.invoice_date)))?d.invoice_date:new Date().toISOString().slice(0,10);
   if(d.total_amount&&+d.total_amount>0)$('f_total').value=(+d.total_amount).toFixed(2);
   $('f_type').value=d.sale_type==='CREDITO'?'CREDITO':'CONTADO';
+  if(d.category){const c=CATS.find(x=>x.toLowerCase()===String(d.category).toLowerCase());if(c)$('f_cat').value=c;}
   syncStatus();
   const b=$('confBadge');b.textContent='IA · revisar';b.className='conf hi';
   $('review').style.display='block';
@@ -1332,7 +1478,7 @@ function invFromForm(){
   return {supplier_name:$('f_sup').value.trim()||'Sin proveedor',
     invoice_number:$('f_num').value.trim(),invoice_date:$('f_date').value,
     total_amount:String(parseFloat($('f_total').value)||0),
-    sale_type:$('f_type').value,category:$('f_cat').value,
+    sale_type:$('f_type').value,category:($('f_cat').value==='__new__'?'Otros':$('f_cat').value),
     status:$('f_status').value,
     payment_method:paid?($('f_pm').value||null):null,
     transaction_number:paid?($('f_txn').value.trim()||null):null,
@@ -1412,8 +1558,8 @@ function resetScan(){
 let lastPendErr=null;
 function renderPending(){
   const p=JSON.parse(localStorage.getItem(LSP)||'[]');
-  $('pendInfo').textContent=p.length?p.length+' factura(s) esperando subir a la nube.':'Sin facturas pendientes.';
-  $('pendRow').style.display=p.length?'flex':'none';
+  $('pendRowG').style.display=p.length?'':'none';
+  $('pendInfo').textContent=p.length?plural(p.length,'factura esperando','facturas esperando')+' conexión':'';
 }
 async function retryPending(silent){
   let p=JSON.parse(localStorage.getItem(LSP)||'[]');
@@ -1431,16 +1577,10 @@ let SUPS=[],editSup=null,supQ='';
 const normTx=s=>String(s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
 const sortedSups=()=>[...SUPS].sort((a,b)=>a.name.localeCompare(b.name,'es',{sensitivity:'base'}));
 $('supSearch').addEventListener('input',()=>{supQ=$('supSearch').value.trim();renderSuppliers();});
-$('supToggle').onclick=()=>{
-  const open=$('supPanel').style.display!=='none';
-  $('supPanel').style.display=open?'none':'block';
-  $('supChev').style.transform=open?'':'rotate(180deg)';
-  if(!open)$('supSearch').focus();
-};
 async function loadSuppliers(){
   const r=await rpc('api_list_suppliers',{p_code:CODE,p_restaurant:VIEW_RID});
   if(r&&r.ok){SUPS=r.rows||[];
-    $('supCount').textContent=SUPS.length?('· '+SUPS.length):'';
+    $('supCount').textContent=SUPS.length?String(SUPS.length):'';
     const alpha=sortedSups();
     $('supList').innerHTML=alpha.map(s=>'<option value="'+esc(s.name)+'">').join('');
     const sel=$('fSup').value;
@@ -1505,6 +1645,7 @@ async function lv(path){
 }
 function lvUI(){
   const on=!!localStorage.getItem(LVK);
+  $('lvState').textContent=on?'Conectado':'Desconectado';$('lvState').classList.toggle('on',on);
   $('lvTokRow').style.display=on?'none':'block';
   $('btnLv').style.display=on?'none':'block';
   $('btnLvOff').style.display=on?'block':'none';
@@ -1980,6 +2121,225 @@ $('pmGo').onclick=async()=>{
 };
 $('btnSelect').onclick=openPayMany;
 
+const CHEV='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" width="16" height="16"><path d="M9 6l6 6-6 6"/></svg>';
+/* ---------- Ajustes: navegación entre subpantallas ---------- */
+let SETV='main';
+function setView(v){
+  SETV=v;
+  document.querySelectorAll('#pg-set .setv').forEach(x=>x.classList.toggle('on',x.id==='sv-'+v));
+  window.scrollTo(0,0);
+  if(v==='cats')loadCats();
+  if(v==='sups'){renderSuppliers();}
+  if(v==='team')loadTeam();
+  if(v==='me')renderMe();
+  if(v==='lv')lvUI();
+}
+$('pg-set').addEventListener('click',e=>{
+  const g=e.target.closest('[data-go]');
+  if(g&&!g.disabled)setView(g.dataset.go);
+});
+const roleName=r=>r==='admin'?'Administrador':r==='empleado'?'Empleado':(r||'');
+function renderProfile(){
+  if(!ME)return;
+  $('profIni').textContent=(ME.name||'?').trim().charAt(0).toUpperCase();
+  $('profName').textContent=ME.name||'—';
+  $('profSub').textContent=[roleName(ME.role),ME.restaurant_name].filter(Boolean).join(' · ');
+}
+function currentEmail(){
+  const a=loadAccounts().find(x=>x.user_id===CURRENT_UID);
+  return (a&&a.email)||(ME&&ME.email)||'—';
+}
+function renderMe(){
+  if(!ME)return;
+  $('meName').textContent=ME.name||'—';
+  $('meEmail').textContent=currentEmail();
+  $('meRole').textContent=roleName(ME.role);
+  $('meBiz').textContent=ME.restaurant_name||'—';
+  renderAccountSwitcher();
+}
+
+/* ---------- Apariencia ---------- */
+const THK='ticksy_theme';
+function getTheme(){try{const t=localStorage.getItem(THK);return t==='light'||t==='dark'?t:'system';}catch(e){return 'system';}}
+function applyTheme(t){
+  const el=document.documentElement;
+  if(t==='light'||t==='dark')el.setAttribute('data-theme',t);else el.removeAttribute('data-theme');
+  const dark=t==='dark'||(t==='system'&&window.matchMedia&&matchMedia('(prefers-color-scheme:dark)').matches);
+  document.querySelectorAll('meta[name="theme-color"]').forEach(m=>m.setAttribute('content',t==='system'?(m.media.includes('dark')?'#0A0F0C':'#EEF2EF'):(dark?'#0A0F0C':'#EEF2EF')));
+}
+function syncThemeSeg(){const t=getTheme();$('themeSeg').querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.th===t));}
+$('themeSeg').onclick=e=>{
+  const b=e.target.closest('button');if(!b)return;
+  try{if(b.dataset.th==='system')localStorage.removeItem(THK);else localStorage.setItem(THK,b.dataset.th);}catch(err){}
+  applyTheme(b.dataset.th);syncThemeSeg();
+};
+applyTheme(getTheme());syncThemeSeg();
+
+/* ---------- Exportar a Excel (todas las facturas) ---------- */
+function csvDownload(rows,name){
+  const head='Fecha,Proveedor,No Factura,Categoria,Tipo,Estado,Metodo de pago,No Transaccion,Monto CRC,Registrado por\n';
+  const cs=v=>'"'+String(v??'').replace(/"/g,'""')+'"';
+  const body=rows.map(x=>[x.invoice_date,x.supplier_name,x.invoice_number,x.category,x.sale_type,x.status,x.payment_method||'',x.transaction_number||'',x.total_amount,x.created_by_name||''].map(cs).join(',')).join('\n');
+  const blob=new Blob(['﻿'+head+body],{type:'text/csv;charset=utf-8'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();
+}
+$('btnExportXls').onclick=async()=>{
+  const b=$('btnExportXls');b.disabled=true;
+  const r=await rpc('api_list_invoices_v2',{p_code:CODE,p_limit:5000,p_restaurant:VIEW_RID,p_month:null,p_date_field:'invoice'});
+  b.disabled=false;
+  if(!(r&&r.ok)){toast('No se pudo exportar. Revisá tu conexión.',true);return;}
+  if(!(r.rows||[]).length){toast('Todavía no hay facturas para exportar.',true);return;}
+  csvDownload(r.rows,'ticksy-todas-'+localISO(new Date())+'.csv');
+  toast(plural(r.rows.length,'factura exportada','facturas exportadas')+': abrilo en Excel.');
+};
+
+/* ---------- Equipo ---------- */
+let TEAM=[],PERSON=null;
+async function loadTeam(){
+  const r=await rpc('api_list_team',{});
+  const box=$('teamBox');
+  if(!r||!r.ok){box.innerHTML='<div class="empty">No se pudo cargar el equipo.</div>';return;}
+  TEAM=r.rows||[];
+  $('teamCnt').textContent=plural(TEAM.length,'persona','personas');
+  if(!TEAM.length){box.innerHTML='<div class="empty">Todavía no hay nadie en el equipo.</div>';return;}
+  box.innerHTML=TEAM.map((u,i)=>
+    '<button type="button" class="grow trow" data-p="'+i+'"><span style="min-width:0"><span style="display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(u.name)+(u.user_id===CURRENT_UID?' (vos)':'')+'</span>'+
+    '<span class="tr2">'+esc(u.email||'')+(u.active?'':' · inactivo')+'</span></span>'+
+    '<span class="gv"><span class="rolepill'+(u.role==='admin'?' admin':'')+'">'+roleName(u.role)+'</span>'+CHEV+'</span></button>').join('');
+}
+$('teamBox').onclick=e=>{const b=e.target.closest('[data-p]');if(b)openPerson(+b.dataset.p);};
+function openPerson(i){
+  const u=TEAM[i];if(!u)return;
+  PERSON=u;
+  $('perName').textContent=u.name||'—';
+  $('perEmail').textContent=u.email||'—';
+  $('perState').textContent=u.active?'Activo':'Inactivo';
+  $('perRole').querySelectorAll('button').forEach(b=>b.classList.toggle('on',b.dataset.role===u.role));
+  $('rpEmail').value=u.email||'';$('rpNew').value='';
+  $('resetPwCard').style.display=u.user_id===CURRENT_UID?'none':'';
+  setView('person');
+}
+$('perRole').onclick=async e=>{
+  const b=e.target.closest('button');if(!b||!PERSON||b.classList.contains('on'))return;
+  const role=b.dataset.role;
+  const btns=$('perRole').querySelectorAll('button');btns.forEach(x=>x.disabled=true);
+  const r=await rpc('api_set_user_role',{p_user_id:PERSON.user_id,p_role:role});
+  btns.forEach(x=>x.disabled=false);
+  if(r&&r.ok){PERSON.role=role;btns.forEach(x=>x.classList.toggle('on',x.dataset.role===role));toast('Rol actualizado.');}
+  else toast(r&&r.error==='debe_quedar_un_admin'?'Tiene que quedar al menos un administrador.':'No se pudo cambiar el rol.',true);
+};
+
+/* ---------- Código de invitación ---------- */
+$('codeRoleSeg').onclick=e=>{
+  const b=e.target.closest('button');if(!b)return;
+  $('newCodeRole').value=b.dataset.role;
+  $('codeRoleSeg').querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));
+};
+
+/* ---------- Categorías ---------- */
+let CATROWS=[],catEdit=null,catDelT=null;
+const CAT_ERR={categoria_existe:'Ya existe una categoría con ese nombre.',categoria_fija:'"Otros" es fija: no se puede cambiar ni borrar.',
+  categoria_en_uso:'Tiene facturas: renombrala o pasá sus facturas a otra.',nombre_invalido:'Escribí un nombre de hasta 40 caracteres.',
+  solo_admin:'Solo un administrador puede hacer esto.',demasiadas_categorias:'Llegaste al máximo de 50 categorías.',no_existe:'Esa categoría ya no existe.'};
+function updateCatCount(){$('catCnt').textContent=CATS.length?String(CATS.length):'';}
+async function loadCats(){
+  const r=await rpc('api_list_categories',{});
+  if(!(r&&r.ok)){$('catList').innerHTML='<div class="empty">No se pudieron cargar las categorías.</div>';return;}
+  CATROWS=r.rows||[];
+  CATS=CATROWS.map(c=>c.name);fillCats();updateCatCount();
+  renderCats();
+}
+const ICON_EDIT='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg>';
+const ICON_DEL='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg>';
+function renderCats(){
+  const box=$('catList');
+  if(!CATROWS.length){box.innerHTML='<div class="empty">Sin categorías.</div>';return;}
+  const week=Date.now()-7*86400000;
+  box.innerHTML=CATROWS.map(c=>{
+    if(catEdit===c.id)return '<div class="crow"><input id="catEditIn" value="'+esc(c.name)+'" maxlength="40" aria-label="Nuevo nombre">'+
+      '<button type="button" class="sbtn" style="color:var(--ac)" data-save="'+c.id+'">Guardar</button><button type="button" class="sbtn" data-cancel="1" aria-label="Cancelar">✕</button></div>';
+    const n=+c.invoices||0;
+    const tag=c.fixed?'<span class="ctag fixed">fija</span>':(c.created_at&&Date.parse(c.created_at)>week?'<span class="ctag new">Nueva</span>':'');
+    return '<div class="crow"><span style="flex:1;min-width:0"><span class="cn"><span>'+esc(c.name)+'</span>'+tag+'</span>'+
+      '<span class="cm">'+(n?plural(n,'factura','facturas'):'Sin uso')+'</span></span>'+
+      (c.fixed?'':'<button type="button" class="cbtn" data-edit="'+c.id+'" aria-label="Renombrar '+esc(c.name)+'">'+ICON_EDIT+'</button>')+
+      (!c.fixed&&!n?'<button type="button" class="cbtn del" data-del="'+c.id+'" aria-label="Borrar '+esc(c.name)+'">'+ICON_DEL+'</button>':'')+
+    '</div>';
+  }).join('');
+  const inp=$('catEditIn');
+  if(inp){inp.focus();inp.select();inp.onkeydown=e=>{if(e.key==='Enter')saveCat(catEdit);if(e.key==='Escape'){catEdit=null;renderCats();}};}
+}
+async function saveCat(id){
+  const name=($('catEditIn')&&$('catEditIn').value||'').trim();
+  const r=await rpc('api_rename_category',{p_id:id,p_name:name});
+  if(r&&r.ok){catEdit=null;toast('Categoría renombrada.');await loadCats();}
+  else toast(CAT_ERR[r&&r.error]||'No se pudo renombrar.',true);
+}
+$('catList').onclick=async e=>{
+  const ed=e.target.closest('[data-edit]'),sv=e.target.closest('[data-save]'),cn=e.target.closest('[data-cancel]'),dl=e.target.closest('[data-del]');
+  if(ed){catEdit=+ed.dataset.edit;renderCats();return;}
+  if(sv){saveCat(+sv.dataset.save);return;}
+  if(cn){catEdit=null;renderCats();return;}
+  if(dl){
+    if(!dl.classList.contains('armed')){
+      $('catList').querySelectorAll('.cbtn.del.armed').forEach(x=>x.classList.remove('armed'));
+      dl.classList.add('armed');dl.setAttribute('aria-label','Tocá de nuevo para borrar');
+      toast('Tocá de nuevo el basurero para borrarla.');
+      clearTimeout(catDelT);catDelT=setTimeout(()=>dl.classList.remove('armed'),4000);
+      return;
+    }
+    clearTimeout(catDelT);
+    const r=await rpc('api_delete_category',{p_id:+dl.dataset.del});
+    if(r&&r.ok){toast('Categoría borrada.');await loadCats();}
+    else toast(CAT_ERR[r&&r.error]||'No se pudo borrar.',true);
+  }
+};
+async function addCategory(name){
+  const r=await rpc('api_add_category',{p_name:name});
+  if(r&&r.ok){
+    if(!CATS.some(c=>c.toLowerCase()===String(r.name).toLowerCase())){
+      const i=CATS.indexOf('Otros');if(i>=0)CATS.splice(i,0,r.name);else CATS.push(r.name);
+    }
+    fillCats();updateCatCount();
+    return r.name;
+  }
+  toast(CAT_ERR[r&&r.error]||'No se pudo crear la categoría.',true);
+  return null;
+}
+$('catAdd').onclick=async()=>{
+  const v=$('catNew').value.trim();
+  if(!v){$('catNew').focus();return;}
+  $('catAdd').disabled=true;
+  const nm=await addCategory(v);
+  $('catAdd').disabled=false;
+  if(nm){$('catNew').value='';toast('Categoría "'+nm+'" agregada.');loadCats();}
+};
+$('catNew').addEventListener('keydown',e=>{if(e.key==='Enter')$('catAdd').click();});
+
+/* ---------- "+ Nueva categoría…" al revisar o editar una factura ---------- */
+let catPrev='';
+$('f_cat').addEventListener('focus',()=>{if($('f_cat').value!=='__new__')catPrev=$('f_cat').value;});
+$('f_cat').addEventListener('change',()=>{
+  if($('f_cat').value!=='__new__'){catPrev=$('f_cat').value;return;}
+  $('ncName').value='';openSheet('ncWrap');setTimeout(()=>$('ncName').focus(),150);
+});
+function ncClose(created){
+  closeSheet('ncWrap');
+  if(created){$('f_cat').value=created;catPrev=created;}
+  else $('f_cat').value=CATS.includes(catPrev)?catPrev:CATS[0];
+}
+$('ncCancel').onclick=()=>ncClose(null);
+$('ncWrap').addEventListener('click',e=>{if(e.target===$('ncWrap'))ncClose(null);});
+$('ncOk').onclick=async()=>{
+  const v=$('ncName').value.trim();
+  if(!v){$('ncName').focus();return;}
+  $('ncOk').disabled=true;
+  const nm=await addCategory(v);
+  $('ncOk').disabled=false;
+  if(nm){toast('Categoría "'+nm+'" creada.');ncClose(nm);}
+};
+$('ncName').addEventListener('keydown',e=>{if(e.key==='Enter')$('ncOk').click();});
+
 /* ---------- Ajustes ---------- */
 $('btnChangeCode').onclick=async()=>{
   const nc=$('newCode').value.trim().toUpperCase();
@@ -1998,6 +2358,7 @@ function renderSubscriptionCard(){
   const box=$('subCard');
   if(!sub){box.style.display='none';return;}
   box.style.display='block';
+  box.classList.toggle('warn',sub.plan_status!=='activo'&&sub.plan_status!=='prueba');
   const fechas=sub.trial_ends_at?new Date(sub.trial_ends_at):null;
   const fechaTxt=fechas?fechas.toLocaleDateString('es-CR',{day:'numeric',month:'long',year:'numeric'}):'';
   if(sub.plan_status==='prueba'){
@@ -2014,55 +2375,15 @@ function renderSubscriptionCard(){
     $('subDetail').textContent='Contactá a Ticksy para renovar el plazo.';
   }
 }
-async function loadTeam(){
-  const r=await rpc('api_list_team',{});
-  const box=$('teamBox');
-  if(!r||!r.ok){box.innerHTML='<div class="empty">No se pudo cargar el equipo.</div>';return;}
-  const rows=r.rows||[];
-  if(!rows.length){box.innerHTML='<div class="empty">Todavía no hay nadie en el equipo.</div>';return;}
-  box.innerHTML=rows.map(u=>(
-    '<div class="teamrow">'+
-      '<div style="min-width:0"><div class="tn">'+esc(u.name)+(u.active?'':' <span style="color:var(--err)">(inactivo)</span>')+'</div>'+
-      '<div class="te">'+esc(u.email)+'</div></div>'+
-      '<div class="roleSeg" data-uid="'+u.user_id+'">'+
-        '<button data-role="empleado" class="'+(u.role==='empleado'?'on':'')+'">Empleado</button>'+
-        '<button data-role="admin" class="'+(u.role==='admin'?'on admin':'')+'">Administrador</button>'+
-      '</div>'+
-    '</div>'
-  )).join('');
-  box.querySelectorAll('.roleSeg').forEach(seg=>{
-    seg.querySelectorAll('button').forEach(btn=>{
-      btn.onclick=async()=>{
-        if(btn.classList.contains('on'))return;
-        const uid=seg.dataset.uid,role=btn.dataset.role;
-        const buttons=seg.querySelectorAll('button');
-        buttons.forEach(b=>b.disabled=true);
-        const r2=await rpc('api_set_user_role',{p_user_id:uid,p_role:role});
-        buttons.forEach(b=>b.disabled=false);
-        if(r2&&r2.ok){
-          toast('Rol actualizado.');
-          buttons.forEach(b=>{
-            const isAdmin=b.dataset.role==='admin';
-            b.classList.toggle('on',b.dataset.role===role);
-            b.classList.toggle('admin',isAdmin&&role==='admin');
-          });
-        }else{
-          toast(r2&&r2.error==='debe_quedar_un_admin'?'Tiene que quedar al menos un administrador.':'No se pudo cambiar el rol.',true);
-          loadTeam();
-        }
-      };
-    });
-  });
-}
 $('btnResetPw').onclick=async()=>{
   const email=$('rpEmail').value.trim();
   const pw=$('rpNew').value;
-  if(!email){toast('Ingresa el correo del empleado.',true);return;}
+  if(!email){toast('Esta persona no tiene correo registrado.',true);return;}
   if(pw.length<6){toast('Mínimo 6 caracteres.',true);return;}
   $('btnResetPw').disabled=true;
   const r=await rpc('api_admin_reset_password',{p_email:email,p_new_password:pw});
   $('btnResetPw').disabled=false;
-  if(r&&r.ok){$('rpEmail').value='';$('rpNew').value='';toast('Contraseña actualizada'+(r.name?' para '+r.name:'')+'. Compártesela.');}
+  if(r&&r.ok){$('rpNew').value='';toast('Contraseña actualizada'+(r.name?' para '+r.name:'')+'. Compártesela.');}
   else if(r&&r.error==='no_encontrado')toast('No hay ningún empleado tuyo con ese correo.',true);
   else toast('No se pudo restablecer la contraseña.',true);
 };
@@ -2076,13 +2397,6 @@ $('btnChangePass').onclick=async()=>{
   if(error)toast('No se pudo cambiar: '+error.message,true);
   else{$('newPass').value='';toast('Contraseña actualizada.');}
 };
-$('btnExport').onclick=async()=>{
-  const r=await rpc('api_list_invoices',{p_code:CODE,p_limit:1000});
-  const blob=new Blob([JSON.stringify(r&&r.rows||[],null,2)],{type:'application/json'});
-  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
-  a.download='ticksy-facturas.json';a.click();
-};
-
 /* ---------- PWA + arranque ---------- */
 /* beta: sin service worker propio */
 fillCats();
