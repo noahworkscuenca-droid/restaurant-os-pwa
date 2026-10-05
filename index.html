@@ -332,9 +332,7 @@ canvas.chart{width:100%!important}
       </div>
       <button class="mbtn" id="mNext" aria-label="Mes siguiente">›</button>
     </div>
-    <div class="row" style="margin-top:.7rem">
-      <input class="filt" id="qNum" placeholder="🔍 Buscar por N° de factura" autocomplete="off">
-    </div>
+    <div class="field icon-field" style="margin:.7rem 0 0"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg><input class="filt" id="qNum" placeholder="Buscar por N° de factura" autocomplete="off"></div>
     <div class="histchips" id="histChips">
       <select class="chipsel" id="fSup"><option value="">Proveedor</option></select>
       <select class="chipsel" id="fSt">
@@ -408,7 +406,7 @@ canvas.chart{width:100%!important}
       <svg id="supChev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex:none;margin-bottom:.7rem;transition:transform .2s"><path d="M6 9l6 6 6-6"/></svg>
     </button>
     <div id="supPanel" style="display:none">
-      <div class="field"><input id="supSearch" placeholder="🔍 Buscar proveedor" autocomplete="off"></div>
+      <div class="field icon-field"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg><input id="supSearch" class="filt" placeholder="Buscar proveedor" autocomplete="off"></div>
       <div class="card" id="supBox"><div class="empty">Cargando…</div></div>
     </div>
     <div class="slabel" id="codeLbl">Código de invitación al negocio</div>
