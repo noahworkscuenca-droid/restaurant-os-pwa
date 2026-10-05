@@ -116,13 +116,15 @@ display:flex;flex-direction:column;align-items:center;justify-content:center;gap
 .suprow input{flex:1;background:var(--s1);border:1px solid var(--ac);border-radius:12px;color:var(--tx);font:inherit;font-size:.9rem;padding:.6rem .8rem;outline:none;min-width:0}
 .sbtn{background:var(--bg);border:0;color:var(--tx2);border-radius:99px;padding:.42rem .8rem;font:inherit;font-size:.7rem;font-weight:600;cursor:pointer;flex:none}
 .sbtn:active{filter:brightness(.95)}
-.teamrow{display:flex;align-items:center;justify-content:space-between;gap:.7rem;padding:.85rem 0;border-bottom:1px solid var(--bd)}
+.teamrow{display:flex;flex-direction:column;gap:.55rem;padding:.85rem 0;border-bottom:1px solid var(--bd)}
 .teamrow:last-child{border-bottom:0}
 .teamrow .tn{font-size:.9rem;font-weight:650;letter-spacing:-.018em}
 .teamrow .te{font-size:.76rem;color:var(--tx3);font-weight:500;margin-top:.1rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.roleSel{flex:none;appearance:none;-webkit-appearance:none;background:var(--glass-bg) url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="%237E8C85" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>') no-repeat right .7rem center;background-size:14px;border:1px solid var(--glass-bd);border-radius:12px;color:var(--tx);font:inherit;font-size:.78rem;font-weight:600;padding:.55rem 1.9rem .55rem .8rem;outline:none}
-.roleSel.admin{color:var(--ac);border-color:rgba(34,199,126,.4)}
-.roleSel:disabled{opacity:.6}
+.roleSeg{display:inline-flex;background:var(--bg);border-radius:10px;padding:.2rem;gap:.15rem;align-self:flex-start}
+.roleSeg button{border:0;background:none;color:var(--tx3);font:inherit;font-size:.74rem;font-weight:700;padding:.4rem .7rem;border-radius:8px;cursor:pointer}
+.roleSeg button.on{background:var(--s1);color:var(--tx)}
+.roleSeg button.on.admin{background:rgba(34,199,126,.16);color:var(--ac)}
+.roleSeg button:disabled{opacity:.6}
 .filt{width:100%;background:var(--glass-bg);border:1px solid var(--glass-bd);border-radius:16px;color:var(--tx);font:inherit;font-size:.9rem;font-weight:500;padding:.8rem .9rem;outline:none}
 .filt:focus{border-color:var(--ac)}
 .icon-field{position:relative}
@@ -1412,24 +1414,34 @@ async function loadTeam(){
     '<div class="teamrow">'+
       '<div style="min-width:0"><div class="tn">'+esc(u.name)+(u.active?'':' <span style="color:var(--err)">(inactivo)</span>')+'</div>'+
       '<div class="te">'+esc(u.email)+'</div></div>'+
-      '<select data-uid="'+u.user_id+'" class="teamRoleSel roleSel'+(u.role==='admin'?' admin':'')+'">'+
-        '<option value="empleado"'+(u.role==='empleado'?' selected':'')+'>Empleado</option>'+
-        '<option value="admin"'+(u.role==='admin'?' selected':'')+'>Administrador</option>'+
-      '</select>'+
+      '<div class="roleSeg" data-uid="'+u.user_id+'">'+
+        '<button data-role="empleado" class="'+(u.role==='empleado'?'on':'')+'">Empleado</button>'+
+        '<button data-role="admin" class="'+(u.role==='admin'?'on admin':'')+'">Administrador</button>'+
+      '</div>'+
     '</div>'
   )).join('');
-  box.querySelectorAll('.teamRoleSel').forEach(sel=>{
-    sel.onchange=async()=>{
-      const uid=sel.dataset.uid,role=sel.value;
-      sel.disabled=true;
-      const r2=await rpc('api_set_user_role',{p_user_id:uid,p_role:role});
-      sel.disabled=false;
-      if(r2&&r2.ok){toast('Rol actualizado.');sel.classList.toggle('admin',role==='admin');}
-      else{
-        toast(r2&&r2.error==='debe_quedar_un_admin'?'Tiene que quedar al menos un administrador.':'No se pudo cambiar el rol.',true);
-        loadTeam();
-      }
-    };
+  box.querySelectorAll('.roleSeg').forEach(seg=>{
+    seg.querySelectorAll('button').forEach(btn=>{
+      btn.onclick=async()=>{
+        if(btn.classList.contains('on'))return;
+        const uid=seg.dataset.uid,role=btn.dataset.role;
+        const buttons=seg.querySelectorAll('button');
+        buttons.forEach(b=>b.disabled=true);
+        const r2=await rpc('api_set_user_role',{p_user_id:uid,p_role:role});
+        buttons.forEach(b=>b.disabled=false);
+        if(r2&&r2.ok){
+          toast('Rol actualizado.');
+          buttons.forEach(b=>{
+            const isAdmin=b.dataset.role==='admin';
+            b.classList.toggle('on',b.dataset.role===role);
+            b.classList.toggle('admin',isAdmin&&role==='admin');
+          });
+        }else{
+          toast(r2&&r2.error==='debe_quedar_un_admin'?'Tiene que quedar al menos un administrador.':'No se pudo cambiar el rol.',true);
+          loadTeam();
+        }
+      };
+    });
   });
 }
 $('btnResetPw').onclick=async()=>{
