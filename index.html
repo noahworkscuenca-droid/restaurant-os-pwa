@@ -103,7 +103,9 @@ body.noscroll{overflow:hidden}
 
 /* Segmentado */
 .seg{display:flex;background:var(--s1);border:1px solid var(--bd);border-radius:12px;padding:3px;gap:2px}
-.seg button{flex:1;min-height:38px;border:0;border-radius:9px;background:none;color:var(--tx2);font-size:.82rem;font-weight:600;cursor:pointer;white-space:nowrap;padding:0 .5rem}
+.seg button{flex:1;min-height:38px;border:0;border-radius:9px;background:none;color:var(--tx2);font-size:.82rem;font-weight:600;cursor:pointer;white-space:nowrap;padding:0 .5rem;min-width:0}
+.seg{min-width:0}
+@media (max-width:380px){#stSeg button{flex:1 1 auto!important;font-size:.74rem;padding:0 .45rem}#stSeg{gap:0}.iconbtn{width:40px}}
 .seg button.on{background:var(--seg-on);color:var(--seg-on-tx);font-weight:650}
 .seg .cnt{color:var(--amber);font-weight:700}
 .seg button.on .cnt{color:var(--seg-on-cnt)}
